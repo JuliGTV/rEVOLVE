@@ -1,7 +1,7 @@
 from population import Organism
 
 
-class Prompgenerator:
+class Promptgenerator:
     def __init__(self, systemprompt: str, reason: bool = False):
         self.systemprompt = systemprompt
 
@@ -11,7 +11,7 @@ class Prompgenerator:
 
 {self._previous_solution(organism)}
 
-{self.format()}
+{self._format()}
 """
         return otpt
 
@@ -27,7 +27,7 @@ You should propose a new solution that is a SMALL ITERATIVE IMPROVEMENT on this 
 """
         return otpt
     
-    def format(self) -> str:
+    def _format(self) -> str:
         if not self.reason:
             return "Your answer should just be the new solution in code, with no additional text or formatting."
         else:
