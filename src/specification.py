@@ -16,7 +16,7 @@ class ProblemSpecification(BaseModel):
     name: str
     systemprompt: str
     evaluator: Callable[[str], float]
-    sample_solution: str
+    starting_population: list[str] 
     hyperparameters: Hyperparameters
 
 
