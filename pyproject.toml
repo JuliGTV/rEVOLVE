@@ -8,3 +8,6 @@ dependencies = [
     "pydantic>=2.11.5",
     "pydantic-ai>=0.2.16",
 ]
+
+[tool.setuptools]
+packages = ["test_problems"]
