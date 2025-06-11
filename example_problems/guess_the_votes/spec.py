@@ -1,4 +1,4 @@
-from src.specification import ProblemSpecification, Hyperparameters
+from src.specification import ProblemSpecification, Hyperparameters, Evaluation
 from example_problems.guess_the_votes.test import test_guess_the_votes
 from src.population import Organism
 
@@ -14,7 +14,7 @@ baseline_solution = """def guess_the_votes(s,v):
  return r"""
 
 
-def evaluate(solution:str) -> int:
+def evaluate(solution:str) -> Evaluation:
 
     try:
         # Create a dictionary to serve as the local namespace
@@ -25,17 +25,32 @@ def evaluate(solution:str) -> int:
         
         # Check if 'f' is defined and is callable
         if 'guess_the_votes' in local_namespace and callable(local_namespace['guess_the_votes']):
-            if test_guess_the_votes(eval('guess_the_votes', local_namespace, local_namespace)):
+            function_detected = True
+            result = test_guess_the_votes(eval('guess_the_votes', local_namespace, local_namespace))
+            if result:
                 if len(solution) >= len(baseline_solution):
-                    return 0
-                return len(baseline_solution) - len(solution)
+                    fitness = 0
+                fitness = len(baseline_solution) - len(solution)
             else:
-                return -1
+                fitness = -1
         else:
-            return -1
+            function_detected = False
+            fitness = -1
     except Exception as e:
+        function_detected = False
         print(e)
-        return -1
+        fitness = -1
+
+    additional_data = {
+        "length": len(solution),
+        "function_detected": str(function_detected)
+    }
+    if function_detected:
+        additional_data["result"] = str(result)
+    return Evaluation(fitness=fitness, additional_data=additional_data)
+    
+
+
 
 sysprompt = """
     You are a master python programmer, and code golf champion.
