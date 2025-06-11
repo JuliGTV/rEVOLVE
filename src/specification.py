@@ -12,11 +12,14 @@ class Hyperparameters(BaseModel):
     target_fitness: Optional[float] = None
     reason: bool = False
 
+class Evaluation(BaseModel):
+    fitness: float
+    additional_data: dict[str, str] = {}
 
 class ProblemSpecification(BaseModel):
     name: str
     systemprompt: str
-    evaluator: Callable[[str], float]
+    evaluator: Callable[[str], Evaluation]
     starting_population: list[Organism] 
     hyperparameters: Hyperparameters = Hyperparameters()
 

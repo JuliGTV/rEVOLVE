@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 import random
 from typing import Optional
-
+from src.specification import Evaluation
 class Organism(BaseModel):
     solution: str
-    fitness: float
+    evaluation: Evaluation
     id: Optional[int] = None
     parent_id: Optional[int] = None
 
@@ -22,13 +22,13 @@ class Population:
         self.id_counter += 1
 
     def get_best(self) -> Organism:
-        return max(self.population, key=lambda x: x.fitness)
+        return max(self.population, key=lambda x: x.evaluation.fitness)
     
     def get_random(self) -> Organism:
         return random.choice(self.population)
     
     def get_weighted_random(self) -> Organism:
-        weights = [organism.fitness + 1 for organism in self.population]
+        weights = [organism.evaluation.fitness + 1 for organism in self.population]
         return random.choices(self.population, weights=weights, k=1)[0]
     
     def get_next(self) -> Organism:
@@ -46,5 +46,8 @@ class Population:
     
     def get_population(self) -> list[Organism]:
         return self.population
+    
+    def calculate_average_fitness(self) -> float:
+        return sum(organism.evaluation.fitness for organism in self.population) / len(self.population)
     
 

@@ -22,7 +22,9 @@ class Promptgenerator:
 Look at this solution to the problem:
 {organism.solution}
 
-It achieved a fitness of {organism.fitness}.
+It achieved a fitness of {organism.evaluation.fitness}.
+Here is some additional data from the evaluation:
+{organism.evaluation.additional_data}
 
 You should propose a new solution that is a SMALL ITERATIVE IMPROVEMENT on this one.
 """
