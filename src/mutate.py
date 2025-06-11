@@ -11,7 +11,7 @@ model = Agent(
 
 
 def generate(prompt: str, reason: bool = False) -> str:
-    output = model.generate(prompt)
+    output = model.run_sync(prompt).output
 
     if reason:
         return output.split(r"\n---\n")[1]

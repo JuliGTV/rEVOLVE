@@ -1,12 +1,12 @@
 from example_problems.guess_the_votes.sample_solutions import o4high_golf, o4high, gpt4o, gpt4o_golf
 from typing import Callable
 import json
-
+with open('example_problems/guess_the_votes/test.json', 'r') as f:
+    test_cases = json.load(f)
 
 def test_guess_the_votes(gtv: Callable[[dict[str, int], dict[str, int]], dict[str, set[str]]]) -> bool:
     # Load test cases from JSON file
-    with open('test_problems/guess_the_votes/test.json', 'r') as f:
-        test_cases = json.load(f)
+
     
     for test_case in test_cases:
         shares = test_case['shares']

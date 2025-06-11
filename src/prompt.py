@@ -4,6 +4,7 @@ from src.population import Organism
 class Promptgenerator:
     def __init__(self, systemprompt: str, reason: bool = False):
         self.systemprompt = systemprompt
+        self.reason = reason
 
     def generate_prompt(self, organism: Organism) -> str:
         otpt = f"""

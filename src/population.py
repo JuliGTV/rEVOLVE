@@ -13,6 +13,8 @@ class Population:
     def __init__(self,exploration_rate: float = 0.4, elitism_rate: float = 0.1, pop=[]):
         self.population = pop
         self.id_counter = 1
+        self.exploration_rate = exploration_rate
+        self.elitism_rate = elitism_rate
 
     def add(self, organism: Organism):
         organism.id = self.id_counter
@@ -26,7 +28,7 @@ class Population:
         return random.choice(self.population)
     
     def get_weighted_random(self) -> Organism:
-        weights = [organism.fitness for organism in self.population]
+        weights = [organism.fitness + 1 for organism in self.population]
         return random.choices(self.population, weights=weights, k=1)[0]
     
     def get_next(self) -> Organism:

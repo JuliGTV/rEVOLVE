@@ -1,5 +1,5 @@
 from src.specification import ProblemSpecification
-from src.evolve import evolve
+from src.evolve import Evolver
 from typing import Optional
 
 
@@ -11,10 +11,11 @@ def run_example(spec: ProblemSpecification, max_steps: Optional[int] = None, tar
         spec.hyperparameters.target_fitness = target_fitness
     
     try:
-        e = evolve(spec)
-        print(e)
+        e = Evolver(spec)
+        e.evolve()
     except Exception as e:
-        print(e)
+  
+        raise e
 
 if __name__ == "__main__":
     from example_problems.guess_the_votes.spec import spec
