@@ -1,27 +1,33 @@
 from pydantic import BaseModel
 import random
+from typing import Optional
 
 class Organism(BaseModel):
     solution: str
     fitness: float
+    id: int
+    parent_id: Optional[int] = None
 
 
 class Population:
     def __init__(self,exploration_rate: float = 0.4, elitism_rate: float = 0.1, pop=[]):
-        self.pop = pop
+        self.population = pop
+        self.id_counter = 1
 
     def add(self, organism: Organism):
-        self.pop.append(organism)
+        organism.id = self.id_counter
+        self.population.append(organism)
+        self.id_counter += 1
 
     def get_best(self) -> Organism:
-        return max(self.pop, key=lambda x: x.fitness)
+        return max(self.population, key=lambda x: x.fitness)
     
     def get_random(self) -> Organism:
-        return random.choice(self.pop)
+        return random.choice(self.population)
     
     def get_weighted_random(self) -> Organism:
-        weights = [organism.fitness for organism in self.pop]
-        return random.choices(self.pop, weights=weights, k=1)[0]
+        weights = [organism.fitness for organism in self.population]
+        return random.choices(self.population, weights=weights, k=1)[0]
     
     def get_next(self) -> Organism:
         "implements a very simple genetic algorithm"
@@ -33,5 +39,10 @@ class Population:
         else:
             return self.get_weighted_random()
        
+    def get_id(self, id: int) -> Organism:
+        return next((organism for organism in self.population if organism.id == id), None)
+    
+    def get_population(self) -> list[Organism]:
+        return self.population
     
 

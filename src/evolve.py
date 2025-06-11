@@ -26,7 +26,7 @@ class Evolver:
             prompt = self.prompt_gen.generate_prompt(mutatee)
             mutated = generate(prompt, self.reason)
             fitness = self.specification.evaluator(mutated)
-            self.population.add(Organism(mutated, fitness))
+            self.population.add(Organism(mutated, fitness, parent_id=mutatee.id))
 
         print(f"Evolved {step} steps"
               f"with best fitness {self.population.get_best().fitness}"
