@@ -2,7 +2,7 @@ from src.population import Organism, Population
 from src.specification import ProblemSpecification
 from src.mutate import generate
 from src.prompt import Promptgenerator
-
+import logfire
 
 
 class Evolver:
@@ -17,9 +17,14 @@ class Evolver:
         self.max_steps = specification.hyperparameters.max_steps
         self.reason = specification.hyperparameters.reason
         self.prompt_gen = Promptgenerator(specification.systemprompt, self.reason)
+        logfire.info("Evolver initialized", 
+                    specification_name=specification.name,
+                    target_fitness=self.target,
+                    max_steps=self.max_steps)
 
     def evolve(self) -> Population:
         step = 0
+        best_fitness = float('-inf')
         while self.population.get_best().evaluation.fitness < self.target and step < self.max_steps:
             step += 1
             mutatee = self.population.get_next()
@@ -27,12 +32,18 @@ class Evolver:
             mutated = generate(prompt, self.reason)
             evaluation = self.specification.evaluator(mutated)
             self.population.add(Organism(solution=mutated, evaluation=evaluation, parent_id=mutatee.id))
-            print(f"Step {step} complete")
-            print(f"Best fitness: {self.population.get_best().evaluation.fitness}")
+            
+            current_best = self.population.get_best().evaluation.fitness
+            logfire.info(f"Step completed {step}"
+                         f"with fitness {evaluation.fitness}"
+                         f"and current best fitness {current_best}"
+                         ) 
 
-        print(f"Evolved {step} steps"
-              f"with best fitness {self.population.get_best().evaluation.fitness}"
-              f"and average fitness {self.population.calculate_average_fitness()}"
-              )
+        final_stats = {
+            "steps": step,
+            "best_fitness": self.population.get_best().evaluation.fitness,
+            "average_fitness": self.population.calculate_average_fitness()
+        }
+        logfire.info("Evolution completed", **final_stats)
         return self.population
 

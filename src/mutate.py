@@ -1,8 +1,13 @@
 from pydantic_ai import Agent
 from dotenv import load_dotenv
-
+import logfire
+import os
 load_dotenv()
 
+logfire.configure(
+    token=os.getenv("LOGFIRE_TOKEN")
+)
+logfire.instrument_pydantic_ai()
 
 model = Agent(
     model="gpt-4o-mini",
