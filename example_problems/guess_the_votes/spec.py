@@ -31,7 +31,8 @@ def evaluate(solution:str) -> Evaluation:
             if type(result) == bool:
                 if len(solution) >= len(baseline_solution):
                     fitness = 0
-                fitness = len(baseline_solution) - len(solution)
+                else:
+                    fitness = len(baseline_solution) - len(solution)
             else:
                 fitness = -1
         else:
