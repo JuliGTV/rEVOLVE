@@ -28,7 +28,8 @@ class Population:
         return random.choice(self.population)
     
     def get_weighted_random(self) -> Organism:
-        weights = [organism.evaluation.fitness + 1 for organism in self.population]
+
+        weights = [organism.evaluation.fitness + 2 for organism in self.population]
         return random.choices(self.population, weights=weights, k=1)[0]
     
     def get_next(self) -> Organism:

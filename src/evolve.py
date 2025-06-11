@@ -30,13 +30,15 @@ class Evolver:
             mutatee = self.population.get_next()
             prompt = self.prompt_gen.generate_prompt(mutatee)
             mutated = generate(prompt, self.reason)
+            print(mutated)
             evaluation = self.specification.evaluator(mutated)
+            print(evaluation)
             self.population.add(Organism(solution=mutated, evaluation=evaluation, parent_id=mutatee.id))
             
             current_best = self.population.get_best().evaluation.fitness
-            logfire.info(f"Step completed {step}"
-                         f"with fitness {evaluation.fitness}"
-                         f"and current best fitness {current_best}"
+            logfire.info(f"Step completed {step}\n"
+                         f"with fitness {evaluation.fitness}\n"
+                         f"and current best fitness {current_best}\n"
                          ) 
 
         final_stats = {

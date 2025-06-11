@@ -10,14 +10,17 @@ logfire.configure(
 logfire.instrument_pydantic_ai()
 
 model = Agent(
-    model="gpt-4o-mini",
+    model="gpt-4o",
     output_type=str
 )
 
 
 def generate(prompt: str, reason: bool = False) -> str:
     output = model.run_sync(prompt).output
-
+    if "```python" in output:
+        output = output.split("```python")[1].split("```")[0]
+    elif "```" in output:
+        output = output.split("```")[1].split("```")[0]
     if reason:
         return output.split(r"\n---\n")[1]
     else:

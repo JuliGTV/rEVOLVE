@@ -22,13 +22,13 @@ def evaluate(solution:str) -> Evaluation:
         local_namespace = {}
         
         # Execute the code string in the local namespace
-        exec(solution, local_namespace, local_namespace)
+        exec(solution, {}, local_namespace)
         
         # Check if 'f' is defined and is callable
         if 'guess_the_votes' in local_namespace and callable(local_namespace['guess_the_votes']):
             function_detected = True
             result = test_guess_the_votes(eval('guess_the_votes', local_namespace, local_namespace))
-            if result:
+            if type(result) == bool:
                 if len(solution) >= len(baseline_solution):
                     fitness = 0
                 fitness = len(baseline_solution) - len(solution)
@@ -46,7 +46,7 @@ def evaluate(solution:str) -> Evaluation:
         "length": str(len(solution)),
         "function_detected": str(function_detected)
     }
-    if function_detected:
+    if 'result' in locals():
         additional_data["result"] = str(result)
     return Evaluation(fitness=fitness, additional_data=additional_data)
     
