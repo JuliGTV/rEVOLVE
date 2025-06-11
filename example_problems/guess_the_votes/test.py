@@ -1,4 +1,4 @@
-from test_problems.guess_the_votes.sample_solutions import o4high_golf, o4high, gpt4o, gpt4o_golf
+from example_problems.guess_the_votes.sample_solutions import o4high_golf, o4high, gpt4o, gpt4o_golf
 from typing import Callable
 import json
 

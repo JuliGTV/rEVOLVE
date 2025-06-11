@@ -11,3 +11,6 @@ wheels/
 
 # Debug files
 *jdebug*
+
+
+.env

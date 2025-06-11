@@ -1,5 +1,6 @@
-from src.specification import ProblemSpecification
-from test_problems.guess_the_votes.test import test_guess_the_votes
+from src.specification import ProblemSpecification, Hyperparameters
+from example_problems.guess_the_votes.test import test_guess_the_votes
+from src.population import Organism
 
 baseline_solution = """def guess_the_votes(s,v):
  from itertools import product
@@ -20,11 +21,11 @@ def evaluate(solution:str) -> int:
         local_namespace = {}
         
         # Execute the code string in the local namespace
-        exec(solution, {}, local_namespace)
+        exec(solution, local_namespace, local_namespace)
         
         # Check if 'f' is defined and is callable
         if 'guess_the_votes' in local_namespace and callable(local_namespace['guess_the_votes']):
-            if test_guess_the_votes(local_namespace['guess_the_votes']):
+            if test_guess_the_votes(eval('guess_the_votes', local_namespace, local_namespace)):
                 if len(solution) >= len(baseline_solution):
                     return 0
                 return len(baseline_solution) - len(solution)
@@ -33,15 +34,10 @@ def evaluate(solution:str) -> int:
         else:
             return -1
     except Exception as e:
+        print(e)
         return -1
 
-
-
-
-
-spec = ProblemSpecification(
-    name="guess_the_votes (code golf)",
-    systemprompt="""
+sysprompt = """
     You are a master python programmer, and code golf champion.
     You will be given a problem, and a solution (or attempt at a solution) to the problem.
     Your task will be to improve the given solution.
@@ -52,18 +48,35 @@ spec = ProblemSpecification(
     Otherwise it will be scored as the difference between the length of the solution and the baseline solution which is 330 characters.
 
 
+"""
 
-""",
+hyperparameters = Hyperparameters(
+    max_steps=10,
+    target_fitness=0,
+)
+
+
+spec = ProblemSpecification(
+    name="guess_the_votes (code golf)",
+    systemprompt=str(sysprompt),
+    evaluator=evaluate,
     starting_population=[
-        "def guess_the_votes(shares, votes):\n    return {vote: set() for vote in votes}\n",
-        "def guess_the_votes(shares, votes):\n    return {vote: set() for vote in votes}\n",
-        "def guess_the_votes(shares, votes):\n    return {vote: set() for vote in votes}\n",
-        "def guess_the_votes(shares, votes):\n    return {vote: set() for vote in votes}\n",
+        Organism(solution=str(baseline_solution), fitness=evaluate(baseline_solution), id=0)
     ],
+    hyperparameters=hyperparameters
 )
 
 
 
 if __name__ == "__main__":
-    print(len(baseline_solution))
-    print(evaluate(baseline_solution))
+    print("Baseline solution length:", len(baseline_solution))
+    print("Baseline solution score:", evaluate(baseline_solution))
+    
+    sample_files = ['o4high.py', 'o4high_golf.py', 'gpt4o.py', 'gpt4o_golf.py']
+    for file in sample_files:
+        with open(f'test_problems/guess_the_votes/sample_solutions/{file}', 'r') as f:
+            solution = f.read()
+        print(f"\n{file}:")
+        print("Length:", len(solution))
+        print("Score:", evaluate(solution))
+    
