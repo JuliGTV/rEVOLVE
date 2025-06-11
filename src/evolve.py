@@ -41,11 +41,11 @@ class Evolver:
                          f"and current best fitness {current_best}\n"
                          ) 
 
-        final_stats = {
-            "steps": step,
-            "best_fitness": self.population.get_best().evaluation.fitness,
-            "average_fitness": self.population.calculate_average_fitness()
-        }
-        logfire.info("Evolution completed", **final_stats)
+
+        logfire.info(f"Evolution completed\n"
+                     f"with {step} steps\n"
+                     f"and best fitness {self.population.get_best().evaluation.fitness}\n"
+                     f"and average fitness {self.population.calculate_average_fitness()}\n"
+                     )
         return self.population
 
