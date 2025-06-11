@@ -1,4 +1,5 @@
-from src.specification import ProblemSpecification, Hyperparameters, Evaluation
+from src.specification import ProblemSpecification, Hyperparameters
+from src.evaluation import Evaluation
 from example_problems.guess_the_votes.test import test_guess_the_votes
 from src.population import Organism
 
@@ -42,7 +43,7 @@ def evaluate(solution:str) -> Evaluation:
         fitness = -1
 
     additional_data = {
-        "length": len(solution),
+        "length": str(len(solution)),
         "function_detected": str(function_detected)
     }
     if function_detected:
@@ -76,7 +77,7 @@ spec = ProblemSpecification(
     systemprompt=str(sysprompt),
     evaluator=evaluate,
     starting_population=[
-        Organism(solution=str(baseline_solution), fitness=evaluate(baseline_solution), id=0)
+        Organism(solution=str(baseline_solution), evaluation=evaluate(str(baseline_solution)), id=0)
     ],
     hyperparameters=hyperparameters
 )
@@ -92,6 +93,6 @@ if __name__ == "__main__":
         with open(f'test_problems/guess_the_votes/sample_solutions/{file}', 'r') as f:
             solution = f.read()
         print(f"\n{file}:")
-        print("Length:", len(solution))
-        print("Score:", evaluate(solution))
+        print("Length:", str(len(solution)))
+        print("Score:", str(evaluate(solution)))
     

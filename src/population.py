@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 import random
 from typing import Optional
-from src.specification import Evaluation
+from src.evaluation import Evaluation
 class Organism(BaseModel):
     solution: str
     evaluation: Evaluation

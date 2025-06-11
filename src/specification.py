@@ -1,7 +1,7 @@
-
 from typing import Callable, Optional
 from pydantic import BaseModel
 from src.population import Organism
+from src.evaluation import Evaluation
 
 
 
@@ -12,9 +12,6 @@ class Hyperparameters(BaseModel):
     target_fitness: Optional[float] = None
     reason: bool = False
 
-class Evaluation(BaseModel):
-    fitness: float
-    additional_data: dict[str, str] = {}
 
 class ProblemSpecification(BaseModel):
     name: str
