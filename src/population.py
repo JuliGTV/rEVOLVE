@@ -5,7 +5,7 @@ from typing import Optional
 class Organism(BaseModel):
     solution: str
     fitness: float
-    id: int
+    id: Optional[int] = None
     parent_id: Optional[int] = None
 
 

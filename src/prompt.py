@@ -1,4 +1,4 @@
-from population import Organism
+from src.population import Organism
 
 
 class Promptgenerator:

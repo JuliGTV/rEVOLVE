@@ -1,6 +1,7 @@
 
 from typing import Callable, Optional
 from pydantic import BaseModel
+from src.population import Organism
 
 
 
@@ -16,7 +17,7 @@ class ProblemSpecification(BaseModel):
     name: str
     systemprompt: str
     evaluator: Callable[[str], float]
-    starting_population: list[str] 
-    hyperparameters: Hyperparameters
+    starting_population: list[Organism] 
+    hyperparameters: Hyperparameters = Hyperparameters()
 
 

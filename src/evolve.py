@@ -1,7 +1,7 @@
-from population import Organism, Population
-from specification import ProblemSpecification
-from mutate import generate
-from prompt import Promptgenerator
+from src.population import Organism, Population
+from src.specification import ProblemSpecification
+from src.mutate import generate
+from src.prompt import Promptgenerator
 
 
 
