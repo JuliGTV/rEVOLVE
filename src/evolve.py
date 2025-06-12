@@ -3,6 +3,10 @@ from src.specification import ProblemSpecification
 from src.mutate import generate
 from src.prompt import Promptgenerator
 import logfire
+import os
+import json
+import pickle
+from datetime import datetime
 
 
 class Evolver:
@@ -49,3 +53,79 @@ class Evolver:
                      )
         return self.population
 
+    def report(self):
+        # Create directory with datetime and problem name
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        problem_name = self.specification.name.replace(" ", "_").replace("(", "").replace(")", "")
+        dir_name = f"{timestamp}_{problem_name}"
+        
+        # Create the directory inside outputs
+        outputs_dir = "outputs"
+        os.makedirs(outputs_dir, exist_ok=True)
+        full_dir_path = os.path.join(outputs_dir, dir_name)
+        os.makedirs(full_dir_path, exist_ok=True)
+        
+        # 1. Create visualization
+        viz_path = os.path.join(full_dir_path, "population_visualization")
+        self.population.visualize_population(filename=viz_path, view=False)
+        
+        # 2. Serialize population (try JSON first, fallback to pickle)
+        try:
+            # Try to serialize as JSON
+            population_data = []
+            for org in self.population.get_population():
+                org_data = {
+                    "id": org.id,
+                    "parent_id": org.parent_id,
+                    "solution": org.solution,
+                    "evaluation": {
+                        "fitness": org.evaluation.fitness,
+                        "additional_data": org.evaluation.additional_data
+                    }
+                }
+                population_data.append(org_data)
+            
+            with open(os.path.join(full_dir_path, "population.json"), "w") as f:
+                json.dump(population_data, f, indent=2)
+                
+        except Exception as e:
+            # Fallback to pickle
+            logfire.warning(f"JSON serialization failed: {e}, using pickle instead")
+            with open(os.path.join(full_dir_path, "population.pkl"), "wb") as f:
+                pickle.dump(self.population.get_population(), f)
+        
+        # 3. Create markdown report
+        best_organism = self.population.get_best()
+        num_organisms = len(self.population.get_population())
+        avg_fitness = self.population.calculate_average_fitness()
+        
+        markdown_content = f"""# Evolution Report
+
+## Problem Information
+- **Problem Name**: {self.specification.name}
+- **Timestamp**: {timestamp}
+
+## Population Statistics
+- **Number of Organisms**: {num_organisms}
+- **Best Fitness Score**: {best_organism.evaluation.fitness}
+- **Average Fitness Score**: {avg_fitness:.4f}
+
+## Best Solution
+```
+{best_organism.solution}
+```
+
+## Additional Data from Best Solution
+{json.dumps(best_organism.evaluation.additional_data, indent=2)}
+
+## Files in this Report
+- `population_visualization.gv` / `population_visualization.gv.pdf` - Visual representation of the population
+- `population.json` or `population.pkl` - Serialized population data
+- `report.md` - This report file
+"""
+        
+        with open(os.path.join(full_dir_path, "report.md"), "w") as f:
+            f.write(markdown_content)
+            
+        logfire.info(f"Report generated in directory: {full_dir_path}")
+        return full_dir_path
