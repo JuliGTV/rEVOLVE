@@ -6,7 +6,7 @@ from src.evaluation import Evaluation
 
 
 class Hyperparameters(BaseModel):
-    exploration_rate: float = 0.4
+    exploration_rate: float = 0.2
     elitism_rate: float = 0.1
     max_steps: int = 100
     target_fitness: Optional[float] = None
