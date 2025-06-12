@@ -81,7 +81,7 @@ class Population:
             if org.parent_id is not None:
                 dot.edge(str(org.parent_id), str(org.id))
 
-        dot.render(filename, view=view)
+        dot.render(filename, format='png', view=view)
         return dot
 
     

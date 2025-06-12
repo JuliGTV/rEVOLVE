@@ -7,6 +7,7 @@ import os
 import json
 import pickle
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 
 class Evolver:
@@ -69,7 +70,33 @@ class Evolver:
         viz_path = os.path.join(full_dir_path, "population_visualization")
         self.population.visualize_population(filename=viz_path, view=False)
         
-        # 2. Serialize population (try JSON first, fallback to pickle)
+        # 2. Create fitness progression plot
+        organisms = self.population.get_population()
+        organisms_sorted = sorted(organisms, key=lambda x: x.id)
+        
+        # Track best fitness at each step
+        best_fitness_progression = []
+        current_best = float('-inf')
+        
+        for org in organisms_sorted:
+            if org.evaluation.fitness > current_best:
+                current_best = org.evaluation.fitness
+            best_fitness_progression.append(current_best)
+        
+        # Create the plot
+        plt.figure(figsize=(10, 6))
+        plt.plot(range(1, len(best_fitness_progression) + 1), best_fitness_progression, 'b-', linewidth=2)
+        plt.xlabel('Generation (Organism ID)')
+        plt.ylabel('Best Fitness Score')
+        plt.title('Fitness Progression Over Time')
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        
+        fitness_plot_path = os.path.join(full_dir_path, "fitness_progression.png")
+        plt.savefig(fitness_plot_path, dpi=150, bbox_inches='tight')
+        plt.close()
+        
+        # 3. Serialize population (try JSON first, fallback to pickle)
         try:
             # Try to serialize as JSON
             population_data = []
@@ -94,10 +121,13 @@ class Evolver:
             with open(os.path.join(full_dir_path, "population.pkl"), "wb") as f:
                 pickle.dump(self.population.get_population(), f)
         
-        # 3. Create markdown report
+        # 4. Create markdown report
         best_organism = self.population.get_best()
         num_organisms = len(self.population.get_population())
         avg_fitness = self.population.calculate_average_fitness()
+        
+        # Get hyperparameters
+        hyperparams = self.specification.hyperparameters
         
         markdown_content = f"""# Evolution Report
 
@@ -105,10 +135,23 @@ class Evolver:
 - **Problem Name**: {self.specification.name}
 - **Timestamp**: {timestamp}
 
+## Hyperparameters
+- **Exploration Rate**: {hyperparams.exploration_rate}
+- **Elitism Rate**: {hyperparams.elitism_rate}
+- **Max Steps**: {hyperparams.max_steps}
+- **Target Fitness**: {hyperparams.target_fitness if hyperparams.target_fitness is not None else 'None'}
+- **Reason**: {hyperparams.reason}
+
 ## Population Statistics
 - **Number of Organisms**: {num_organisms}
 - **Best Fitness Score**: {best_organism.evaluation.fitness}
 - **Average Fitness Score**: {avg_fitness:.4f}
+
+## Fitness Progression
+![Fitness Progression](fitness_progression.png)
+
+## Population Visualization
+![Population Visualization](population_visualization.gv.png)
 
 ## Best Solution
 ```
@@ -116,10 +159,13 @@ class Evolver:
 ```
 
 ## Additional Data from Best Solution
+```json
 {json.dumps(best_organism.evaluation.additional_data, indent=2)}
+```
 
 ## Files in this Report
-- `population_visualization.gv` / `population_visualization.gv.pdf` - Visual representation of the population
+- `population_visualization.gv` / `population_visualization.gv.png` - Visual representation of the population
+- `fitness_progression.png` - Plot showing fitness improvement over generations
 - `population.json` or `population.pkl` - Serialized population data
 - `report.md` - This report file
 """
