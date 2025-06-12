@@ -13,11 +13,11 @@ def run_example(spec: ProblemSpecification, max_steps: Optional[int] = None, tar
     try:
         e = Evolver(spec)
         e.evolve()
-        e.population.visualize_population()
+        e.report()
     except Exception as e:
   
         raise e
 
 if __name__ == "__main__":
     from example_problems.guess_the_votes.spec import spec
-    run_example(spec, max_steps=100)
+    run_example(spec, max_steps=15)
