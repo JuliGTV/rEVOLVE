@@ -22,9 +22,9 @@ def generate(prompt: str, reason: bool = False) -> str:
         output = output.split("```python")[1].split("```")[0]
     elif "```" in output:
         output = output.split("```")[1].split("```")[0]
-    if reason:
-        return output.split(r"\n---\n")[1]
-    else:
-        return output
+    # if reason:
+    #     return output.split(r"\n---\n")[1]
+    
+    return output
 
 

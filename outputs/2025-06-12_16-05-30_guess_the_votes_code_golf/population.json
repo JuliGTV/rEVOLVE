@@ -1,0 +1,520 @@
+[
+  {
+    "id": 0,
+    "parent_id": null,
+    "solution": "def guess_the_votes(s,v):\n from itertools import product\n r={k:set()for k in v}\n a=list(s)\n o=list(v)\n A=[x for x in product(range(len(o)),repeat=len(a))if all(sum(s[a[i]]for i in range(len(a))if x[i]==j)==v[o[j]]for j in range(len(o)))]\n for i,n in enumerate(a):\n  p={o[x[i]]for x in A}\n  if len(p)==1:r[p.pop()].add(n)\n return r",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "length": "330",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 1,
+    "parent_id": 0,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={k:set()for k in v}\n a=list(s)\n o=list(v)\n A=[x for x in p(range(len(o)),repeat=len(a))if all(sum(s[a[i]]for i in range(len(a))if x[i]==j)==v[o[j]]for j in range(len(o)))]\n for i,n in enumerate(a):\n  if len({o[x[i]]for x in A})==1:r[o[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 2.0,
+      "additional_data": {
+        "length": "328",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 2,
+    "parent_id": 1,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={k:set()for k in v}\n a=list(s)\n o=list(v)\n A=[x for x in p(range(len(o)),repeat=len(a))if all(sum(s[a[i]]for i in range(len(a))if x[i]==j)==v[o[j]]for j in range(len(o)))]\n for i,n in enumerate(a):\n  if len({o[x[i]]for x in A})<2:r[o[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "327",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 3,
+    "parent_id": 1,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={k:set()for k in v}\n a=list(s)\n o=list(v)\n A=[x for x in p(range(len(o)),repeat=len(a))if all(sum(s[a[i]]for i in range(len(a))if x[i]==j)==v[o[j]]for j in range(len(o)))]\n for i,n in enumerate(a):\n  if len({o[x[i]]for x in A})==1:r[o[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 2.0,
+      "additional_data": {
+        "length": "328",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 4,
+    "parent_id": 1,
+    "solution": "\ndef guess_the_votes(s, v):\n from itertools import product as p\n r={k:set()for k in v}\n a,b=list(s),list(v)\n A=[x for x in p(range(len(b)),repeat=len(a))if all(sum(s[a[i]]for i in range(len(a))if x[i]==j)==v[b[j]]for j in range(len(b)))]\n for i,n in enumerate(a):\n  if len({b[x[i]]for x in A})==1:r[b[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 2.0,
+      "additional_data": {
+        "length": "328",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 5,
+    "parent_id": 4,
+    "solution": "\ndef guess_the_votes(s, v):\n from itertools import product as p\n r={k:set()for k in v}\n a=list(s)\n A=[x for x in p(range(len(v)),repeat=len(a))if all(sum(s[n]for i,n in enumerate(a)if x[i]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(a):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 13.0,
+      "additional_data": {
+        "length": "317",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 6,
+    "parent_id": 5,
+    "solution": "\ndef guess_the_votes(s, v):\n from itertools import product as p\n r={k:set()for k in v}\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 24.0,
+      "additional_data": {
+        "length": "306",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 7,
+    "parent_id": 6,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={k:set()for k in v}\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 25.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 8,
+    "parent_id": 7,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product\n r={k:set()for k in v}\n A=[x for x in product(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 24.0,
+      "additional_data": {
+        "length": "306",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 9,
+    "parent_id": 8,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product\n r={k:set()for k in v}\n A=[x for x in product(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 24.0,
+      "additional_data": {
+        "length": "306",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 10,
+    "parent_id": 7,
+    "solution": "\ndef guess_the_votes(S,V):\n from itertools import product as p\n R={k:set()for k in V}\n A=[x for x in p(range(len(V)),repeat=len(S))if all(sum(S[n]for i,n in enumerate(S)if x[i]==j)==V[k]for j,k in enumerate(V))]\n for i,s in enumerate(S):\n  if len({x[i]for x in A})==1:R[list(V)[A[0][i]]].add(s)\n return R\n",
+    "evaluation": {
+      "fitness": 25.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 11,
+    "parent_id": 8,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product\n r={k:set()for k in v}\n A=[x for x in product(range(len(v)),repeat=len(s))if all(sum(s[n]for n in range(len(s))if x[n]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 12,
+    "parent_id": 5,
+    "solution": "\ndef guess_the_votes(s, v):\n from itertools import product as p\n a=list(s)\n A=[x for x in p(range(len(v)),repeat=len(a))if all(sum(s[n]for i,n in enumerate(a)if x[i]==j)==v[k]for j,k in enumerate(v))]\n return {k:{n for i,n in enumerate(a)if len({x[i]for x in A})==1 and x[i]==list(v).index(k)} for k in v}\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "306",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 13,
+    "parent_id": 9,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product\n r={k:set()for k in v}\n A=[x for x in product(range(len(v)),repeat=len(s))if all(sum(s[n]for n in range(len(s))if x[n]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 14,
+    "parent_id": 7,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={i:set()for i in v}\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for j,n in enumerate(s)if x[j]==k)==v[i]for k,i in enumerate(v))]\n for j,n in enumerate(s):\n  if len({x[j]for x in A})==1:r[list(v)[A[0][j]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 25.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 15,
+    "parent_id": 14,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={k:set()for k in v}\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for j,n in enumerate(s)if x[j]==i)==v[k]for i,k in enumerate(v))]\n for j,n in enumerate(s):\n  if len({x[j]for x in A})==1:r[list(v)[A[0][j]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 25.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 16,
+    "parent_id": 7,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={k:set()for k in v}\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 25.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 17,
+    "parent_id": 16,
+    "solution": "\ndef guess_the_votes(s,v):\n import itertools as i\n r={k:set()for k in v}\n A=[x for x in i.product(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==l for j,l in enumerate(v.values()))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 23.0,
+      "additional_data": {
+        "length": "307",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 18,
+    "parent_id": 9,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product\n r={k:set()for k in v}\n A=[x for x in product(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})<2:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 19,
+    "parent_id": 17,
+    "solution": "\ndef guess_the_votes(s,v):\n import itertools as i\n r={k:set()for k in v}\n A=[x for x in i.product(range(len(v)),repeat=len(s))if all(sum(s[n]for n in range(len(s))if x[n]==j)==v[list(v)[j]]for j in range(len(v)))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "307",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 20,
+    "parent_id": 17,
+    "solution": "\ndef guess_the_votes(s,v):\n import itertools as i\n r={k:set()for k in v}\n A=[x for x in i.product(range(len(v)),repeat=len(s))if all(sum(s[n]for n,e in enumerate(x)if e==j)==l for j,l in enumerate(v.values()))]\n for i,n in enumerate(s): \n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 21,
+    "parent_id": 7,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n return {k:{n for i,n in enumerate(s)if len({x[i]for x in A})==1 and list(v)[A[0][i]]==k} for k in v}\n",
+    "evaluation": {
+      "fitness": 39.0,
+      "additional_data": {
+        "length": "291",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 22,
+    "parent_id": 21,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n return {k:{n for i,n in enumerate(s)if len({x[i]for x in A})==1 and list(v)[A[0][i]]==k}for k in v}\n",
+    "evaluation": {
+      "fitness": 40.0,
+      "additional_data": {
+        "length": "290",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 23,
+    "parent_id": 22,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n return {k:{n for i,n in enumerate(s)if len({x[i]for x in A})<2 and list(v)[A[0][i]]==k}for k in v}\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "289",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 24,
+    "parent_id": 17,
+    "solution": "\ndef guess_the_votes(s,v):\n import itertools as i\n r={k:set()for k in v}\n A=[x for x in i.product(v.keys(),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[list(v)[j]]for j in v.values())]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "300",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 25,
+    "parent_id": 21,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n return {k:{n for i,n in enumerate(s)if {x[i]for x in A}=={A[0][i]}and list(v)[A[0][i]]==k}for k in v}\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "292",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 26,
+    "parent_id": 22,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n return {k:{n for i,n in enumerate(s)if len({x[i]for x in A})==1 and list(v)[A[0][i]]==k}for k in v}\n",
+    "evaluation": {
+      "fitness": 40.0,
+      "additional_data": {
+        "length": "290",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 27,
+    "parent_id": 22,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n a=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n return {k:{n for i,n in enumerate(s)if len({x[i]for x in a})==1 and list(v)[a[0][i]]==k}for k in v}\n",
+    "evaluation": {
+      "fitness": 40.0,
+      "additional_data": {
+        "length": "290",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 28,
+    "parent_id": 17,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={k:set()for k in v}\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==l for j,l in enumerate(v.values()))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 18.0,
+      "additional_data": {
+        "length": "312",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 29,
+    "parent_id": 28,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n R={k:set()for k in v}\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==l for j,l in enumerate(v.values()))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:R[list(v)[A[0][i]]].add(n)\n return R\n",
+    "evaluation": {
+      "fitness": 18.0,
+      "additional_data": {
+        "length": "312",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 30,
+    "parent_id": 7,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={k:set()for k in v}\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 25.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 31,
+    "parent_id": 15,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={k:set()for k in v}\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for j,n in enumerate(s)if x[j]==i)==v[k]for i,k in enumerate(v))]\n for j,n in enumerate(s):\n  if len({x[j]for x in A})==1:r[list(v)[A[0][j]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 25.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 32,
+    "parent_id": 22,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n a=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n return {k:{n for i,n in enumerate(s)if len({x[i]for x in a})==1 and list(v)[a[0][i]]==k}for k in v}\n",
+    "evaluation": {
+      "fitness": 40.0,
+      "additional_data": {
+        "length": "290",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 33,
+    "parent_id": 31,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={k:set()for k in v}\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for j,n in enumerate(s)if x[j]==i)==v[k]for i,k in enumerate(v))]\n for j,n in enumerate(s):\n  if len({x[j]for x in A})==1:r[list(v)[A[0][j]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 25.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 34,
+    "parent_id": 30,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import* \n r={k:set()for k in v}\n A=[x for x in product(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "300",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 35,
+    "parent_id": 28,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import*\n r={k:set()for k in v}\n A=[x for x in product(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==l for j,l in enumerate(v.values()))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "306",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 36,
+    "parent_id": 7,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n r={k:set()for k in v}\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n for i,n in enumerate(s):\n  if len({x[i]for x in A})==1:r[list(v)[A[0][i]]].add(n)\n return r\n",
+    "evaluation": {
+      "fitness": 25.0,
+      "additional_data": {
+        "length": "305",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 37,
+    "parent_id": 26,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n A=[x for x in p(range(len(v)),repeat=len(s))if sum(s[n] for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v)]\n return {k:{n for i,n in enumerate(s)if len({x[i]for x in A})==1 and list(v)[A[0][i]]==k}for k in v}\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "286",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 38,
+    "parent_id": 21,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n return {k:{n for i,n in enumerate(s)if len({x[i]for x in A})==1 and list(v)[A[0][i]]==k}for k in v}\n",
+    "evaluation": {
+      "fitness": 40.0,
+      "additional_data": {
+        "length": "290",
+        "function_detected": "True",
+        "result": "True"
+      }
+    }
+  },
+  {
+    "id": 39,
+    "parent_id": 21,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n return {k:{n for i,n in enumerate(s)if len({x[i]for x in A})<2 and list(v)[A[0][i]]==k}for k in v}\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "289",
+        "function_detected": "False"
+      }
+    }
+  },
+  {
+    "id": 40,
+    "parent_id": 21,
+    "solution": "\ndef guess_the_votes(s,v):\n from itertools import product as p\n A=[x for x in p(range(len(v)),repeat=len(s))if all(sum(s[n]for i,n in enumerate(s)if x[i]==j)==v[k]for j,k in enumerate(v))]\n return {k:{n for i,n in s.items()if len({x[i]for x in A})==1 and list(v)[A[0][i]]==k}for k in v}\n",
+    "evaluation": {
+      "fitness": -1.0,
+      "additional_data": {
+        "length": "287",
+        "function_detected": "False"
+      }
+    }
+  }
+]

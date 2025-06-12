@@ -20,4 +20,4 @@ def run_example(spec: ProblemSpecification, max_steps: Optional[int] = None, tar
 
 if __name__ == "__main__":
     from example_problems.guess_the_votes.spec import spec
-    run_example(spec, max_steps=30)
+    run_example(spec)

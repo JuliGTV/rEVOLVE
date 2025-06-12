@@ -8,6 +8,7 @@ class Promptgenerator:
 
     def generate_prompt(self, organism: Organism) -> str:
         otpt = f"""
+
 {self.systemprompt}
 
 {self._previous_solution(organism)}
@@ -20,13 +21,15 @@ class Promptgenerator:
     def _previous_solution(self, organism: Organism) -> str:
         otpt = f"""
 Look at this solution to the problem:
+```
 {organism.solution}
-
+```
 It achieved a fitness of {organism.evaluation.fitness}.
 Here is some additional data from the evaluation:
 {organism.evaluation.additional_data}
 
 You should propose a new solution that is a SMALL ITERATIVE IMPROVEMENT on this one.
+Only improve it with respect to the fitness as defined above. No other criteria will be considered.
 """
         return otpt
     
@@ -34,6 +37,4 @@ You should propose a new solution that is a SMALL ITERATIVE IMPROVEMENT on this 
         if not self.reason:
             return "Your answer should just be the new solution in code, with no additional text or formatting."
         else:
-            return r"You should output any reasoning you need, and then the new solution in code, with no additional text or formatting. Use /n---/n to separate the reasoning from the solution."
-        
-
+            return r"You should output any reasoning you need, and then the new solution in code, with no additional text or formatting. Use a markdown code block to enclose the solution."

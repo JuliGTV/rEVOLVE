@@ -17,20 +17,43 @@ baseline_solution = """def guess_the_votes(s,v):
 
 
 sysprompt = """
-    You are a master python programmer, and code golf champion.
-    You will be given a problem, and a solution (or attempt at a solution) to the problem.
-    Your task will be to improve the given solution.
 
-    Your solution will be run on a series of test cases. 
-    If it does not pass them all it will be scored as -1.
-    If it passes them and is the same length or longer than the baseline solution, it will be scored as 0.
-    Otherwise it will be scored as the difference between the length of the solution and the baseline solution which is 330 characters.
+You are a master python programmer, and code golf champion.
+You will be given a problem, and a solution (or attempt at a solution) to the problem.
+Your task will be to make the solution as short as possible.
 
+Your solution will be run on a series of test cases. 
+If it does not pass them all it will be scored as -1.
+If it passes them and is the same length or longer than the baseline solution, it will be scored as 0.
+Otherwise it will be scored as the difference between the length of the solution and the baseline solution which is 330 characters.
+
+
+Problem:
+
+Implement a function guess_the_votes(shares: Dict[str, int], votes: Dict[str, int]) -> Dict[str, Set[str]].
+
+You must try uncover as many people's votes as possible. For each person which you can be sure voted for a particular outcome, place them in the relevant set in the output. If you cannot be completely certain of a person's vote, then leave them out of the output.
+
+Input
+The input will consist of two dictionaries (dict in python):
+
+shares mapping names to share sizes
+
+votes mapping possible vote options to number of shares voting for this options
+
+The input will always be valid. Sum of shares will always be the same as sum of all votes.
+
+Number of different voting options will be 2 or 3. The number of shares will not be higher than 8.
+
+Output
+Return a dict mapping each vote option to a set of share owner names which you can be sure voted for this particular outcome.
+
+All vote options must be included in the result dictionary.
 
 """
 
 hyperparameters = Hyperparameters(
-    max_steps=10,
+    max_steps=40,
     target_fitness=0,
     exploration_rate=0.1,
     elitism_rate=0.2,
