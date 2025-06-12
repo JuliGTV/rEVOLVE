@@ -32,8 +32,9 @@ sysprompt = """
 hyperparameters = Hyperparameters(
     max_steps=10,
     target_fitness=0,
-    exploration_rate=0,
-    elitism_rate=1
+    exploration_rate=0.1,
+    elitism_rate=0.2,
+    reason=True
 )
 
 
