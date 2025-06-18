@@ -35,9 +35,7 @@ class Evolver:
             mutatee = self.population.get_next()
             prompt = self.prompt_gen.generate_prompt(mutatee)
             mutated = generate(prompt, self.reason)
-            print(mutated)
             evaluation = self.specification.evaluator(mutated)
-            print(evaluation)
             self.population.add(Organism(solution=mutated, evaluation=evaluation, parent_id=mutatee.id))
             
             current_best = self.population.get_best().evaluation.fitness

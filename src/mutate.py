@@ -2,6 +2,7 @@ from pydantic_ai import Agent
 from dotenv import load_dotenv
 import logfire
 import os
+import random
 load_dotenv()
 
 logfire.configure(
@@ -16,8 +17,11 @@ model = Agent(
 )
 
 
-def generate(prompt: str, reason: bool = False) -> str:
-    output = model.run_sync(prompt).output
+def generate(prompt: str, reason: bool = False, second_model:str = "openai:o4-mini-2025-04-16", second_model_rate:float = 0.15) -> str:
+    if random.random() < second_model_rate:
+        output = model.run_sync(prompt, model=second_model, model_settings={"max_tokens": 10000}).output
+    else:
+        output = model.run_sync(prompt).output
     if "```python" in output:
         output = output.split("```python")[1].split("```")[0]
     elif "```" in output:

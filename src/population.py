@@ -61,26 +61,29 @@ class Population:
     def visualize_population(self, filename: str = 'population.gv', view: bool = False) -> Digraph:
         """
         Create a Graphviz directed graph of the population.
-        Nodes are colored by fitness on a red-to-green gradient.
+        Nodes are colored by organism ID on a gradient (blue to red).
+        Node labels show the fitness score.
         An edge from parent to child is drawn when parent_id is set.
         """
         dot = Digraph(comment='Population')
-        # compute fitness range
-        fitness_values = [org.evaluation.fitness for org in self.population]
-        min_fit, max_fit = min(fitness_values), max(fitness_values)
+        # compute ID range for coloring
+        id_values = [org.id for org in self.population]
+        min_id, max_id = min(id_values), max(id_values)
 
         for org in self.population:
-            # normalize fitness to [0,1]
-            if max_fit > min_fit:
-                norm = (org.evaluation.fitness - min_fit) / (max_fit - min_fit)
+            # normalize ID to [0,1] for color mapping
+            if max_id > min_id:
+                norm = (org.id - min_id) / (max_id - min_id)
             else:
                 norm = 0.5
-            # hue from red (0deg) to green (120deg)
-            hue = (120 * norm) / 360.0
+            # hue from blue (240deg) to red (0deg)
+            hue = (240 * (1 - norm)) / 360.0
             r, g, b = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
             hexcolor = f"#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}"
 
-            dot.node(str(org.id), label=str(org.id), style='filled', fillcolor=hexcolor)
+            # Display fitness score as the node label
+            fitness_label = f"{org.evaluation.fitness:.2f}"
+            dot.node(str(org.id), label=fitness_label, style='filled', fillcolor=hexcolor)
 
             # add edge from parent
             if org.parent_id is not None:

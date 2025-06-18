@@ -1,12 +1,14 @@
 from src.population import Organism
-
-
+import random
+import logfire
 class Promptgenerator:
-    def __init__(self, systemprompt: str, reason: bool = False):
+    def __init__(self, systemprompt: str, reason: bool = False, big_changes: float = 0.25):
         self.systemprompt = systemprompt
         self.reason = reason
+        self.big_changes = big_changes
 
     def generate_prompt(self, organism: Organism) -> str:
+
         otpt = f"""
 
 {self.systemprompt}
@@ -19,6 +21,13 @@ class Promptgenerator:
 
 
     def _previous_solution(self, organism: Organism) -> str:
+
+        changes = "SMALL ITERATIVE IMPROVEMENT"
+        if random.random() < self.big_changes:
+            changes = "LARGE QUALITATIVE CHANGE"
+        
+        logfire.debug(f"Changes: {changes}")
+        
         otpt = f"""
 Look at this solution to the problem:
 ```
@@ -28,7 +37,7 @@ It achieved a fitness of {organism.evaluation.fitness}.
 Here is some additional data from the evaluation:
 {organism.evaluation.additional_data}
 
-You should propose a new solution that is a SMALL ITERATIVE IMPROVEMENT on this one.
+You should propose a new solution that is a {changes} on this one.
 Only improve it with respect to the fitness as defined above. No other criteria will be considered.
 """
         return otpt
