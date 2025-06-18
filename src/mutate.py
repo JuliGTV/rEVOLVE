@@ -13,7 +13,8 @@ logfire.instrument_pydantic_ai()
 agent = Agent(
     model="gpt-4.1-mini",
     output_type=str,
-    model_settings={"temperature": 1, "max_tokens": 1500}
+    model_settings={"temperature": 1, "max_tokens": 1500},
+    retries=3
 )
 
 

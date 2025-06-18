@@ -11,39 +11,76 @@ import matplotlib.pyplot as plt
 
 
 class Evolver:
-    def __init__(self, specification: ProblemSpecification):
+    def __init__(self, specification: ProblemSpecification, checkpoint_dir: str = None):
         self.specification = specification
-        self.population = Population(
-            pop = specification.starting_population,
-            exploration_rate = specification.hyperparameters.exploration_rate,
-            elitism_rate = specification.hyperparameters.elitism_rate
-        )
+        self.checkpoint_dir = checkpoint_dir or "checkpoints"
+        self.checkpoint_file = os.path.join(self.checkpoint_dir, f"{specification.name.replace(' ', '_')}_checkpoint.pkl")
+        
+        # Try to load from checkpoint first
+        if os.path.exists(self.checkpoint_file):
+            self.population, self.current_step = self._load_checkpoint()
+            logfire.info("Loaded from checkpoint", 
+                        specification_name=specification.name,
+                        current_step=self.current_step,
+                        population_size=len(self.population.get_population()))
+        else:
+            self.population = Population(
+                pop = specification.starting_population,
+                exploration_rate = specification.hyperparameters.exploration_rate,
+                elitism_rate = specification.hyperparameters.elitism_rate
+            )
+            self.current_step = 0
+            
         self.target = specification.hyperparameters.target_fitness if specification.hyperparameters.target_fitness else float('inf')
         self.max_steps = specification.hyperparameters.max_steps
         self.reason = specification.hyperparameters.reason
         self.prompt_gen = Promptgenerator(specification.systemprompt, self.reason)
+        
+        # Ensure checkpoint directory exists
+        os.makedirs(self.checkpoint_dir, exist_ok=True)
+        
         logfire.info("Evolver initialized", 
                     specification_name=specification.name,
                     target_fitness=self.target,
-                    max_steps=self.max_steps)
+                    max_steps=self.max_steps,
+                    starting_step=self.current_step)
 
     def evolve(self) -> Population:
-        step = 0
+        step = self.current_step
         best_fitness = float('-inf')
-        while self.population.get_best().evaluation.fitness < self.target and step < self.max_steps:
-            step += 1
-            mutatee = self.population.get_next()
-            prompt = self.prompt_gen.generate_prompt(mutatee)
-            mutated = generate(prompt, self.reason)
-            evaluation = self.specification.evaluator(mutated)
-            self.population.add(Organism(solution=mutated, evaluation=evaluation, parent_id=mutatee.id))
-            
-            current_best = self.population.get_best().evaluation.fitness
-            logfire.info(f"Step completed {step}\n"
-                         f"with fitness {evaluation.fitness}\n"
-                         f"and current best fitness {current_best}\n"
-                         ) 
-
+        
+        try:
+            while self.population.get_best().evaluation.fitness < self.target and step < self.max_steps:
+                step += 1
+                
+                try:
+                    mutatee = self.population.get_next()
+                    prompt = self.prompt_gen.generate_prompt(mutatee)
+                    mutated = generate(prompt, self.reason)
+                    evaluation = self.specification.evaluator(mutated)
+                    self.population.add(Organism(solution=mutated, evaluation=evaluation, parent_id=mutatee.id))
+                    
+                    # Save checkpoint every 10 steps
+                    if step % 10 == 0:
+                        self._save_checkpoint(step)
+                    
+                    current_best = self.population.get_best().evaluation.fitness
+                    logfire.info(f"Step completed {step}\n"
+                                 f"with fitness {evaluation.fitness}\n"
+                                 f"and current best fitness {current_best}\n"
+                                 ) 
+                except Exception as e:
+                    logfire.error(f"Error in evolution step {step}: {str(e)}")
+                    self._save_checkpoint(step)
+                    raise
+                    
+        except Exception as e:
+            logfire.error(f"Critical error in evolution loop: {str(e)}")
+            logfire.info(f"Population state saved to checkpoint: {self.checkpoint_file}")
+            raise
+        finally:
+            # Always save final checkpoint
+            self._save_checkpoint(step)
 
         logfire.info(f"Evolution completed\n"
                      f"with {step} steps\n"
@@ -172,4 +209,43 @@ class Evolver:
             f.write(markdown_content)
             
         logfire.info(f"Report generated in directory: {full_dir_path}")
+        
+        # Clean up checkpoint file after successful completion
+        if os.path.exists(self.checkpoint_file):
+            os.remove(self.checkpoint_file)
+            logfire.info("Checkpoint file cleaned up after successful completion")
+            
         return full_dir_path
+    
+    def _save_checkpoint(self, step: int):
+        """Save current population state and step to checkpoint file"""
+        checkpoint_data = {
+            'population': self.population,
+            'step': step,
+            'specification_name': self.specification.name,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        try:
+            with open(self.checkpoint_file, 'wb') as f:
+                pickle.dump(checkpoint_data, f)
+            logfire.debug(f"Checkpoint saved at step {step}")
+        except Exception as e:
+            logfire.error(f"Failed to save checkpoint: {str(e)}")
+    
+    def _load_checkpoint(self):
+        """Load population state and step from checkpoint file"""
+        try:
+            with open(self.checkpoint_file, 'rb') as f:
+                checkpoint_data = pickle.load(f)
+            
+            population = checkpoint_data['population']
+            step = checkpoint_data['step']
+            
+            logfire.info(f"Checkpoint loaded from {checkpoint_data['timestamp']}, "
+                        f"resuming from step {step}")
+            
+            return population, step
+        except Exception as e:
+            logfire.error(f"Failed to load checkpoint: {str(e)}")
+            raise

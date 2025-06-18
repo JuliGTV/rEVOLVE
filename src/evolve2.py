@@ -12,21 +12,39 @@ import random
 
 
 class Evolver2:
-    def __init__(self, specification: ProblemSpecification):
+    def __init__(self, specification: ProblemSpecification, checkpoint_dir: str = None):
         self.specification = specification
-        self.population = Population(
-            pop = specification.starting_population,
-            exploration_rate = specification.hyperparameters.exploration_rate,
-            elitism_rate = specification.hyperparameters.elitism_rate
-        )
+        self.checkpoint_dir = checkpoint_dir or "checkpoints"
+        self.checkpoint_file = os.path.join(self.checkpoint_dir, f"{specification.name.replace(' ', '_')}_evolver2_checkpoint.pkl")
+        
+        # Try to load from checkpoint first
+        if os.path.exists(self.checkpoint_file):
+            self.population, self.current_step = self._load_checkpoint()
+            logfire.info("Loaded from checkpoint", 
+                        specification_name=specification.name,
+                        current_step=self.current_step,
+                        population_size=len(self.population.get_population()))
+        else:
+            self.population = Population(
+                pop = specification.starting_population,
+                exploration_rate = specification.hyperparameters.exploration_rate,
+                elitism_rate = specification.hyperparameters.elitism_rate
+            )
+            self.current_step = 0
+            
         self.target = specification.hyperparameters.target_fitness if specification.hyperparameters.target_fitness else float('inf')
         self.max_steps = specification.hyperparameters.max_steps
         self.reason = specification.hyperparameters.reason
         self.prompt_gen = Promptgenerator(specification.systemprompt, self.reason)
+        
+        # Ensure checkpoint directory exists
+        os.makedirs(self.checkpoint_dir, exist_ok=True)
+        
         logfire.info("Evolver2 initialized", 
                     specification_name=specification.name,
                     target_fitness=self.target,
-                    max_steps=self.max_steps)
+                    max_steps=self.max_steps,
+                    starting_step=self.current_step)
 
     def _choose_model(self, iteration_type: str = "normal") -> str:
         """Choose model based on iteration type and probabilities"""
@@ -83,57 +101,77 @@ class Evolver2:
         return current_organism
 
     def evolve(self) -> Population:
-        step = 0
-        while self.population.get_best().evaluation.fitness < self.target and step < self.max_steps:
-            step += 1
-            
-            # Determine iteration type based on probabilities
-            rand = random.random()
-            
-            if rand < 0.01:  # 1/100 - Large change to best solution
-                iteration_type = "large_change"
-                mutatee = self.population.get_best()
-                model = self._choose_model(iteration_type)
-                prompt = self.prompt_gen.generate_prompt(mutatee, big_changes=1)  # Force large changes
+        step = self.current_step
+        
+        try:
+            while self.population.get_best().evaluation.fitness < self.target and step < self.max_steps:
+                step += 1
                 
-                logfire.info(f"Step {step}: Large change to best solution (fitness: {mutatee.evaluation.fitness})")
-                
-            elif rand < 0.02:  # Next 1/100 - Small iterative changes to best solution
-                iteration_type = "small_change"
-                
-                logfire.info(f"Step {step}: Small iterative changes to best solution")
-                
-                # Apply iterative small changes
-                final_organism = self._apply_iterative_small_changes(self.population.get_best())
-                
-                # Continue with normal evolution step
-                mutatee = self.population.get_next()
-                model = self._choose_model("normal")
-                big_changes_param = self._determine_big_changes_param(mutatee)
-                prompt = self.prompt_gen.generate_prompt(mutatee, big_changes=big_changes_param)
-                
-            else:  # Rest of the time - Normal evolution
-                iteration_type = "normal"
-                mutatee = self.population.get_next()
-                model = self._choose_model(iteration_type)
-                big_changes_param = self._determine_big_changes_param(mutatee)
-                prompt = self.prompt_gen.generate_prompt(mutatee, big_changes=big_changes_param)
-                
-                logfire.debug(f"Step {step}: Normal evolution, model: {model}, "
-                            f"big_changes: {big_changes_param}")
-            
-            # Generate mutation (skip if we already did iterative changes)
-            if iteration_type != "small_change":
-                # Set reasoning=True for o4-mini models (they are reasoning models), False for others
-                is_reasoning_model = True if "o4-mini" in model else False
-                mutated = generate(prompt, model=model, reasoning=is_reasoning_model)
-                evaluation = self.specification.evaluator(mutated)
-                self.population.add(Organism(solution=mutated, evaluation=evaluation, parent_id=mutatee.id))
-                
-                current_best_fitness = self.population.get_best().evaluation.fitness
-                logfire.info(f"Step {step} completed with fitness {evaluation.fitness}, "
-                           f"current best: {current_best_fitness}, "
-                           f"model: {model}, type: {iteration_type}")
+                try:
+                    # Determine iteration type based on probabilities
+                    rand = random.random()
+                    
+                    if rand < 0.01:  # 1/100 - Large change to best solution
+                        iteration_type = "large_change"
+                        mutatee = self.population.get_best()
+                        model = self._choose_model(iteration_type)
+                        prompt = self.prompt_gen.generate_prompt(mutatee, big_changes=1)  # Force large changes
+                        
+                        logfire.info(f"Step {step}: Large change to best solution (fitness: {mutatee.evaluation.fitness})")
+                        
+                    elif rand < 0.02:  # Next 1/100 - Small iterative changes to best solution
+                        iteration_type = "small_change"
+                        
+                        logfire.info(f"Step {step}: Small iterative changes to best solution")
+                        
+                        # Apply iterative small changes
+                        final_organism = self._apply_iterative_small_changes(self.population.get_best())
+                        
+                        # Continue with normal evolution step
+                        mutatee = self.population.get_next()
+                        model = self._choose_model("normal")
+                        big_changes_param = self._determine_big_changes_param(mutatee)
+                        prompt = self.prompt_gen.generate_prompt(mutatee, big_changes=big_changes_param)
+                        
+                    else:  # Rest of the time - Normal evolution
+                        iteration_type = "normal"
+                        mutatee = self.population.get_next()
+                        model = self._choose_model(iteration_type)
+                        big_changes_param = self._determine_big_changes_param(mutatee)
+                        prompt = self.prompt_gen.generate_prompt(mutatee, big_changes=big_changes_param)
+                        
+                        logfire.debug(f"Step {step}: Normal evolution, model: {model}, "
+                                    f"big_changes: {big_changes_param}")
+                    
+                    # Generate mutation (skip if we already did iterative changes)
+                    if iteration_type != "small_change":
+                        # Set reasoning=True for o4-mini models (they are reasoning models), False for others
+                        is_reasoning_model = True if "o4-mini" in model else False
+                        mutated = generate(prompt, model=model, reasoning=is_reasoning_model)
+                        evaluation = self.specification.evaluator(mutated)
+                        self.population.add(Organism(solution=mutated, evaluation=evaluation, parent_id=mutatee.id))
+                        
+                        current_best_fitness = self.population.get_best().evaluation.fitness
+                        logfire.info(f"Step {step} completed with fitness {evaluation.fitness}, "
+                                   f"current best: {current_best_fitness}, "
+                                   f"model: {model}, type: {iteration_type}")
+                    
+                    # Save checkpoint every 10 steps
+                    if step % 10 == 0:
+                        self._save_checkpoint(step)
+                        
+                except Exception as e:
+                    logfire.error(f"Error in evolution step {step}: {str(e)}")
+                    self._save_checkpoint(step)
+                    raise
+                    
+        except Exception as e:
+            logfire.error(f"Critical error in evolution loop: {str(e)}")
+            logfire.info(f"Population state saved to checkpoint: {self.checkpoint_file}")
+            raise
+        finally:
+            # Always save final checkpoint
+            self._save_checkpoint(step)
 
         logfire.info(f"Evolution completed with {step} steps, "
                      f"best fitness: {self.population.get_best().evaluation.fitness}, "
@@ -267,4 +305,43 @@ class Evolver2:
             f.write(markdown_content)
             
         logfire.info(f"Report generated in directory: {full_dir_path}")
+        
+        # Clean up checkpoint file after successful completion
+        if os.path.exists(self.checkpoint_file):
+            os.remove(self.checkpoint_file)
+            logfire.info("Checkpoint file cleaned up after successful completion")
+            
         return full_dir_path
+    
+    def _save_checkpoint(self, step: int):
+        """Save current population state and step to checkpoint file"""
+        checkpoint_data = {
+            'population': self.population,
+            'step': step,
+            'specification_name': self.specification.name,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        try:
+            with open(self.checkpoint_file, 'wb') as f:
+                pickle.dump(checkpoint_data, f)
+            logfire.debug(f"Checkpoint saved at step {step}")
+        except Exception as e:
+            logfire.error(f"Failed to save checkpoint: {str(e)}")
+    
+    def _load_checkpoint(self):
+        """Load population state and step from checkpoint file"""
+        try:
+            with open(self.checkpoint_file, 'rb') as f:
+                checkpoint_data = pickle.load(f)
+            
+            population = checkpoint_data['population']
+            step = checkpoint_data['step']
+            
+            logfire.info(f"Checkpoint loaded from {checkpoint_data['timestamp']}, "
+                        f"resuming from step {step}")
+            
+            return population, step
+        except Exception as e:
+            logfire.error(f"Failed to load checkpoint: {str(e)}")
+            raise
