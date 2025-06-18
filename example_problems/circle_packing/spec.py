@@ -106,18 +106,18 @@ def get_circle_packing_spec() -> ProblemSpecification:
     """
     
     # Create initial population with the base solution
-    # We need to provide a dummy evaluation that will be replaced during evolution
-    dummy_evaluation = Evaluation(fitness=0.0)
+    # Evaluate the initial solution properly instead of using dummy value
+    initial_evaluation = evaluate_circle_packing(INITIAL_SOLUTION)
     starting_population = [
-        Organism(solution=INITIAL_SOLUTION, evaluation=dummy_evaluation)
+        Organism(solution=INITIAL_SOLUTION, evaluation=initial_evaluation)
     ]
     
     # Configure hyperparameters for circle packing evolution
     hyperparameters = Hyperparameters(
-        exploration_rate=0.3,      # Higher exploration for this complex problem
+        exploration_rate=0.1,      # Higher exploration for this complex problem
         elitism_rate=0.2,          # Keep good solutions
         max_steps=100,             # Run for many iterations
-        target_fitness=2.635,      # AlphaEvolve benchmark
+        target_fitness=2.636,      # AlphaEvolve benchmark
         reason=True                # Enable reasoning for complex problem
     )
     
