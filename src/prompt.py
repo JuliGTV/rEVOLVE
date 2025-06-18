@@ -1,13 +1,17 @@
 from src.population import Organism
 import random
 import logfire
+from typing import Optional
+
 class Promptgenerator:
     def __init__(self, systemprompt: str, reason: bool = False, big_changes: float = 0.25):
         self.systemprompt = systemprompt
         self.reason = reason
         self.big_changes = big_changes
 
-    def generate_prompt(self, organism: Organism) -> str:
+    def generate_prompt(self, organism: Organism, big_changes: Optional[float] = None) -> str:
+        if big_changes is None:
+            big_changes = self.big_changes
 
         otpt = f"""
 
@@ -27,7 +31,7 @@ class Promptgenerator:
             changes = "LARGE QUALITATIVE CHANGE"
         
         logfire.debug(f"Changes: {changes}")
-        
+
         otpt = f"""
 Look at this solution to the problem:
 ```
