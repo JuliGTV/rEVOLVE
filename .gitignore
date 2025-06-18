@@ -14,3 +14,5 @@ wheels/
 
 
 .env
+
+example_problems/circle_packing/circle_packing_openevolve

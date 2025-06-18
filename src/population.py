@@ -15,10 +15,15 @@ class Organism(BaseModel):
 
 class Population:
     def __init__(self, exploration_rate: float = 0.2, elitism_rate: float = 0.1, pop: List[Organism] = None):
-        self.population = pop or []
+        self.population = []
         self.id_counter = 1
         self.exploration_rate = exploration_rate
         self.elitism_rate = elitism_rate
+        
+        # Add initial population through add() method to ensure IDs are assigned
+        if pop:
+            for organism in pop:
+                self.add(organism)
 
     def add(self, organism: Organism):
         organism.id = self.id_counter

@@ -1,0 +1,53 @@
+[
+  {
+    "id": 1,
+    "parent_id": null,
+    "solution": "import numpy as np\n\ndef run_packing():\n    \"\"\"\n    Construct arrangement of 26 circles in unit square to maximize sum of radii.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # Ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.25 * np.cos(angle), 0.5 + 0.25 * np.sin(angle)]\n    \n    # Ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.4 * np.cos(angle), 0.5 + 0.4 * np.sin(angle)]\n    \n    # One additional circle\n    centers[25] = [0.5, 0.85]\n    \n    # Ensure all circles are well within the unit square\n    centers = np.clip(centers, 0.1, 0.9)\n    \n    # Calculate radii\n    n = centers.shape[0]\n    radii = np.ones(n) * 0.05  # Start with small radii\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.08)\n    \n    # Limit by distance to other circles\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.95:  # Leave small gap\n                scale = (dist * 0.95) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {}
+    }
+  },
+  {
+    "id": 2,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    \"\"\"\n    Small iterative improvement: iteratively grow radii by considering all pairwise constraints.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n\n    # Central circle\n    centers[0] = [0.5, 0.5]\n\n    # Ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.25 * np.cos(angle), 0.5 + 0.25 * np.sin(angle)]\n\n    # Ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.4 * np.cos(angle), 0.5 + 0.4 * np.sin(angle)]\n\n    # One more circle near top\n    centers[25] = [0.5, 0.85]\n\n    centers = np.clip(centers, 0.06, 0.94)  # Slightly more room to grow at the edges\n\n    # Start with large optimistic radii\n    radii = np.ones(n) * 0.08\n\n    # Iteratively adjust radii by conflicts with",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Solution execution failed: cannot unpack non-iterable NoneType object"
+      }
+    }
+  },
+  {
+    "id": 3,
+    "parent_id": 2,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    \"\"\"\n    Small iterative improvement: iteratively grow radii by considering all pairwise and bounding box constraints.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n\n    # Central circle\n    centers[0] = [0.5, 0.5]\n\n    # Ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.25 * np.cos(angle), 0.5 + 0.25 * np.sin(angle)]\n\n    # Ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.4 * np.cos(angle), 0.5 + 0.4 * np.sin(angle)]\n\n    # One more circle near top\n    centers[25] = [0.5, 0.85]\n\n    # Clamp positions to avoid getting too close to the border\n    centers = np.clip(centers, 0.06, 0.94)\n\n    # Start with all radii the same, moderately large\n    radii = np.ones(n) * 0.08\n\n    for iteration in range(50):\n        new_radii = np.zeros_like(radii)\n        for i in range(n):\n            x, y = centers[i]\n            # Distance to box edge sets a radius upper bound\n            max_r = min(x, 1 - x, y, ",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Results file not found"
+      }
+    }
+  },
+  {
+    "id": 4,
+    "parent_id": 3,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    \"\"\"\n    Iteratively grow radii to the maximal values allowed by distance to box and non-overlapping constraint.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n\n    # Central circle\n    centers[0] = [0.5, 0.5]\n\n    # Ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.25 * np.cos(angle), 0.5 + 0.25 * np.sin(angle)]\n\n    # Ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.4 * np.cos(angle), 0.5 + 0.4 * np.sin(angle)]\n    \n    # One more circle near top (could be improved, but keeping as in original)\n    centers[25] = [0.5, 0.85]\n\n    # Clamp positions to avoid getting too close to the border\n    min_c = 0.06\n    max_c = 1.0 - min_c\n    centers = np.clip(centers, min_c, max_c)\n\n    # Start with all radii the same, moderately large\n    radii = np.ones(n) * 0.08\n\n    for iteration in range(150):  # more iterations to convergence\n        new_radii = np.zeros_like(radii)\n        for i in range(n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Results file not found"
+      }
+    }
+  }
+]
