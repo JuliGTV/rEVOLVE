@@ -11,11 +11,11 @@ import matplotlib.pyplot as plt
 import random
 
 
-class Evolver2:
+class Evolver3:
     def __init__(self, specification: ProblemSpecification, checkpoint_dir: str = None):
         self.specification = specification
         self.checkpoint_dir = checkpoint_dir or "checkpoints"
-        self.checkpoint_file = os.path.join(self.checkpoint_dir, f"{specification.name.replace(' ', '_')}_evolver2_checkpoint.pkl")
+        self.checkpoint_file = os.path.join(self.checkpoint_dir, f"{specification.name.replace(' ', '_')}_evolver3_checkpoint.pkl")
         
         # Try to load from checkpoint first
         if os.path.exists(self.checkpoint_file):
@@ -40,7 +40,7 @@ class Evolver2:
         # Ensure checkpoint directory exists
         os.makedirs(self.checkpoint_dir, exist_ok=True)
         
-        logfire.info("Evolver2 initialized", 
+        logfire.info("Evolver3 initialized", 
                     specification_name=specification.name,
                     target_fitness=self.target,
                     max_steps=self.max_steps,
@@ -49,16 +49,16 @@ class Evolver2:
     def _choose_model(self, iteration_type: str = "normal") -> str:
         """Choose model based on iteration type and probabilities"""
         if iteration_type in ["large_change", "small_change"]:
-            return "openai:o4-mini-2025-04-16"
+            return "openai:o3"
         
         # For normal iterations: o4-mini 1/100, gpt-4.1 ~14%, gpt-4.1-mini rest
         rand = random.random()
         if rand < 0.01:  # 1/100
-            return "openai:o4-mini-2025-04-16"
-        elif rand < 0.2:  
-            return "openai:gpt-4.1"
+            return "openai:o3"
+        elif rand < 0.3:  
+            return "deepseek:deepseek-reasoner"
         else:
-            return "openai:gpt-4.1-mini"
+            return "deepseek:deepseek-chat"
 
     def _determine_big_changes_param(self, organism: Organism) -> float:
         """Determine big_changes parameter based on organism fitness vs average"""
@@ -67,6 +67,13 @@ class Evolver2:
             return 0.6  # Below average - more big changes
         else:
             return 0.2  # Above average - fewer big changes
+    
+    def _determine_change_type(self, big_changes_param: float) -> str:
+        """Determine whether to make big or small changes based on probability"""
+        if random.random() < big_changes_param:
+            return "LARGE QUALITATIVE CHANGE"
+        else:
+            return "SMALL ITERATIVE IMPROVEMENT"
 
     def _apply_iterative_small_changes(self, best_organism: Organism) -> Organism:
         """Apply small changes iteratively until no improvement"""
@@ -74,18 +81,28 @@ class Evolver2:
         improvement_count = 0
         
         while True:
-            # Generate prompt with big_changes=0 for small changes
-            prompt = self.prompt_gen.generate_prompt(current_organism, big_changes=0)
-            mutated = generate(prompt, model="openai:o4-mini-2025-04-16", reasoning=True)
+            # Generate prompt with explicit small change type
+            model = "openai:o3"
+            prompt = self.prompt_gen.generate_prompt(current_organism, change_type="SMALL ITERATIVE IMPROVEMENT")
+            mutated = generate(prompt, model=model, reasoning=True)
             evaluation = self.specification.evaluator(mutated)
             
             # Check if it's an improvement
             if evaluation.fitness > current_organism.evaluation.fitness:
-                # Create new organism with improvement
+                # Create new organism with improvement and creation info
+                creation_info = {
+                    "model": model,
+                    "change_type": "SMALL ITERATIVE IMPROVEMENT",
+                    "iteration_type": "small_change_iterative",
+                    "step": self.current_step,
+                    "improvement_number": improvement_count + 1
+                }
+                
                 new_organism = Organism(
                     solution=mutated, 
                     evaluation=evaluation, 
-                    parent_id=current_organism.id
+                    parent_id=current_organism.id,
+                    creation_info=creation_info
                 )
                 self.population.add(new_organism)
                 current_organism = new_organism
@@ -108,47 +125,80 @@ class Evolver2:
                 step += 1
                 
                 try:
-
+                    tenth = self.max_steps // 10
                     
-                    if step in [2,5] or step % 100 == 0:  # 1/100 - Large change to best solution
+                    if step in [2,5] or step % tenth == 0:  # 1/100 - Large change to best solution
                         iteration_type = "large_change"
                         mutatee = self.population.get_best()
                         model = self._choose_model(iteration_type)
-                        prompt = self.prompt_gen.generate_prompt(mutatee, big_changes=1)  # Force large changes
+                        change_type = "LARGE QUALITATIVE CHANGE"
+                        prompt = self.prompt_gen.generate_prompt(mutatee, change_type=change_type)
                         
                         logfire.info(f"Step {step}: Large change to best solution (fitness: {mutatee.evaluation.fitness})")
                         
-                    elif step % 100 == 50:  # Next 1/100 - Small iterative changes to best solution
+                    elif step % tenth == tenth // 2:  # Next 1/100 - Small iterative changes to best solution
                         iteration_type = "small_change"
                         
                         logfire.info(f"Step {step}: Small iterative changes to best solution")
                         
                         # Apply iterative small changes
+                        self.current_step = step  # Update current_step for the iterative method
                         final_organism = self._apply_iterative_small_changes(self.population.get_best())
                         
                         # Continue with normal evolution step
                         mutatee = self.population.get_next()
                         model = self._choose_model("normal")
                         big_changes_param = self._determine_big_changes_param(mutatee)
-                        prompt = self.prompt_gen.generate_prompt(mutatee, big_changes=big_changes_param)
+                        change_type = self._determine_change_type(big_changes_param)
+                        prompt = self.prompt_gen.generate_prompt(mutatee, change_type=change_type)
                         
                     else:  # Rest of the time - Normal evolution
                         iteration_type = "normal"
+                        
+                        # Keep picking new organisms until we find one with fewer than 10 children
+                        max_attempts = 50  # Prevent infinite loop
+                        attempts = 0
                         mutatee = self.population.get_next()
+                        
+                        while mutatee.children >= 10 and attempts < max_attempts:
+                            attempts += 1
+                            mutatee = self.population.get_next()
+                        
+                        if attempts > 0:
+                            logfire.debug(f"Step {step}: Skipped {attempts} organisms with 10+ children, "
+                                        f"selected organism {mutatee.id} with {mutatee.children} children")
+                        
                         model = self._choose_model(iteration_type)
                         big_changes_param = self._determine_big_changes_param(mutatee)
-                        prompt = self.prompt_gen.generate_prompt(mutatee, big_changes=big_changes_param)
+                        change_type = self._determine_change_type(big_changes_param)
+                        prompt = self.prompt_gen.generate_prompt(mutatee, change_type=change_type)
                         
                         logfire.debug(f"Step {step}: Normal evolution, model: {model}, "
-                                    f"big_changes: {big_changes_param}")
+                                    f"change_type: {change_type}, mutatee children: {mutatee.children}")
                     
                     # Generate mutation (skip if we already did iterative changes)
                     if iteration_type != "small_change":
-                        # Set reasoning=True for o4-mini models (they are reasoning models), False for others
-                        is_reasoning_model = True if "o4-mini" in model else False
+                        # Set reasoning=True for o3 models (they are reasoning models), False for others
+                        is_reasoning_model = True if "o3" in model or "reason" in model else False
                         mutated = generate(prompt, model=model, reasoning=is_reasoning_model)
                         evaluation = self.specification.evaluator(mutated)
-                        self.population.add(Organism(solution=mutated, evaluation=evaluation, parent_id=mutatee.id))
+                        
+                        # Create creation info
+                        creation_info = {
+                            "model": model,
+                            "change_type": change_type,
+                            "iteration_type": iteration_type,
+                            "step": step,
+                            "big_changes_param": big_changes_param if iteration_type == "normal" else None
+                        }
+                        
+                        new_organism = Organism(
+                            solution=mutated, 
+                            evaluation=evaluation, 
+                            parent_id=mutatee.id,
+                            creation_info=creation_info
+                        )
+                        self.population.add(new_organism)
                         
                         current_best_fitness = self.population.get_best().evaluation.fitness
                         logfire.info(f"Step {step} completed with fitness {evaluation.fitness}, "
@@ -232,6 +282,7 @@ class Evolver2:
                         "fitness": org.evaluation.fitness,
                         "additional_data": org.evaluation.additional_data
                     },
+                    "creation_info": org.creation_info,
                     "children": org.children
                 }
                 population_data.append(org_data)

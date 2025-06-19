@@ -143,7 +143,8 @@ class Evolver:
                     "evaluation": {
                         "fitness": org.evaluation.fitness,
                         "additional_data": org.evaluation.additional_data
-                    }
+                    },
+                    "children": org.children
                 }
                 population_data.append(org_data)
             

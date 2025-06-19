@@ -79,17 +79,23 @@ OPTIMIZATION GOAL:
 - Higher sum of radii = better fitness
 
 KEY GEOMETRIC INSIGHTS:
+- Similar radius circles often form regular patterns, while varied radii allow better space utilization
+- Perfect symmetry may not yield the optimal packing due to edge effects
 - Circle packings often follow hexagonal patterns in dense regions however purely hexagonal patterns are not optimal due to edge effects
-- Edge effects make square container packing challenging
-- Circles can be arranged in layers, shells, or grid patterns
+- Circles can be arranged in layers, shells, or grid patterns (but other patterns may be better)
 - Variable radius circles allow better space utilization than uniform radii
 - Mathematical optimization techniques (scipy.optimize) can be very effective
-- Consider different placement strategies: constructive, grid-based, or optimization-based
-- Break through plateaus by trying fundamentally different approaches
+- Consider different placement strategies: constructive, grid-based, optimization-based or hybrid
+- Break through plateaus by trying fundamentally different approaches especially when asked for large changes
+- The densest known circle packings often use a hybrid approach
+- The optimization routine is critically important - simple physics-based models with carefully tuned parameters
+- Consider strategic placement of circles at square corners and edges
+- Adjusting the pattern to place larger circles at the center and smaller at the edges
+- The math literature suggests special arrangements for specific values of n
 
 CODING REQUIREMENTS:
 - Import numpy as np (available)
-- You may use scipy if needed (but check imports)
+- You may use scipy if needed (but remember to import it)
 - Focus on the run_packing() function implementation
 - Ensure all circles are valid (non-negative radii, proper placement)
 - The code will be executed safely in a sandbox environment
@@ -114,8 +120,8 @@ def get_circle_packing_spec() -> ProblemSpecification:
     
     # Configure hyperparameters for circle packing evolution
     hyperparameters = Hyperparameters(
-        exploration_rate=0.1,      # Higher exploration for this complex problem
-        elitism_rate=0.2,          # Keep good solutions
+        exploration_rate=0.15,      # Higher exploration for this complex problem
+        elitism_rate=0.15,          # Keep good solutions
         max_steps=1000,             # Run for many iterations
         target_fitness=2.636,      # AlphaEvolve benchmark
         reason=True                # Enable reasoning for complex problem

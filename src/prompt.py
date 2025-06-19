@@ -9,7 +9,7 @@ class Promptgenerator:
         self.reason = reason
         self.big_changes = big_changes
 
-    def generate_prompt(self, organism: Organism, big_changes: Optional[float] = None) -> str:
+    def generate_prompt(self, organism: Organism, big_changes: Optional[float] = None, change_type: Optional[str] = None) -> str:
         if big_changes is None:
             big_changes = self.big_changes
 
@@ -17,18 +17,22 @@ class Promptgenerator:
 
 {self.systemprompt}
 
-{self._previous_solution(organism)}
+{self._previous_solution(organism, big_changes, change_type)}
 
 {self._format()}
 """
         return otpt
 
 
-    def _previous_solution(self, organism: Organism) -> str:
-
-        changes = "SMALL ITERATIVE IMPROVEMENT"
-        if random.random() < self.big_changes:
-            changes = "LARGE QUALITATIVE CHANGE"
+    def _previous_solution(self, organism: Organism, big_changes: float, change_type: Optional[str] = None) -> str:
+        # If change_type is explicitly provided, use it
+        if change_type is not None:
+            changes = change_type
+        else:
+            # Otherwise use the old random logic for backward compatibility
+            changes = "SMALL ITERATIVE IMPROVEMENT"
+            if random.random() < big_changes:
+                changes = "LARGE QUALITATIVE CHANGE"
         
         logfire.debug(f"Changes: {changes}")
 

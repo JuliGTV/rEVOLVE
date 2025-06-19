@@ -20,7 +20,7 @@ agent = Agent(
 
 def generate(prompt: str, model:str = "gpt-4.1-mini", reasoning:bool = False) -> str:
     if reasoning or "o4" in model:
-        output = agent.run_sync(prompt, model=model, model_settings={"max_tokens": 10000}).output
+        output = agent.run_sync(prompt, model=model, model_settings={"max_tokens": 30000}).output
     else:
         output = agent.run_sync(prompt, model=model).output
 

@@ -11,6 +11,8 @@ class Organism(BaseModel):
     evaluation: Evaluation
     id: Optional[int] = None
     parent_id: Optional[int] = None
+    creation_info: Optional[dict] = None
+    children: int = 0
 
 
 class Population:
@@ -27,6 +29,22 @@ class Population:
 
     def add(self, organism: Organism):
         organism.id = self.id_counter
+        
+        # Add child number to creation_info if this organism has a parent
+        if organism.parent_id is not None:
+            parent = self.get_id(organism.parent_id)
+            if parent is not None:
+                # Child number is current children count + 1 (since we haven't incremented yet)
+                child_number = parent.children + 1
+                
+                # Add child_number to creation_info
+                if organism.creation_info is None:
+                    organism.creation_info = {}
+                organism.creation_info["child_number"] = child_number
+                
+                # Increment parent's children count
+                parent.children += 1
+        
         self.population.append(organism)
         self.id_counter += 1
 
@@ -37,7 +55,7 @@ class Population:
         return random.choice(self.population)
     
     def get_weighted_random(self) -> Organism:
-        weights = [organism.evaluation.fitness + 1 for organism in self.population]
+        weights = [organism.evaluation.fitness ** 3 + 1 for organism in self.population]
         return random.choices(self.population, weights=weights, k=1)[0]
     
     def get_next(self) -> Organism:
@@ -64,8 +82,24 @@ class Population:
         Nodes are colored by organism ID on a gradient (blue to red).
         Node labels show the fitness score.
         An edge from parent to child is drawn when parent_id is set.
+        Organisms that were historically the best are highlighted with thick borders.
+        The overall best organism is highlighted with a gold border.
         """
         dot = Digraph(comment='Population')
+        
+        # Find organisms that were historically the best at some point
+        organisms_sorted = sorted(self.population, key=lambda x: x.id)
+        historically_best_ids = set()
+        current_best_fitness = float('-inf')
+        
+        for org in organisms_sorted:
+            if org.evaluation.fitness > current_best_fitness:
+                current_best_fitness = org.evaluation.fitness
+                historically_best_ids.add(org.id)
+        
+        # Find the overall best organism
+        overall_best = self.get_best()
+        
         # compute ID range for coloring
         id_values = [org.id for org in self.population]
         min_id, max_id = min(id_values), max(id_values)
@@ -83,7 +117,19 @@ class Population:
 
             # Display fitness score as the node label
             fitness_label = f"{org.evaluation.fitness:.2f}"
-            dot.node(str(org.id), label=fitness_label, style='filled', fillcolor=hexcolor)
+            
+            # Determine node styling based on historical significance
+            if org.id == overall_best.id:
+                # Overall best: gold border, thick
+                dot.node(str(org.id), label=fitness_label, style='filled', 
+                        fillcolor=hexcolor, color='gold', penwidth='4')
+            elif org.id in historically_best_ids:
+                # Historically best: thick black border
+                dot.node(str(org.id), label=fitness_label, style='filled', 
+                        fillcolor=hexcolor, color='black', penwidth='3')
+            else:
+                # Regular organism
+                dot.node(str(org.id), label=fitness_label, style='filled', fillcolor=hexcolor)
 
             # add edge from parent
             if org.parent_id is not None:

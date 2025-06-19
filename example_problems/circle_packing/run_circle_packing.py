@@ -16,7 +16,7 @@ from matplotlib.patches import Circle
 # Add the src directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
 
-from evolve2 import Evolver2
+from evolve3 import Evolver3
 from .spec import get_circle_packing_spec
 
 
@@ -92,7 +92,7 @@ def main():
     spec = get_circle_packing_spec()
     
     # Create the evolver
-    evolver = Evolver2(spec)
+    evolver = Evolver3(spec)
     
     # Run evolution
     print("Starting evolution...")
