@@ -97,11 +97,13 @@ def main():
     # Run evolution
     print("Starting evolution...")
     try:
-        best_organism = evolver.evolve()
+        population = evolver.evolve()
+
+        best_organism = population.get_best()
         
         print("\nEvolution completed!")
-        print(f"Best fitness: {best_organism.evaluation.fitness:.6f}")
-        print(f"Target ratio: {best_organism.evaluation.fitness/2.635:.6f}")
+        print(f"Best fitness: {population.best_organism.evaluation.fitness:.6f}")
+        print(f"Target ratio: {population.best_organism.evaluation.fitness/2.635:.6f}")
         
         # Print additional data
         if best_organism.evaluation.additional_data:

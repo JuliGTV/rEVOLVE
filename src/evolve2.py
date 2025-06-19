@@ -55,7 +55,7 @@ class Evolver2:
         rand = random.random()
         if rand < 0.01:  # 1/100
             return "openai:o4-mini-2025-04-16"
-        elif rand < 0.15:  # ~14% (but not the first 1/100)
+        elif rand < 0.2:  
             return "openai:gpt-4.1"
         else:
             return "openai:gpt-4.1-mini"
@@ -108,10 +108,9 @@ class Evolver2:
                 step += 1
                 
                 try:
-                    # Determine iteration type based on probabilities
-                    rand = random.random()
+
                     
-                    if rand < 0.01:  # 1/100 - Large change to best solution
+                    if step in [2,5] or step % 100 == 0:  # 1/100 - Large change to best solution
                         iteration_type = "large_change"
                         mutatee = self.population.get_best()
                         model = self._choose_model(iteration_type)
@@ -119,7 +118,7 @@ class Evolver2:
                         
                         logfire.info(f"Step {step}: Large change to best solution (fitness: {mutatee.evaluation.fitness})")
                         
-                    elif rand < 0.02:  # Next 1/100 - Small iterative changes to best solution
+                    elif step % 100 == 50:  # Next 1/100 - Small iterative changes to best solution
                         iteration_type = "small_change"
                         
                         logfire.info(f"Step {step}: Small iterative changes to best solution")
