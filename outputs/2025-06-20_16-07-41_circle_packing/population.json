@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "parent_id": null,
+    "solution": "import numpy as np\n\ndef run_packing():\n    \"\"\"\n    Construct arrangement of 26 circles in unit square to maximize sum of radii.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # Ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.25 * np.cos(angle), 0.5 + 0.25 * np.sin(angle)]\n    \n    # Ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.4 * np.cos(angle), 0.5 + 0.4 * np.sin(angle)]\n    \n    # One additional circle\n    centers[25] = [0.5, 0.85]\n    \n    # Ensure all circles are well within the unit square\n    centers = np.clip(centers, 0.1, 0.9)\n    \n    # Calculate radii\n    n = centers.shape[0]\n    radii = np.ones(n) * 0.05  # Start with small radii\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.08)\n    \n    # Limit by distance to other circles\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.95:  # Leave small gap\n                scale = (dist * 0.95) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.780464893137411,
+      "additional_data": {
+        "sum_radii": "1.780465",
+        "target_ratio": "0.675698",
+        "validity": "valid",
+        "target_value": "2.635"
+      }
+    },
+    "children": 0
+  }
+]

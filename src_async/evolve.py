@@ -13,15 +13,22 @@ from typing import List, Tuple
 
 
 class AsyncEvolver:
-    def __init__(self, specification: ProblemSpecification, checkpoint_dir: str = None, max_concurrent: int = 5, model_mix: dict = None):
+    def __init__(self, specification: ProblemSpecification, checkpoint_dir: str = None, max_concurrent: int = 20, 
+                 model_mix: dict = None, big_changes_rate: float = 0.2, best_model: str = "gpt-4o", 
+                 max_children_per_organism: int = 20):
         self.specification = specification
         self.checkpoint_dir = checkpoint_dir or "checkpoints"
-        self.checkpoint_file = os.path.join(self.checkpoint_dir, f"{specification.name.replace(' ', '_')}_checkpoint.pkl")
+        self.checkpoint_file = os.path.join(self.checkpoint_dir, f"{specification.name.replace(' ', '_')}_async_checkpoint.pkl")
         self.max_concurrent = max_concurrent
         
         # Model mixing: allows using different models with different probabilities
         # Example: {"gpt-4.1-mini": 0.8, "gpt-4o": 0.2} for 80% fast, 20% reasoning
-        self.model_mix = model_mix or {"gpt-4.1-mini": 1.0}
+        self.model_mix = model_mix or {"deepseek:deepseek-reasoner": 0.01, "deepseek:deepseek-chat": 0.99}
+        
+        # New features from evolve3
+        self.big_changes_rate = big_changes_rate  # Probability of asking for large vs small changes
+        self.best_model = best_model  # Model to use for exploiting best organisms
+        self.max_children_per_organism = max_children_per_organism  # Cap on children per organism
         
         # Try to load from checkpoint first
         if os.path.exists(self.checkpoint_file):
@@ -52,7 +59,10 @@ class AsyncEvolver:
                     max_steps=self.max_steps,
                     starting_step=self.current_step,
                     max_concurrent=self.max_concurrent,
-                    model_mix=self.model_mix)
+                    model_mix=self.model_mix,
+                    big_changes_rate=self.big_changes_rate,
+                    best_model=self.best_model,
+                    max_children_per_organism=self.max_children_per_organism)
 
     async def evolve(self) -> Population:
         """Main async evolution loop with streaming concurrent LLM calls"""
@@ -65,16 +75,23 @@ class AsyncEvolver:
             while self.population.get_best().evaluation.fitness < self.target and step < self.max_steps:
                 # Fill up to max_concurrent slots with new tasks
                 while len(active_tasks) < self.max_concurrent and step < self.max_steps:
-                    mutatee = self.population.get_next()
-                    prompt = self.prompt_gen.generate_prompt(mutatee)
+                    # Select organism with child cap enforcement
+                    mutatee = self._select_organism_with_child_cap()
+                    
+                    # Determine change type based on probability
+                    change_type = self._determine_change_type()
+                    
+                    # Generate prompt with specific change type
+                    prompt = self.prompt_gen.generate_prompt(mutatee, change_type=change_type)
                     
                     # Create async task for LLM call with metadata
                     task = asyncio.create_task(
-                        self._generate_and_evaluate_async(prompt, mutatee.id),
+                        self._generate_and_evaluate_async_with_metadata(prompt, mutatee.id, change_type, step + 1),
                         name=f"step_{step + 1}_parent_{mutatee.id}"
                     )
                     task.step_number = step + 1  # Store step number for later
                     task.parent_id = mutatee.id   # Store parent ID for later
+                    task.change_type = change_type  # Store change type for later
                     active_tasks.add(task)
                     step += 1
                 
@@ -86,28 +103,73 @@ class AsyncEvolver:
                     for task in done:
                         task_step = task.step_number
                         parent_id = task.parent_id
+                        change_type = task.change_type
                         
                         try:
                             result = await task
-                            mutated_solution, evaluation = result
                             
-                            self.population.add(Organism(
-                                solution=mutated_solution, 
-                                evaluation=evaluation, 
-                                parent_id=parent_id
-                            ))
-                            
-                            current_best = self.population.get_best().evaluation.fitness
-                            logfire.info(f"Step completed {task_step}\n"
-                                         f"with fitness {evaluation.fitness}\n"
-                                         f"and current best fitness {current_best}\n")
-                            
-                            # Check if we've reached the target
-                            if evaluation.fitness >= self.target:
-                                # Cancel remaining tasks if target reached
-                                for pending_task in pending:
-                                    pending_task.cancel()
-                                break
+                            # Handle different task types
+                            if change_type == "EXPLOITATION":
+                                # Exploitation task returns an Organism directly
+                                exploitation_organism = result
+                                self.population.add(exploitation_organism)
+                                
+                                logfire.info(f"Exploitation step completed {task_step}\n"
+                                             f"with fitness {exploitation_organism.evaluation.fitness}\n"
+                                             f"from organism {exploitation_organism.parent_id}\n"
+                                             f"current best fitness: {self.population.get_best().evaluation.fitness}")
+                                
+                                # Check if we've reached the target
+                                if exploitation_organism.evaluation.fitness >= self.target:
+                                    # Cancel remaining tasks if target reached
+                                    for pending_task in pending:
+                                        pending_task.cancel()
+                                    break
+                            else:
+                                # Regular task returns (solution, evaluation, creation_info)
+                                mutated_solution, evaluation, creation_info = result
+                                
+                                # Check if this is a new best organism
+                                current_best_fitness = self.population.get_best().evaluation.fitness
+                                is_new_best = evaluation.fitness > current_best_fitness
+                                
+                                # Add the new organism with creation info
+                                new_organism = Organism(
+                                    solution=mutated_solution, 
+                                    evaluation=evaluation, 
+                                    parent_id=parent_id,
+                                    creation_info=creation_info
+                                )
+                                self.population.add(new_organism)
+                                
+                                logfire.info(f"Step completed {task_step}\n"
+                                             f"with fitness {evaluation.fitness}\n"
+                                             f"change_type: {change_type}\n"
+                                             f"model: {creation_info['model']}\n"
+                                             f"current best fitness: {self.population.get_best().evaluation.fitness}\n"
+                                             f"is_new_best: {is_new_best}")
+                                
+                                # If we have a new best organism, exploit it asynchronously
+                                if is_new_best:
+                                    exploitation_task = asyncio.create_task(
+                                        self._exploit_best_organism_async(new_organism, task_step),
+                                        name=f"exploit_best_{task_step}_org_{new_organism.id}"
+                                    )
+                                    exploitation_task.step_number = task_step
+                                    exploitation_task.parent_id = new_organism.id
+                                    exploitation_task.change_type = "EXPLOITATION"
+                                    
+                                    # Add exploitation task to active tasks if we have room
+                                    if len(active_tasks) + len(pending) < self.max_concurrent:
+                                        active_tasks.add(exploitation_task)
+                                        logfire.info(f"Started exploitation task for new best organism {new_organism.id}")
+                                
+                                # Check if we've reached the target
+                                if evaluation.fitness >= self.target:
+                                    # Cancel remaining tasks if target reached
+                                    for pending_task in pending:
+                                        pending_task.cancel()
+                                    break
                                 
                         except Exception as e:
                             logfire.error(f"Error in evolution step {task_step}: {str(e)}")
@@ -127,21 +189,38 @@ class AsyncEvolver:
                 for task in done:
                     task_step = task.step_number
                     parent_id = task.parent_id
+                    change_type = task.change_type
                     
                     try:
                         result = await task
-                        mutated_solution, evaluation = result
                         
-                        self.population.add(Organism(
-                            solution=mutated_solution, 
-                            evaluation=evaluation, 
-                            parent_id=parent_id
-                        ))
-                        
-                        current_best = self.population.get_best().evaluation.fitness
-                        logfire.info(f"Final step completed {task_step}\n"
-                                     f"with fitness {evaluation.fitness}\n"
-                                     f"and current best fitness {current_best}\n")
+                        # Handle exploitation tasks vs regular tasks
+                        if change_type == "EXPLOITATION":
+                            # Exploitation task returns an Organism directly
+                            exploitation_organism = result
+                            self.population.add(exploitation_organism)
+                            
+                            logfire.info(f"Final exploitation step completed {task_step}\n"
+                                         f"with fitness {exploitation_organism.evaluation.fitness}\n"
+                                         f"from organism {exploitation_organism.parent_id}")
+                        else:
+                            # Regular task returns (solution, evaluation, creation_info)
+                            mutated_solution, evaluation, creation_info = result
+                            
+                            new_organism = Organism(
+                                solution=mutated_solution, 
+                                evaluation=evaluation, 
+                                parent_id=parent_id,
+                                creation_info=creation_info
+                            )
+                            self.population.add(new_organism)
+                            
+                            current_best = self.population.get_best().evaluation.fitness
+                            logfire.info(f"Final step completed {task_step}\n"
+                                         f"with fitness {evaluation.fitness}\n"
+                                         f"change_type: {change_type}\n"
+                                         f"model: {creation_info['model']}\n"
+                                         f"current best fitness: {current_best}")
                         
                     except Exception as e:
                         logfire.error(f"Error in final evolution step {task_step}: {str(e)}")
@@ -174,6 +253,30 @@ class AsyncEvolver:
         
         # Fallback to first model
         return list(self.model_mix.keys())[0]
+    
+    def _determine_change_type(self) -> str:
+        """Determine whether to make big or small changes based on probability"""
+        import random
+        if random.random() < self.big_changes_rate:
+            return "LARGE QUALITATIVE CHANGE"
+        else:
+            return "SMALL ITERATIVE IMPROVEMENT"
+    
+    def _select_organism_with_child_cap(self) -> Organism:
+        """Select organism ensuring it doesn't exceed max children limit"""
+        max_attempts = 50  # Prevent infinite loop
+        attempts = 0
+        
+        mutatee = self.population.get_next()
+        while mutatee.children >= self.max_children_per_organism and attempts < max_attempts:
+            attempts += 1
+            mutatee = self.population.get_next()
+        
+        if attempts > 0:
+            logfire.debug(f"Skipped {attempts} organisms with {self.max_children_per_organism}+ children, "
+                         f"selected organism {mutatee.id} with {mutatee.children} children")
+        
+        return mutatee
 
     async def _generate_and_evaluate_async(self, prompt: str, parent_id: int) -> Tuple[str, object]:
         """Generate a mutation and evaluate it asynchronously"""
@@ -185,6 +288,59 @@ class AsyncEvolver:
         mutated = await generate_async(prompt, model=selected_model, reasoning=is_reasoning)
         evaluation = self.specification.evaluator(mutated)
         return mutated, evaluation
+    
+    async def _generate_and_evaluate_async_with_metadata(self, prompt: str, parent_id: int, change_type: str, step_number: int) -> Tuple[str, object, dict]:
+        """Generate a mutation and evaluate it asynchronously with creation metadata"""
+        selected_model = self._select_model()
+        is_reasoning = self.reason or "o4" in selected_model
+        
+        logfire.debug(f"Step {step_number}: Selected model {selected_model} for parent {parent_id} "
+                     f"(change_type: {change_type}, reasoning: {is_reasoning})")
+        
+        mutated = await generate_async(prompt, model=selected_model, reasoning=is_reasoning)
+        evaluation = self.specification.evaluator(mutated)
+        
+        # Create creation info
+        creation_info = {
+            "model": selected_model,
+            "change_type": change_type,
+            "step": step_number,
+            "is_reasoning": is_reasoning,
+            "big_changes_rate": self.big_changes_rate
+        }
+        
+        return mutated, evaluation, creation_info
+    
+    async def _exploit_best_organism_async(self, best_organism: Organism, step_number: int) -> Organism:
+        """Generate a small improvement on the best organism using the best model"""
+        prompt = self.prompt_gen.generate_prompt(best_organism, change_type="SMALL ITERATIVE IMPROVEMENT")
+        is_reasoning = self.reason or "o4" in self.best_model
+        
+        logfire.info(f"Step {step_number}: Exploiting best organism {best_organism.id} "
+                    f"(fitness: {best_organism.evaluation.fitness}) with {self.best_model}")
+        
+        mutated = await generate_async(prompt, model=self.best_model, reasoning=is_reasoning)
+        evaluation = self.specification.evaluator(mutated)
+        
+        # Create creation info for exploitation
+        creation_info = {
+            "model": self.best_model,
+            "change_type": "SMALL ITERATIVE IMPROVEMENT",
+            "step": step_number,
+            "is_reasoning": is_reasoning,
+            "exploitation": True,
+            "exploited_organism_id": best_organism.id,
+            "exploited_organism_fitness": best_organism.evaluation.fitness
+        }
+        
+        exploitation_organism = Organism(
+            solution=mutated,
+            evaluation=evaluation,
+            parent_id=best_organism.id,
+            creation_info=creation_info
+        )
+        
+        return exploitation_organism
 
     def report(self):
         """Generate report - identical to sync version"""
@@ -353,8 +509,11 @@ class AsyncEvolver:
 
 # For backward compatibility, provide a sync wrapper
 class Evolver(AsyncEvolver):
-    def __init__(self, specification: ProblemSpecification, checkpoint_dir: str = None, max_concurrent: int = 5, model_mix: dict = None):
-        super().__init__(specification, checkpoint_dir, max_concurrent, model_mix)
+    def __init__(self, specification: ProblemSpecification, checkpoint_dir: str = None, max_concurrent: int = 5, 
+                 model_mix: dict = None, big_changes_rate: float = 0.25, best_model: str = "gpt-4o", 
+                 max_children_per_organism: int = 10):
+        super().__init__(specification, checkpoint_dir, max_concurrent, model_mix, big_changes_rate, 
+                        best_model, max_children_per_organism)
     
     def evolve(self) -> Population:
         """Sync wrapper that runs the async evolution"""

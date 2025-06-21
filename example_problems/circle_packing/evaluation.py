@@ -162,7 +162,7 @@ def evaluate_circle_packing(solution: str) -> Evaluation:
     Returns:
         Evaluation object with fitness and metadata
     """
-    TARGET_VALUE = 2.635  # AlphaEvolve benchmark for n=26
+    TARGET_VALUE = 2.636  # AlphaEvolve benchmark for n=26
     
     try:
         # Run the solution safely
