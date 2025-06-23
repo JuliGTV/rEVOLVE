@@ -71,121 +71,47 @@ class AsyncEvolver:
         try:
             # Use a queue-based approach for continuous processing
             active_tasks = set()
+            target_reached = False
             
-            while self.population.get_best().evaluation.fitness < self.target and step < self.max_steps:
-                # Fill up to max_concurrent slots with new tasks
-                while len(active_tasks) < self.max_concurrent and step < self.max_steps:
-                    # Select organism with child cap enforcement
-                    mutatee = self._select_organism_with_child_cap()
-                    
-                    # Determine change type based on probability
-                    change_type = self._determine_change_type()
-                    
-                    # Generate prompt with specific change type
-                    prompt = self.prompt_gen.generate_prompt(mutatee, change_type=change_type)
-                    
-                    # Create async task for LLM call with metadata
-                    task = asyncio.create_task(
-                        self._generate_and_evaluate_async_with_metadata(prompt, mutatee.id, change_type, step + 1),
-                        name=f"step_{step + 1}_parent_{mutatee.id}"
-                    )
-                    task.step_number = step + 1  # Store step number for later
-                    task.parent_id = mutatee.id   # Store parent ID for later
-                    task.change_type = change_type  # Store change type for later
-                    active_tasks.add(task)
-                    step += 1
+            # Main evolution loop - continue until all tasks are processed
+            while active_tasks or (not target_reached and step < self.max_steps and self.population.get_best().evaluation.fitness < self.target):
+                # Fill up to max_concurrent slots with new tasks (only if we haven't reached limits)
+                should_create_new_tasks = (
+                    not target_reached and 
+                    step < self.max_steps and 
+                    self.population.get_best().evaluation.fitness < self.target
+                )
                 
-                # Wait for at least one task to complete
+                if should_create_new_tasks:
+                    while len(active_tasks) < self.max_concurrent and step < self.max_steps:
+                        # Select organism with child cap enforcement
+                        mutatee = self._select_organism_with_child_cap()
+                        
+                        # Determine change type based on probability
+                        change_type = self._determine_change_type()
+                        
+                        # Generate prompt with specific change type
+                        prompt = self.prompt_gen.generate_prompt(mutatee, change_type=change_type)
+                        
+                        # Create async task for LLM call with metadata
+                        task = asyncio.create_task(
+                            self._generate_and_evaluate_async_with_metadata(prompt, mutatee.id, change_type, step + 1),
+                            name=f"step_{step + 1}_parent_{mutatee.id}"
+                        )
+                        task.step_number = step + 1  # Store step number for later
+                        task.parent_id = mutatee.id   # Store parent ID for later
+                        task.change_type = change_type  # Store change type for later
+                        active_tasks.add(task)
+                        step += 1
+                
+                # Wait for at least one task to complete (if we have any active tasks)
                 if active_tasks:
                     done, pending = await asyncio.wait(active_tasks, return_when=asyncio.FIRST_COMPLETED)
-                    
-                    # Process completed tasks immediately
-                    for task in done:
-                        task_step = task.step_number
-                        parent_id = task.parent_id
-                        change_type = task.change_type
-                        
-                        try:
-                            result = await task
-                            
-                            # Handle different task types
-                            if change_type == "EXPLOITATION":
-                                # Exploitation task returns an Organism directly
-                                exploitation_organism = result
-                                self.population.add(exploitation_organism)
-                                
-                                logfire.info(f"Exploitation step completed {task_step}\n"
-                                             f"with fitness {exploitation_organism.evaluation.fitness}\n"
-                                             f"from organism {exploitation_organism.parent_id}\n"
-                                             f"current best fitness: {self.population.get_best().evaluation.fitness}")
-                                
-                                # Check if we've reached the target
-                                if exploitation_organism.evaluation.fitness >= self.target:
-                                    # Cancel remaining tasks if target reached
-                                    for pending_task in pending:
-                                        pending_task.cancel()
-                                    break
-                            else:
-                                # Regular task returns (solution, evaluation, creation_info)
-                                mutated_solution, evaluation, creation_info = result
-                                
-                                # Check if this is a new best organism
-                                current_best_fitness = self.population.get_best().evaluation.fitness
-                                is_new_best = evaluation.fitness > current_best_fitness
-                                
-                                # Add the new organism with creation info
-                                new_organism = Organism(
-                                    solution=mutated_solution, 
-                                    evaluation=evaluation, 
-                                    parent_id=parent_id,
-                                    creation_info=creation_info
-                                )
-                                self.population.add(new_organism)
-                                
-                                logfire.info(f"Step completed {task_step}\n"
-                                             f"with fitness {evaluation.fitness}\n"
-                                             f"change_type: {change_type}\n"
-                                             f"model: {creation_info['model']}\n"
-                                             f"current best fitness: {self.population.get_best().evaluation.fitness}\n"
-                                             f"is_new_best: {is_new_best}")
-                                
-                                # If we have a new best organism, exploit it asynchronously
-                                if is_new_best:
-                                    exploitation_task = asyncio.create_task(
-                                        self._exploit_best_organism_async(new_organism, task_step),
-                                        name=f"exploit_best_{task_step}_org_{new_organism.id}"
-                                    )
-                                    exploitation_task.step_number = task_step
-                                    exploitation_task.parent_id = new_organism.id
-                                    exploitation_task.change_type = "EXPLOITATION"
-                                    
-                                    # Add exploitation task to active tasks if we have room
-                                    if len(active_tasks) + len(pending) < self.max_concurrent:
-                                        active_tasks.add(exploitation_task)
-                                        logfire.info(f"Started exploitation task for new best organism {new_organism.id}")
-                                
-                                # Check if we've reached the target
-                                if evaluation.fitness >= self.target:
-                                    # Cancel remaining tasks if target reached
-                                    for pending_task in pending:
-                                        pending_task.cancel()
-                                    break
-                                
-                        except Exception as e:
-                            logfire.error(f"Error in evolution step {task_step}: {str(e)}")
-                    
-                    # Update active tasks to only include pending ones
-                    active_tasks = pending
-                    
-                    # Save checkpoint every 10 completed steps
-                    if len(self.population.get_population()) % 10 == 0:
-                        self._save_checkpoint(len(self.population.get_population()))
-            
-            # Wait for any remaining active tasks to complete
-            if active_tasks:
-                logfire.info(f"Waiting for {len(active_tasks)} remaining tasks to complete...")
-                done, _ = await asyncio.wait(active_tasks)
+                else:
+                    # No more tasks to process, exit the loop
+                    break
                 
+                # Process completed tasks immediately
                 for task in done:
                     task_step = task.step_number
                     parent_id = task.parent_id
@@ -194,19 +120,33 @@ class AsyncEvolver:
                     try:
                         result = await task
                         
-                        # Handle exploitation tasks vs regular tasks
+                        # Handle different task types
                         if change_type == "EXPLOITATION":
                             # Exploitation task returns an Organism directly
                             exploitation_organism = result
                             self.population.add(exploitation_organism)
                             
-                            logfire.info(f"Final exploitation step completed {task_step}\n"
+                            logfire.info(f"Exploitation step completed {task_step}\n"
                                          f"with fitness {exploitation_organism.evaluation.fitness}\n"
-                                         f"from organism {exploitation_organism.parent_id}")
+                                         f"from organism {exploitation_organism.parent_id}\n"
+                                         f"current best fitness: {self.population.get_best().evaluation.fitness}")
+                            
+                            # Check if we've reached the target
+                            if exploitation_organism.evaluation.fitness >= self.target:
+                                target_reached = True
+                                logfire.info(f"Target fitness {self.target} reached! Cancelling remaining tasks...")
+                                # Cancel remaining tasks if target reached
+                                for pending_task in pending:
+                                    pending_task.cancel()
                         else:
                             # Regular task returns (solution, evaluation, creation_info)
                             mutated_solution, evaluation, creation_info = result
                             
+                            # Check if this is a new best organism
+                            current_best_fitness = self.population.get_best().evaluation.fitness
+                            is_new_best = evaluation.fitness > current_best_fitness
+                            
+                            # Add the new organism with creation info
                             new_organism = Organism(
                                 solution=mutated_solution, 
                                 evaluation=evaluation, 
@@ -215,15 +155,50 @@ class AsyncEvolver:
                             )
                             self.population.add(new_organism)
                             
-                            current_best = self.population.get_best().evaluation.fitness
-                            logfire.info(f"Final step completed {task_step}\n"
+                            logfire.info(f"Step completed {task_step}\n"
                                          f"with fitness {evaluation.fitness}\n"
                                          f"change_type: {change_type}\n"
                                          f"model: {creation_info['model']}\n"
-                                         f"current best fitness: {current_best}")
-                        
+                                         f"current best fitness: {self.population.get_best().evaluation.fitness}\n"
+                                         f"is_new_best: {is_new_best}")
+                            
+                            # If we have a new best organism, exploit it asynchronously (only if we're still running)
+                            if is_new_best and not target_reached and step < self.max_steps:
+                                exploitation_task = asyncio.create_task(
+                                    self._exploit_best_organism_async(new_organism, task_step),
+                                    name=f"exploit_best_{task_step}_org_{new_organism.id}"
+                                )
+                                exploitation_task.step_number = task_step
+                                exploitation_task.parent_id = new_organism.id
+                                exploitation_task.change_type = "EXPLOITATION"
+                                
+                                # Add exploitation task to active tasks if we have room
+                                if len(pending) < self.max_concurrent:
+                                    pending.add(exploitation_task)
+                                    logfire.info(f"Started exploitation task for new best organism {new_organism.id}")
+                            
+                            # Check if we've reached the target
+                            if evaluation.fitness >= self.target:
+                                target_reached = True
+                                logfire.info(f"Target fitness {self.target} reached! Cancelling remaining tasks...")
+                                # Cancel remaining tasks if target reached
+                                for pending_task in pending:
+                                    pending_task.cancel()
+                            
                     except Exception as e:
-                        logfire.error(f"Error in final evolution step {task_step}: {str(e)}")
+                        logfire.error(f"Error in evolution step {task_step}: {str(e)}")
+                
+                # Update active tasks to only include pending ones
+                active_tasks = pending
+                
+                # Save checkpoint every 10 completed steps
+                if len(self.population.get_population()) % 10 == 0:
+                    self._save_checkpoint(len(self.population.get_population()))
+            
+            # Log completion
+            logfire.info(f"Evolution loop completed. Final step count: {step}, "
+                        f"Active tasks remaining: {len(active_tasks)}, "
+                        f"Target reached: {target_reached}")
                     
         except Exception as e:
             logfire.error(f"Critical error in evolution loop: {str(e)}")
@@ -291,6 +266,8 @@ class AsyncEvolver:
     
     async def _generate_and_evaluate_async_with_metadata(self, prompt: str, parent_id: int, change_type: str, step_number: int) -> Tuple[str, object, dict]:
         """Generate a mutation and evaluate it asynchronously with creation metadata"""
+        from src_async.evaluation import Evaluation
+        
         selected_model = self._select_model()
         is_reasoning = self.reason or "o4" in selected_model
         
@@ -298,7 +275,13 @@ class AsyncEvolver:
                      f"(change_type: {change_type}, reasoning: {is_reasoning})")
         
         mutated = await generate_async(prompt, model=selected_model, reasoning=is_reasoning)
-        evaluation = self.specification.evaluator(mutated)
+        sync_evaluation = self.specification.evaluator(mutated)
+        
+        # Convert sync evaluation to async evaluation
+        evaluation = Evaluation(
+            fitness=sync_evaluation.fitness,
+            additional_data=sync_evaluation.additional_data
+        )
         
         # Create creation info
         creation_info = {
@@ -313,6 +296,8 @@ class AsyncEvolver:
     
     async def _exploit_best_organism_async(self, best_organism: Organism, step_number: int) -> Organism:
         """Generate a small improvement on the best organism using the best model"""
+        from src_async.evaluation import Evaluation
+        
         prompt = self.prompt_gen.generate_prompt(best_organism, change_type="SMALL ITERATIVE IMPROVEMENT")
         is_reasoning = self.reason or "o4" in self.best_model
         
@@ -320,7 +305,13 @@ class AsyncEvolver:
                     f"(fitness: {best_organism.evaluation.fitness}) with {self.best_model}")
         
         mutated = await generate_async(prompt, model=self.best_model, reasoning=is_reasoning)
-        evaluation = self.specification.evaluator(mutated)
+        sync_evaluation = self.specification.evaluator(mutated)
+        
+        # Convert sync evaluation to async evaluation
+        evaluation = Evaluation(
+            fitness=sync_evaluation.fitness,
+            additional_data=sync_evaluation.additional_data
+        )
         
         # Create creation info for exploitation
         creation_info = {

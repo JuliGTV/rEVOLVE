@@ -1,0 +1,722 @@
+[
+  {
+    "id": 1,
+    "parent_id": null,
+    "solution": "import numpy as np\n\ndef run_packing():\n    \"\"\"\n    Construct arrangement of 26 circles in unit square to maximize sum of radii.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # Ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.25 * np.cos(angle), 0.5 + 0.25 * np.sin(angle)]\n    \n    # Ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.4 * np.cos(angle), 0.5 + 0.4 * np.sin(angle)]\n    \n    # One additional circle\n    centers[25] = [0.5, 0.85]\n    \n    # Ensure all circles are well within the unit square\n    centers = np.clip(centers, 0.1, 0.9)\n    \n    # Calculate radii\n    n = centers.shape[0]\n    radii = np.ones(n) * 0.05  # Start with small radii\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.08)\n    \n    # Limit by distance to other circles\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.95:  # Leave small gap\n                scale = (dist * 0.95) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.780464893137411,
+      "additional_data": {
+        "sum_radii": "1.780465",
+        "target_ratio": "0.675442",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 23
+  },
+  {
+    "id": 2,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles (offset angle slightly)\n    for i in range(8):\n        angle = 2 * np.pi * i / 8 + np.pi/16\n        centers[i + 1] = [0.5 + 0.28 * np.cos(angle), 0.5 + 0.28 * np.sin(angle)]\n    \n    # Second ring of 16 circles (more spread out)\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.42 * np.cos(angle), 0.5 + 0.42 * np.sin(angle)]\n    \n    # Additional circle in corner\n    centers[25] = [0.85, 0.85]\n    \n    # Calculate radii more aggressively\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Optimize circle distances with less gap\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.6515446824532463,
+      "additional_data": {
+        "sum_radii": "1.651545",
+        "target_ratio": "0.626534",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 3,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Larger central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring - 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.3 * np.cos(angle), 0.5 + 0.3 * np.sin(angle)]\n    \n    # Second ring - 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.45 * np.cos(angle), 0.5 + 0.45 * np.sin(angle)]\n    \n    # Additional circle placed optimally\n    centers[25] = [0.5, 0.92]\n    \n    # Allow circles closer to edges\n    centers = np.clip(centers, 0.05, 0.95)\n    \n    # Calculate radii\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Optimize circle distances with less conservative scaling\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.7486329215234784,
+      "additional_data": {
+        "sum_radii": "1.748633",
+        "target_ratio": "0.663366",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 1
+  },
+  {
+    "id": 4,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring - 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.3 * np.cos(angle), 0.5 + 0.3 * np.sin(angle)]\n    \n    # Second ring - 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.45 * np.cos(angle), 0.5 + 0.45 * np.sin(angle)]\n    \n    # Additional circle near edge\n    centers[25] = [0.5, 0.9]\n    \n    # Calculate radii more aggressively\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Optimize radii considering circle distances\n    for i in range(n):\n        min_dist = np.inf\n        for j in range(n):\n            if i != j:\n                dist = np.sqrt((centers[i,0]-centers[j,0])**2 + (centers[i,1]-centers[j,1])**2)\n                min_dist = min(min_dist, dist - radii[j])\n        radii[i] = min(radii[i], min_dist)\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.5180068339366105,
+      "additional_data": {
+        "sum_radii": "0.518007",
+        "target_ratio": "0.196512",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 5,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.3 * np.cos(angle), 0.5 + 0.3 * np.sin(angle)]\n    \n    # Second ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.45 * np.cos(angle), 0.5 + 0.45 * np.sin(angle)]\n    \n    # Additional circle in a corner\n    centers[25] = [0.9, 0.9]\n    \n    # Calculate radii\n    radii = np.zeros(n)\n    \n    # Start with maximum possible radii limited by borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.1)\n    \n    # Adjust radii based on circle distances\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:  # Tighter packing\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.9899053994096212,
+      "additional_data": {
+        "sum_radii": "1.989905",
+        "target_ratio": "0.754896",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 9
+  },
+  {
+    "id": 6,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Larger central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring - 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.3 * np.cos(angle), 0.5 + 0.3 * np.sin(angle)]\n    \n    # Second ring - 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.45 * np.cos(angle), 0.5 + 0.45 * np.sin(angle)]\n    \n    # Place last circle in a corner\n    centers[25] = [0.9, 0.9]\n    \n    # Calculate radii\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.1)  # Slightly larger max radius\n    \n    # Adjust for circle overlaps with reduced gap factor\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:  # Smaller gap\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    # Special treatment for central circle\n    radii[0] = min(0.15, radii[0])\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.9899053994096212,
+      "additional_data": {
+        "sum_radii": "1.989905",
+        "target_ratio": "0.754896",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 3
+  },
+  {
+    "id": 7,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    \"\"\"\n    Improved arrangement of 26 circles in unit square to maximize sum of radii.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # Ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.3 * np.cos(angle), 0.5 + 0.3 * np.sin(angle)]\n    \n    # Ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.45 * np.cos(angle), 0.5 + 0.45 * np.sin(angle)]\n    \n    # Optimized additional circle position\n    centers[25] = [0.5, 0.92]\n    \n    # Relaxed bounds for better edge utilization\n    centers = np.clip(centers, 0.05, 0.95)\n    \n    # Calculate radii with larger initial values\n    n = centers.shape[0]\n    radii = np.ones(n) * 0.08  # Increased initial radii\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.12)  # Increased max radius\n    \n    # Less conservative scaling factor\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:  # Reduced gap\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.9181283801102549,
+      "additional_data": {
+        "sum_radii": "1.918128",
+        "target_ratio": "0.727666",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 2
+  },
+  {
+    "id": 8,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.25 * np.cos(angle), 0.5 + 0.25 * np.sin(angle)]\n    \n    # Second ring of 12 circles\n    for i in range(12):\n        angle = 2 * np.pi * i / 12\n        centers[i + 9] = [0.5 + 0.4 * np.cos(angle), 0.5 + 0.4 * np.sin(angle)]\n    \n    # Add 4 corner circles\n    centers[21] = [0.1, 0.1]\n    centers[22] = [0.1, 0.9]\n    centers[23] = [0.9, 0.1]\n    centers[24] = [0.9, 0.9]\n    \n    # One additional circle at top center\n    centers[25] = [0.5, 0.85]\n    \n    # Calculate radii with less conservative approach\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Adjust radii for non-overlapping\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:  # Slightly less gap\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.8896676741019036,
+      "additional_data": {
+        "sum_radii": "1.889668",
+        "target_ratio": "0.716869",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 2
+  },
+  {
+    "id": 9,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    \"\"\"\n    Improved arrangement of 26 circles in unit square to maximize sum of radii.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.28 * np.cos(angle), 0.5 + 0.28 * np.sin(angle)]\n    \n    # Second ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.42 * np.cos(angle), 0.5 + 0.42 * np.sin(angle)]\n    \n    # Additional circle placed optimally near edge\n    centers[25] = [0.5, 0.92]\n    \n    # Allow circles to get closer to edges\n    centers = np.clip(centers, 0.05, 0.95)\n    \n    # Calculate radii\n    n = centers.shape[0]\n    radii = np.ones(n) * 0.08  # Start with larger radii\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.12)\n    \n    # Limit by distance to other circles with tighter packing\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:  # Pack tighter\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.8213490626375155,
+      "additional_data": {
+        "sum_radii": "1.821349",
+        "target_ratio": "0.690952",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 2
+  },
+  {
+    "id": 10,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles - adjusted radius\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.3 * np.cos(angle), 0.5 + 0.3 * np.sin(angle)]\n    \n    # Second ring of 16 circles - adjusted radius\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.45 * np.cos(angle), 0.5 + 0.45 * np.sin(angle)]\n    \n    # Additional circle placed more strategically\n    centers[25] = [0.5, 0.92]\n    \n    # Calculate radii with non-uniform initial values\n    radii = np.zeros(n)\n    radii[0] = 0.15  # Central circle\n    radii[1:9] = 0.1  # First ring\n    radii[9:25] = 0.07  # Second ring\n    radii[25] = 0.08  # Additional circle\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, radii[i])\n    \n    # Limit by distance to other circles with smaller gap\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:  # Reduced gap\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.8331460674157305,
+      "additional_data": {
+        "sum_radii": "1.833146",
+        "target_ratio": "0.695427",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 11,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    \"\"\"\n    Improved arrangement of 26 circles in unit square to maximize sum of radii.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.28 * np.cos(angle), 0.5 + 0.28 * np.sin(angle)]\n    \n    # Second ring of 16 circles - adjusted for better packing\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        r = 0.42 if i % 2 == 0 else 0.38  # Alternating radii for better packing\n        centers[i + 9] = [0.5 + r * np.cos(angle), 0.5 + r * np.sin(angle)]\n    \n    # Additional circle placed optimally in remaining space\n    centers[25] = [0.5, 0.9]\n    \n    # Relaxed border constraints\n    centers = np.clip(centers, 0.05, 0.95)\n    \n    # Calculate radii with more aggressive packing\n    n = centers.shape[0]\n    radii = np.ones(n) * 0.08  # Larger initial radii\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.1)  # Increased max radius\n    \n    # Limit by distance to other circles with tighter packing\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:  # Tighter packing\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.7259716553958127,
+      "additional_data": {
+        "sum_radii": "1.725972",
+        "target_ratio": "0.654769",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 12,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.3 * np.cos(angle), 0.5 + 0.3 * np.sin(angle)]\n    \n    # Second ring of 12 circles\n    for i in range(12):\n        angle = 2 * np.pi * i / 12\n        centers[i + 9] = [0.5 + 0.45 * np.cos(angle), 0.5 + 0.45 * np.sin(angle)]\n    \n    # Place 4 circles in the corners\n    centers[21] = [0.05, 0.05]\n    centers[22] = [0.95, 0.05]\n    centers[23] = [0.05, 0.95]\n    centers[24] = [0.95, 0.95]\n    \n    # Place 1 circle in the middle of each edge\n    centers[25] = [0.5, 0.05]\n    \n    # Calculate radii\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Adjust radii to prevent overlaps with scaling factor 0.98\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.7781362927273487,
+      "additional_data": {
+        "sum_radii": "1.778136",
+        "target_ratio": "0.674559",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 13,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    \"\"\"\n    Improved arrangement of 26 circles in unit square to maximize sum of radii.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Larger central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.28 * np.cos(angle), 0.5 + 0.28 * np.sin(angle)]\n    \n    # Outer ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.42 * np.cos(angle), 0.5 + 0.42 * np.sin(angle)]\n    \n    # Place the last circle in a corner\n    centers[25] = [0.08, 0.08]\n    \n    # Calculate radii\n    radii = np.zeros(n)\n    radii[0] = 0.15  # Larger central circle\n    \n    # Initial radii for rings\n    for i in range(1, 9):\n        radii[i] = 0.07\n    for i in range(9, 25):\n        radii[i] = 0.05\n    radii[25] = 0.08\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(radii[i], x, y, 1 - x, 1 - y)\n    \n    # Limit by distance to other circles with less aggressive scaling\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.59,
+      "additional_data": {
+        "sum_radii": "1.590000",
+        "target_ratio": "0.603187",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 14,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 6 circles (hexagonal pattern)\n    for i in range(6):\n        angle = 2 * np.pi * i / 6\n        centers[i + 1] = [0.5 + 0.2 * np.cos(angle), 0.5 + 0.2 * np.sin(angle)]\n    \n    # Second ring of 12 circles\n    for i in range(12):\n        angle = 2 * np.pi * i / 12\n        centers[i + 7] = [0.5 + 0.35 * np.cos(angle), 0.5 + 0.35 * np.sin(angle)]\n    \n    # Additional circles in the corners and edges\n    centers[19] = [0.1, 0.1]\n    centers[20] = [0.1, 0.9]\n    centers[21] = [0.9, 0.1]\n    centers[22] = [0.9, 0.9]\n    centers[23] = [0.5, 0.1]\n    centers[24] = [0.5, 0.9]\n    centers[25] = [0.1, 0.5]\n    centers[26] = [0.9, 0.5]\n    \n    # Ensure circles are within bounds but allow closer to edges\n    centers = np.clip(centers, 0.05, 0.95)\n    \n    # Calculate initial radii based on position\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y) * 0.9\n    \n    # Optimize radii considering circle distances\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Solution execution failed: index 26 is out of bounds for axis 0 with size 26"
+      }
+    },
+    "children": 1
+  },
+  {
+    "id": 15,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    # Initial positions: grid + hexagonal hybrid\n    centers = np.array([\n        [0.2, 0.2], [0.5, 0.2], [0.8, 0.2],\n        [0.1, 0.35], [0.3, 0.35], [0.5, 0.35], [0.7, 0.35], [0.9, 0.35],\n        [0.2, 0.5], [0.4, 0.5], [0.6, 0.5], [0.8, 0.5],\n        [0.1, 0.65], [0.3, 0.65], [0.5, 0.65], [0.7, 0.65], [0.9, 0.65],\n        [0.2, 0.8], [0.4, 0.8], [0.6, 0.8], [0.8, 0.8],\n        [0.5, 0.9],\n        # Additional circles in corners\n        [0.05, 0.05], [0.95, 0.05], [0.05, 0.95], [0.95, 0.95]\n    ])\n    \n    # Initial radii estimates\n    radii = np.minimum(\n        np.minimum(centers[:,0], 1-centers[:,0]),\n        np.minimum(centers[:,1], 1-centers[:,1])\n    ) * 0.9\n    \n    # Optimization objective\n    def objective(r):\n        # Negative sum for maximization\n        return -np.sum(r)\n    \n    # Constraints\n    constraints = []\n    \n    # Boundary constraints\n    for i in range(26):\n        def make_constr(i):\n            return {'type': 'ineq', 'fun': lambda r: min(\n                centers[i,0] - r[i],\n                centers[i,1] - r[i],\n                1 - centers[i,0] - r[i],\n                1 - centers[i,1] - r[i]\n            )}\n        constraints.append(make_constr(i))\n    \n    # Non-overlapping constraints\n    for i in range(26):\n        for j in range(i+1, 26):\n            def make_constr(i, j):\n                return {'type': 'ineq', \n                        'fun': lambda r: np.sqrt((centers[i,0]-centers[j,0])**2 + \n                                                (centers[i,1]-centers[j,1])**2) - r[i] - r[j]}\n            constraints.append(make_constr(i,j))\n    \n    # Solve optimization\n    res = minimize(objective, radii, method='SLSQP', \n                   constraints=constraints,\n                   options={'maxiter': 1000, 'ftol': 1e-8})\n    \n    radii = res.x\n    sum_radii = np.sum(radii)\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 2.113919430196318,
+      "additional_data": {
+        "sum_radii": "2.113919",
+        "target_ratio": "0.801942",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 1
+  },
+  {
+    "id": 16,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    def objective(x):\n        centers = x[:52].reshape(26, 2)\n        radii = x[52:]\n        \n        # Border constraints\n        border_violation = np.sum(np.maximum(centers - 1 + radii, 0) + np.sum(np.maximum(radii - centers, 0))\n        \n        # Overlap constraints\n        overlap = 0\n        for i in range(26):\n            for j in range(i+1, 26):\n                dist = np.sqrt(np.sum((centers[i] - centers[j])**2))\n                overlap += np.maximum(radii[i] + radii[j] - dist, 0)\n        \n        # Maximize sum of radii while penalizing constraints\n        return -np.sum(radii) + 1000*(border_violation + overlap)\n    \n    # Initial guess - hybrid pattern\n    x0 = np.zeros(78)\n    \n    # Central circle\n    x0[0:2] = [0.5, 0.5]\n    x0[52] = 0.2\n    \n    # First ring - 6 circles\n    angles = np.linspace(0, 2*np.pi, 6, endpoint=False)\n    x0[2:14] = np.column_stack([0.5 + 0.3*np.cos(angles), 0.5 + 0.3*np.sin(angles)]).flatten()\n    x0[53:59] = 0.12\n    \n    # Second ring - 12 circles\n    angles = np.linspace(0, 2*np.pi, 12, endpoint=False)\n    x0[14:38] = np.column_stack([0.5 + 0.45*np.cos(angles), 0.5 + 0.45*np.sin(angles)]).flatten()\n    x0[59:71] = 0.08\n    \n    # Corners and edges - 7 circles\n    x0[38:52] = [\n        0.1, 0.1, 0.1, 0.9, 0.9, 0.1, 0.9, 0.9,\n        0.5, 0.1, 0.5, 0.9, 0.1, 0.5\n    ]\n    x0[71:78] = [0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07]\n    \n    # Optimize\n    bounds = [(0,1)]*52 + [(0,0.5)]*26\n    res = minimize(objective, x0, method='L-BFGS-B', bounds=bounds, options={'maxiter': 1000})\n    \n    centers = res.x[:52].reshape(26, 2)\n    radii = res.x[52:]\n    sum_radii = np.sum(radii)\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Results file not found"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 17,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    # Initial positions combining grid and hexagonal patterns\n    centers = np.array([\n        # Center cluster (hexagonal)\n        [0.5, 0.5], [0.4, 0.5], [0.6, 0.5],\n        [0.45, 0.433], [0.55, 0.433], [0.45, 0.567], [0.55, 0.567],\n        [0.4, 0.433], [0.6, 0.433], [0.4, 0.567], [0.6, 0.567],\n        \n        # Edge clusters\n        [0.25, 0.25], [0.25, 0.75], [0.75, 0.25], [0.75, 0.75],\n        [0.15, 0.15], [0.15, 0.85], [0.85, 0.15], [0.85, 0.85],\n        \n        # Border lines\n        [0.1, 0.5], [0.9, 0.5], [0.5, 0.1], [0.5, 0.9],\n        [0.25, 0.5], [0.75, 0.5], [0.5, 0.25], [0.5, 0.75]\n    ])\n    \n    # Optimization function\n    def objective(r):\n        return -np.sum(r)\n    \n    def constraints(r):\n        cons = []\n        # Border constraints\n        for i in range(26):\n            x, y = centers[i]\n            cons.append(min(x, y, 1-x, 1-y) - r[i])\n        \n        # Non-overlapping constraints\n        for i in range(26):\n            for j in range(i+1, 26):\n                dist = np.linalg.norm(centers[i] - centers[j])\n                cons.append(dist - r[i] - r[j])\n        return np.array(cons)\n    \n    # Initial radii estimates\n    r0 = np.zeros(26)\n    for i in range(26):\n        x, y = centers[i]\n        r0[i] = min(x, y, 1-x, 1-y)\n    r0 = r0 * 0.9  # Start with conservative radii\n    \n    # Optimize\n    bounds = [(0, None) for _ in range(26)]\n    cons = {'type': 'ineq', 'fun': constraints}\n    res = minimize(objective, r0, method='SLSQP', bounds=bounds, constraints=cons)\n    \n    radii = res.x\n    sum_radii = np.sum(radii)\n    \n    # Final validation\n    for i in range(26):\n        x, y = centers[i]\n        assert radii[i] <= min(x, y, 1-x, 1-y)\n        for j in range(i+1, 26):\n            dist = np.linalg.norm(centers[i] - centers[j])\n            assert dist >= radii[i] + radii[j]\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Solution execution failed: "
+      }
+    },
+    "children": 1
+  },
+  {
+    "id": 18,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    # Initial positions - hybrid grid/hexagonal pattern\n    centers = np.array([\n        [0.2, 0.2], [0.5, 0.2], [0.8, 0.2],\n        [0.35, 0.35], [0.65, 0.35],\n        [0.2, 0.5], [0.5, 0.5], [0.8, 0.5],\n        [0.35, 0.65], [0.65, 0.65],\n        [0.2, 0.8], [0.5, 0.8], [0.8, 0.8],\n        # Additional circles in gaps\n        [0.1, 0.1], [0.9, 0.1], [0.1, 0.9], [0.9, 0.9],\n        [0.1, 0.5], [0.9, 0.5], [0.5, 0.1], [0.5, 0.9],\n        # Center cluster\n        [0.3, 0.3], [0.7, 0.3], [0.3, 0.7], [0.7, 0.7],\n        [0.4, 0.4], [0.6, 0.4], [0.4, 0.6], [0.6, 0.6]\n    ])\n    \n    # Objective function for optimization\n    def objective(r):\n        # Border constraints\n        if np.any(r <= 0):\n            return -np.sum(r) * 100  # Penalize negative radii\n        \n        # Circle containment\n        for i in range(26):\n            x, y = centers[i]\n            if x - r[i] < 0 or x + r[i] > 1 or y - r[i] < 0 or y + r[i] > 1:\n                return -np.sum(r) * 100\n        \n        # Non-overlapping constraints\n        for i in range(26):\n            for j in range(i+1, 26):\n                dist = np.linalg.norm(centers[i] - centers[j])\n                if dist < r[i] + r[j]:\n                    return -np.sum(r) * 100\n        \n        return -np.sum(r)  # Minimize negative sum\n    \n    # Initial radii guess\n    r0 = np.minimum(np.minimum(centers[:,0], 1-centers[:,0]),\n                    np.minimum(centers[:,1], 1-centers[:,1])) * 0.9\n    \n    # Optimize radii\n    bounds = [(0, min(1-centers[i,0], 1-centers[i,1], centers[i,0], centers[i,1])) for i in range(26)]\n    res = minimize(objective, r0, method='L-BFGS-B', bounds=bounds, \n                   options={'maxiter': 1000, 'ftol': 1e-8})\n    \n    radii = res.x\n    sum_radii = np.sum(radii)\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Solution execution failed: The number of bounds is not compatible with the length of `x0`."
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 19,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring - 8 circles with slight asymmetry\n    for i in range(8):\n        angle = 2 * np.pi * i / 8 + 0.05\n        centers[i + 1] = [0.5 + 0.28 * np.cos(angle), 0.5 + 0.28 * np.sin(angle)]\n    \n    # Second ring - 16 circles with varied spacing\n    for i in range(16):\n        angle = 2 * np.pi * i / 16 + 0.03\n        r = 0.42 if i % 2 else 0.38\n        centers[i + 9] = [0.5 + r * np.cos(angle), 0.5 + r * np.sin(angle)]\n    \n    # Additional circle placed strategically\n    centers[25] = [0.5, 0.9]\n    \n    # Calculate initial radii\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Optimize radii considering neighbor distances\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    # Small optimization step\n    def objective(x):\n        new_centers = x[:52].reshape(26, 2)\n        new_radii = x[52:]\n        sum_r = np.sum(new_radii)\n        \n        # Boundary constraints\n        for i in range(26):\n            x, y = new_centers[i]\n            if x < new_radii[i] or x > 1 - new_radii[i] or y < new_radii[i] or y > 1 - new_radii[i]:\n                return -sum_r * 0.5\n        \n        # Overlap constraints\n        for i in range(26):\n            for j in range(i + 1, 26):\n                dist = np.sqrt(np.sum((new_centers[i] - new_centers[j]) ** 2))\n                if dist < new_radii[i] + new_radii[j]:\n                    return -sum_r * 0.5\n        \n        return -sum_r\n    \n    x0 = np.concatenate([centers.flatten(), radii])\n    bounds = [(0, 1)] * 52 + [(0, 0.5)] * 26\n    res = minimize(objective, x0, method='L-BFGS-B', bounds=bounds, options={'maxiter': 20})\n    \n    optimized = res.x\n    centers = optimized[:52].reshape(26, 2)\n    radii = optimized[52:]\n    sum_radii = np.sum(radii)\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "invalid",
+        "error": "Invalid packing (overlaps or out of bounds)"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 20,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    def objective(x):\n        centers = x[:52].reshape(26, 2)\n        radii = x[52:]\n        # Penalty for out-of-square circles\n        penalty = 0\n        for i in range(26):\n            xc, yc = centers[i]\n            r = radii[i]\n            if xc - r < 0 or xc + r > 1 or yc - r < 0 or yc + r > 1:\n                penalty += 1000\n        # Penalty for overlapping circles\n        for i in range(26):\n            for j in range(i+1, 26):\n                dist = np.sqrt((centers[i,0]-centers[j,0])**2 + (centers[i,1]-centers[j,1])**2)\n                if dist < radii[i] + radii[j]:\n                    penalty += 1000 * (radii[i] + radii[j] - dist)\n        return -np.sum(radii) + penalty\n\n    # Initial guess - hybrid pattern\n    x0 = np.zeros(78)\n    # Centers - 4x7 grid with offset rows\n    grid_positions = []\n    for i in range(7):\n        for j in range(4):\n            x = 0.1 + 0.8 * j / 3\n            y = 0.1 + 0.8 * i / 6\n            if i % 2 == 1:\n                x += 0.8 / 6\n            grid_positions.extend([x, y])\n    # Add some edge positions\n    grid_positions.extend([0.05, 0.5, 0.95, 0.5, 0.5, 0.05, 0.5, 0.95])\n    # Add corner positions\n    grid_positions.extend([0.05, 0.05, 0.95, 0.05, 0.05, 0.95, 0.95, 0.95])\n    x0[:52] = np.array(grid_positions[:52])\n    # Radii - larger in center\n    for i in range(26):\n        x, y = x0[2*i], x0[2*i+1]\n        dist_to_center = np.sqrt((x-0.5)**2 + (y-0.5)**2)\n        x0[52+i] = max(0.05, 0.1 - 0.08*dist_to_center)\n\n    # Optimize\n    bounds = [(0,1)]*52 + [(0, 0.5)]*26\n    res = minimize(objective, x0, method='L-BFGS-B', bounds=bounds, options={'maxiter': 1000})\n    \n    centers = res.x[:52].reshape(26, 2)\n    radii = res.x[52:]\n    sum_radii = np.sum(radii)\n    \n    # Final validity check and adjustment\n    for i in range(26):\n        x, y = centers[i]\n        r = radii[i]\n        max_r = min(x, y, 1-x, 1-y)\n        if r > max_r:\n            radii[i] = max_r\n    \n    for i in range(26):\n        for j in range(i+1, 26):\n            dist = np.sqrt((centers[i,0]-centers[j,0])**2 + (centers[i,1]-centers[j,1])**2)\n            if dist < radii[i] + radii[j]:\n                scale = dist / (radii[i] + radii[j])\n                radii[i] *= scale * 0.99\n                radii[j] *= scale * 0.99\n    \n    return centers, radii, np.sum(radii)\n",
+    "evaluation": {
+      "fitness": 1.6617660967358543,
+      "additional_data": {
+        "sum_radii": "1.661766",
+        "target_ratio": "0.630412",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 21,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    # Initial asymmetric placement with variable radii\n    centers = np.array([\n        [0.2, 0.2], [0.8, 0.2], [0.2, 0.8], [0.8, 0.8],  # corners\n        [0.5, 0.2], [0.5, 0.8], [0.2, 0.5], [0.8, 0.5],  # edge centers\n        [0.35, 0.35], [0.65, 0.35], [0.35, 0.65], [0.65, 0.65],  # inner square\n        [0.5, 0.5],  # center\n        [0.3, 0.2], [0.7, 0.2], [0.3, 0.8], [0.7, 0.8],  # additional edge\n        [0.2, 0.3], [0.8, 0.3], [0.2, 0.7], [0.8, 0.7],\n        [0.4, 0.2], [0.6, 0.2], [0.4, 0.8], [0.6, 0.8],\n        [0.2, 0.4], [0.8, 0.4], [0.2, 0.6], [0.8, 0.6]\n    ])\n    \n    # Initial radii estimates (larger in center)\n    radii = np.array([\n        0.1, 0.1, 0.1, 0.1,  # corners\n        0.08, 0.08, 0.08, 0.08,  # edges\n        0.07, 0.07, 0.07, 0.07,  # inner square\n        0.12,  # center\n        0.06, 0.06, 0.06, 0.06,  # additional edge\n        0.06, 0.06, 0.06, 0.06,\n        0.05, 0.05, 0.05, 0.05,\n        0.05, 0.05, 0.05, 0.05\n    ])\n    \n    # Optimization objective\n    def objective(x):\n        centers = x[:52].reshape(26, 2)\n        radii = x[52:]\n        \n        # Border constraints\n        border_violation = np.sum(np.maximum(centers - (1 - radii[:, None]), 0) +\n                                np.maximum(-centers + radii[:, None], 0))\n        \n        # Overlap constraints\n        overlap = 0\n        for i in range(26):\n            for j in range(i+1, 26):\n                dist = np.linalg.norm(centers[i] - centers[j])\n                overlap += max(0, radii[i] + radii[j] - dist)\n        \n        # Maximize sum of radii while minimizing violations\n        return -np.sum(radii) + 1000*border_violation + 1000*overlap\n    \n    # Initial guess\n    x0 = np.concatenate([centers.flatten(), radii])\n    \n    # Bounds (centers must stay in [0,1], radii positive)\n    bounds = [(0,1)]*52 + [(0, 0.5)]*26\n    \n    # Optimize\n    res = minimize(objective, x0, bounds=bounds, method='L-BFGS-B', \n                   options={'maxiter': 1000, 'ftol': 1e-8})\n    \n    # Extract results\n    optimized = res.x\n    centers = optimized[:52].reshape(26, 2)\n    radii = optimized[52:]\n    \n    # Final validity check and adjustment\n    for i in range(26):\n        x, y = centers[i]\n        max_r = min(x, y, 1-x, 1-y)\n        radii[i] = min(radii[i], max_r)\n        \n        for j in range(i+1, 26):\n            dist = np.linalg.norm(centers[i] - centers[j])\n            if radii[i] + radii[j] > dist:\n                scale = 0.99 * dist / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Solution execution failed: The number of bounds is not compatible with the length of `x0`."
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 22,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Larger central circle\n    centers[0] = [0.5, 0.5]\n    \n    # Tighter first ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.2 * np.cos(angle), 0.5 + 0.2 * np.sin(angle)]\n    \n    # Adjusted outer ring with some circles moved toward corners\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        r = 0.35 if i % 4 == 0 else 0.3  # Push every 4th circle outward\n        centers[i + 9] = [0.5 + r * np.cos(angle), 0.5 + r * np.sin(angle)]\n    \n    # Better placed final circle\n    centers[25] = [0.85, 0.85]\n    \n    # Calculate radii with more aggressive initial values\n    radii = np.zeros(n)\n    radii[0] = 0.15  # Larger center circle\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Limit by distance to other circles with less scaling\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:  # Tighter packing\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.0936737411729505,
+      "additional_data": {
+        "sum_radii": "1.093674",
+        "target_ratio": "0.414899",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 23,
+    "parent_id": 5,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle slightly offset for better packing\n    centers[0] = [0.502, 0.502]\n    \n    # First ring of 8 circles with adjusted radius\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.32 * np.cos(angle), 0.5 + 0.32 * np.sin(angle)]\n    \n    # Second ring of 16 circles with adjusted radius\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.48 * np.cos(angle), 0.5 + 0.48 * np.sin(angle)]\n    \n    # Optimized corner circle position\n    centers[25] = [0.92, 0.92]\n    \n    # Calculate radii\n    radii = np.zeros(n)\n    \n    # Start with maximum possible radii limited by borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Adjust radii based on circle distances with tighter packing\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:  # Tighter packing\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.6067668225930698,
+      "additional_data": {
+        "sum_radii": "1.606767",
+        "target_ratio": "0.609547",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 24,
+    "parent_id": 5,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.32 * np.cos(angle), 0.5 + 0.32 * np.sin(angle)]\n    \n    # Second ring of 16 circles - adjusted outward\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.48 * np.cos(angle), 0.5 + 0.48 * np.sin(angle)]\n    \n    # Additional circle in corner - moved closer to corner\n    centers[25] = [0.95, 0.95]\n    \n    # Calculate radii more precisely\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Adjust radii with tighter packing factor\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:  # Tighter packing\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.636423192772942,
+      "additional_data": {
+        "sum_radii": "1.636423",
+        "target_ratio": "0.620798",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 1
+  },
+  {
+    "id": 25,
+    "parent_id": 6,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Larger central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring - 8 circles with adjusted radius\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.28 * np.cos(angle), 0.5 + 0.28 * np.sin(angle)]\n    \n    # Second ring - 16 circles with adjusted radius\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.42 * np.cos(angle), 0.5 + 0.42 * np.sin(angle)]\n    \n    # Optimized corner placement\n    centers[25] = [0.92, 0.92]\n    \n    # Calculate radii with larger initial values\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.12)\n    \n    # Tighter packing with increased scaling factor\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:  # Tighter packing\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    # Adjusted central circle radius\n    radii[0] = min(0.18, radii[0])\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.9984276267605634,
+      "additional_data": {
+        "sum_radii": "1.998428",
+        "target_ratio": "0.758129",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 26,
+    "parent_id": 5,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.3 * np.cos(angle), 0.5 + 0.3 * np.sin(angle)]\n    \n    # Second ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.45 * np.cos(angle), 0.5 + 0.45 * np.sin(angle)]\n    \n    # Utilize all four corners\n    centers[25] = [0.95, 0.95]\n    centers[24] = [0.05, 0.95]\n    centers[23] = [0.95, 0.05]\n    centers[22] = [0.05, 0.05]\n    \n    # Calculate radii\n    radii = np.zeros(n)\n    \n    # Better initial radius estimation\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # More aggressive packing adjustment\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:  # Tighter packing\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.8252063569882406,
+      "additional_data": {
+        "sum_radii": "1.825206",
+        "target_ratio": "0.692415",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 27,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    \"\"\"\n    Improved arrangement of 26 circles in unit square to maximize sum of radii.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles - adjusted radius\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.3 * np.cos(angle), 0.5 + 0.3 * np.sin(angle)]\n    \n    # Second ring of 16 circles - adjusted radius\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.45 * np.cos(angle), 0.5 + 0.45 * np.sin(angle)]\n    \n    # Better positioned additional circle\n    centers[25] = [0.5, 0.925]\n    \n    # Calculate radii - start with larger initial values\n    n = centers.shape[0]\n    radii = np.ones(n) * 0.08\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.12)\n    \n    # Limit by distance to other circles - more aggressive packing\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.98:\n                scale = (dist * 0.98) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.917906957045061,
+      "additional_data": {
+        "sum_radii": "1.917907",
+        "target_ratio": "0.727582",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 1
+  },
+  {
+    "id": 28,
+    "parent_id": 5,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle - make it larger initially\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles - adjust radius to 0.35\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.35 * np.cos(angle), 0.5 + 0.35 * np.sin(angle)]\n    \n    # Second ring of 16 circles - adjust radius to 0.5\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.5 * np.cos(angle), 0.5 + 0.5 * np.sin(angle)]\n    \n    # Place corner circle more optimally\n    centers[25] = [0.95, 0.95]\n    \n    # Calculate radii without arbitrary limit\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Adjust radii with more aggressive scaling (0.99)\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.4318469819984658,
+      "additional_data": {
+        "sum_radii": "1.431847",
+        "target_ratio": "0.543189",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 29,
+    "parent_id": 1,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring - 6 circles (better packing than 8)\n    for i in range(6):\n        angle = 2 * np.pi * i / 6\n        centers[i + 1] = [0.5 + 0.2 * np.cos(angle), 0.5 + 0.2 * np.sin(angle)]\n    \n    # Second ring - 12 circles\n    for i in range(12):\n        angle = 2 * np.pi * i / 12\n        centers[i + 7] = [0.5 + 0.35 * np.cos(angle), 0.5 + 0.35 * np.sin(angle)]\n    \n    # Remaining 7 circles placed strategically\n    centers[19] = [0.15, 0.15]\n    centers[20] = [0.85, 0.15]\n    centers[21] = [0.15, 0.85]\n    centers[22] = [0.85, 0.85]\n    centers[23] = [0.5, 0.1]\n    centers[24] = [0.5, 0.9]\n    centers[25] = [0.1, 0.5]\n    \n    # Calculate radii more aggressively\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Optimize radii considering pairwise distances\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            max_r = dist * 0.98  # Tighter packing\n            if radii[i] + radii[j] > max_r:\n                ratio = radii[i] / (radii[i] + radii[j])\n                radii[i] = max_r * ratio\n                radii[j] = max_r * (1 - ratio)\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.3800601515447022,
+      "additional_data": {
+        "sum_radii": "1.380060",
+        "target_ratio": "0.523543",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 30,
+    "parent_id": 7,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.28 * np.cos(angle), 0.5 + 0.28 * np.sin(angle)]\n    \n    # Second ring of 12 circles (reduced from 16)\n    for i in range(12):\n        angle = 2 * np.pi * i / 12\n        centers[i + 9] = [0.5 + 0.42 * np.cos(angle), 0.5 + 0.42 * np.sin(angle)]\n    \n    # Place remaining 5 circles more strategically\n    centers[21] = [0.15, 0.15]\n    centers[22] = [0.85, 0.15]\n    centers[23] = [0.15, 0.85]\n    centers[24] = [0.85, 0.85]\n    centers[25] = [0.5, 0.85]\n    \n    # Relaxed bounds for better edge utilization\n    centers = np.clip(centers, 0.03, 0.97)\n    \n    # Calculate radii with larger initial values\n    radii = np.ones(n) * 0.09\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.13)\n    \n    # More aggressive scaling factor\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.6637225460671672,
+      "additional_data": {
+        "sum_radii": "1.663723",
+        "target_ratio": "0.631154",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 31,
+    "parent_id": 6,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Larger central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring - 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.32 * np.cos(angle), 0.5 + 0.32 * np.sin(angle)]\n    \n    # Second ring - 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.48 * np.cos(angle), 0.5 + 0.48 * np.sin(angle)]\n    \n    # Place last circle more optimally in corner\n    centers[25] = [0.95, 0.95]\n    \n    # Calculate radii without artificial cap\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Adjust for circle overlaps with optimized gap factor\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:  # Tighter gap\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    # Slightly larger central circle\n    radii[0] = min(0.18, radii[0])\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.636423192772942,
+      "additional_data": {
+        "sum_radii": "1.636423",
+        "target_ratio": "0.620798",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 32,
+    "parent_id": 14,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 6 circles (hexagonal pattern)\n    for i in range(6):\n        angle = 2 * np.pi * i / 6\n        centers[i + 1] = [0.5 + 0.2 * np.cos(angle), 0.5 + 0.2 * np.sin(angle)]\n    \n    # Second ring of 12 circles\n    for i in range(12):\n        angle = 2 * np.pi * i / 12\n        centers[i + 7] = [0.5 + 0.35 * np.cos(angle), 0.5 + 0.35 * np.sin(angle)]\n    \n    # Additional circles in the corners and edges\n    centers[19] = [0.1, 0.1]\n    centers[20] = [0.1, 0.9]\n    centers[21] = [0.9, 0.1]\n    centers[22] = [0.9, 0.9]\n    centers[23] = [0.5, 0.1]\n    centers[24] = [0.5, 0.9]\n    centers[25] = [0.1, 0.5]  # Only 25 circles now\n    \n    # Calculate initial radii more aggressively\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y) * 0.95  # Increased from 0.9\n    \n    # Optimize radii considering circle distances\n    for _ in range(3):  # Multiple passes for better optimization\n        for i in range(n):\n            for j in range(i + 1, n):\n                dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n                if radii[i] + radii[j] > dist * 0.99:  # Tighter packing\n                    scale = (dist * 0.99) / (radii[i] + radii[j])\n                    radii[i] *= scale\n                    radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.5009642116895872,
+      "additional_data": {
+        "sum_radii": "1.500964",
+        "target_ratio": "0.569410",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 33,
+    "parent_id": 7,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    \"\"\"\n    Optimized arrangement of 26 circles with better edge utilization and tighter packing.\n    \"\"\"\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.32 * np.cos(angle), 0.5 + 0.32 * np.sin(angle)]\n    \n    # Second ring of 16 circles with adjusted radius\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.48 * np.cos(angle), 0.5 + 0.48 * np.sin(angle)]\n    \n    # Additional circle placed more optimally\n    centers[25] = [0.5, 0.96]\n    \n    # Less conservative bounds for edge circles\n    centers = np.clip(centers, 0.03, 0.97)\n    \n    # Calculate radii with optimized initial values\n    radii = np.ones(n) * 0.085\n    \n    # Adjust maximum radius based on position\n    for i in range(n):\n        x, y = centers[i]\n        max_r = min(x, y, 1 - x, 1 - y)\n        if i == 25:  # Edge circle\n            radii[i] = min(max_r, 0.15)\n        else:\n            radii[i] = min(max_r, 0.13)\n    \n    # Tighter packing with increased scaling factor\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.7734545773829973,
+      "additional_data": {
+        "sum_radii": "1.773455",
+        "target_ratio": "0.672782",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 34,
+    "parent_id": 15,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    # Improved initial positions with better edge utilization\n    centers = np.array([\n        [0.18, 0.18], [0.5, 0.18], [0.82, 0.18],\n        [0.08, 0.34], [0.3, 0.34], [0.5, 0.34], [0.7, 0.34], [0.92, 0.34],\n        [0.18, 0.5], [0.38, 0.5], [0.62, 0.5], [0.82, 0.5],\n        [0.08, 0.66], [0.3, 0.66], [0.5, 0.66], [0.7, 0.66], [0.92, 0.66],\n        [0.18, 0.82], [0.38, 0.82], [0.62, 0.82], [0.82, 0.82],\n        [0.5, 0.92],\n        # Adjusted corner positions to allow larger radii\n        [0.07, 0.07], [0.93, 0.07], [0.07, 0.93], [0.93, 0.93]\n    ])\n    \n    # Initial radii estimates with more aggressive scaling\n    radii = np.minimum(\n        np.minimum(centers[:,0], 1-centers[:,0]),\n        np.minimum(centers[:,1], 1-centers[:,1])\n    ) * 0.95\n    \n    # Optimization objective\n    def objective(r):\n        return -np.sum(r)\n    \n    # Constraints\n    constraints = []\n    \n    # Boundary constraints\n    for i in range(26):\n        def make_constr(i):\n            return {'type': 'ineq', 'fun': lambda r: min(\n                centers[i,0] - r[i],\n                centers[i,1] - r[i],\n                1 - centers[i,0] - r[i],\n                1 - centers[i,1] - r[i]\n            )}\n        constraints.append(make_constr(i))\n    \n    # Non-overlapping constraints\n    for i in range(26):\n        for j in range(i+1, 26):\n            def make_constr(i, j):\n                return {'type': 'ineq', \n                        'fun': lambda r: np.sqrt((centers[i,0]-centers[j,0])**2 + \n                                        (centers[i,1]-centers[j,1])**2) - r[i] - r[j]}\n            constraints.append(make_constr(i,j))\n    \n    # Solve optimization with more iterations\n    res = minimize(objective, radii, method='SLSQP', \n                   constraints=constraints,\n                   options={'maxiter': 2000, 'ftol': 1e-8})\n    \n    radii = res.x\n    sum_radii = np.sum(radii)\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 2.212474520844253,
+      "additional_data": {
+        "sum_radii": "2.212475",
+        "target_ratio": "0.839330",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 35,
+    "parent_id": 5,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    n = 26\n    # Initial guess - hybrid grid/hexagonal pattern\n    centers = np.array([\n        [0.5, 0.5],  # Center circle\n        # Inner hexagon\n        [0.5, 0.3], [0.5, 0.7],\n        [0.3, 0.4], [0.7, 0.4], [0.3, 0.6], [0.7, 0.6],\n        # Middle grid\n        [0.2, 0.2], [0.5, 0.2], [0.8, 0.2],\n        [0.2, 0.5], [0.8, 0.5],\n        [0.2, 0.8], [0.5, 0.8], [0.8, 0.8],\n        # Additional points\n        [0.15, 0.15], [0.85, 0.15], [0.15, 0.85], [0.85, 0.85],\n        [0.35, 0.15], [0.65, 0.15], [0.35, 0.85], [0.65, 0.85],\n        [0.15, 0.35], [0.85, 0.35], [0.15, 0.65], [0.85, 0.65],\n        [0.35, 0.35], [0.65, 0.65]\n    ])\n    \n    # Optimization objective: maximize sum of radii\n    def objective(x):\n        centers = x.reshape(-1, 2)\n        radii = np.zeros(n)\n        for i in range(n):\n            xc, yc = centers[i]\n            radii[i] = min(xc, yc, 1 - xc, 1 - yc)\n            for j in range(i):\n                dist = np.sqrt((centers[i,0]-centers[j,0])**2 + (centers[i,1]-centers[j,1])**2\n                if radii[i] + radii[j] > dist:\n                    radii[i] = dist - radii[j]\n        return -np.sum(radii)  # Negative for minimization\n    \n    # Constraints: all circles must stay within unit square\n    bounds = [(0, 1) for _ in range(2*n)]\n    \n    # Optimize\n    res = minimize(objective, centers.flatten(), method='L-BFGS-B', bounds=bounds)\n    optimized_centers = res.x.reshape(-1, 2)\n    \n    # Calculate final radii\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = optimized_centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n        for j in range(i):\n            dist = np.sqrt((optimized_centers[i,0]-optimized_centers[j,0])**2 + \n                          (optimized_centers[i,1]-optimized_centers[j,1])**2)\n            if radii[i] + radii[j] > dist:\n                radii[i] = dist - radii[j]\n    \n    sum_radii = np.sum(radii)\n    return optimized_centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Results file not found"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 36,
+    "parent_id": 5,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    n = 26\n    # Initial positions - hybrid grid/hexagonal with corner emphasis\n    centers = np.array([\n        # Central large circle\n        [0.5, 0.5],\n        # First hexagonal ring\n        [0.5, 0.25], [0.5, 0.75],\n        [0.25, 0.5], [0.75, 0.5],\n        [0.3, 0.3], [0.3, 0.7],\n        [0.7, 0.3], [0.7, 0.7],\n        # Second hexagonal ring\n        [0.15, 0.5], [0.85, 0.5],\n        [0.5, 0.15], [0.5, 0.85],\n        [0.2, 0.2], [0.2, 0.8],\n        [0.8, 0.2], [0.8, 0.8],\n        [0.35, 0.15], [0.35, 0.85],\n        [0.65, 0.15], [0.65, 0.85],\n        [0.15, 0.35], [0.85, 0.35],\n        [0.15, 0.65], [0.85, 0.65],\n        # Corner circles\n        [0.05, 0.05], [0.05, 0.95],\n        [0.95, 0.05], [0.95, 0.95]\n    ])\n    \n    # Initial radii - larger in center, smaller at edges\n    radii = np.array([\n        0.2,  # center\n        0.12, 0.12, 0.12, 0.12, 0.12, 0.12, 0.12, 0.12,  # first ring\n        0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08,  # second ring\n        0.06, 0.06, 0.06, 0.06, 0.06, 0.06,  # remaining\n        0.05, 0.05, 0.05, 0.05  # corners\n    ])\n    \n    # Optimization function\n    def objective(x):\n        centers = x[:2*n].reshape(n, 2)\n        radii = x[2*n:]\n        \n        # Border constraints\n        border_violation = np.sum(np.maximum(centers - (1 - radii[:, None]), 0) + \n                          np.sum(np.maximum(-centers + radii[:, None], 0))\n        \n        # Overlap constraints\n        overlap = 0\n        for i in range(n):\n            for j in range(i+1, n):\n                dist = np.linalg.norm(centers[i] - centers[j])\n                overlap += max(0, radii[i] + radii[j] - dist)\n        \n        # Maximize sum of radii while minimizing violations\n        return -np.sum(radii) + 1000*border_violation + 1000*overlap\n    \n    # Bounds\n    bounds = [(0, 1) for _ in range(2*n)] + [(0, 0.25) for _ in range(n)]\n    x0 = np.concatenate([centers.ravel(), radii])\n    \n    # Optimize\n    res = minimize(objective, x0, method='L-BFGS-B', bounds=bounds, \n                   options={'maxiter': 1000, 'ftol': 1e-8})\n    \n    # Extract results\n    centers = res.x[:2*n].reshape(n, 2)\n    radii = res.x[2*n:]\n    sum_radii = np.sum(radii)\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Results file not found"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 37,
+    "parent_id": 9,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    def objective(x):\n        centers = x[:52].reshape(26, 2)\n        radii = x[52:]\n        \n        # Border constraints\n        border_violation = np.sum(np.maximum(centers - (1 - radii[:, None]), 0) + \n                                np.maximum(radii[:, None] - centers, 0))\n        \n        # Overlap constraints\n        overlap = 0\n        for i in range(26):\n            for j in range(i+1, 26):\n                dist = np.linalg.norm(centers[i] - centers[j])\n                overlap += max(0, radii[i] + radii[j] - dist)\n        \n        # Maximize sum of radii while minimizing violations\n        return -np.sum(radii) + 1000 * (border_violation + overlap)\n    \n    # Initial guess - hybrid grid/radial pattern\n    x0 = np.zeros(78)\n    \n    # Place 4 corner circles\n    x0[:8] = [0.1, 0.1, 0.9, 0.1, 0.9, 0.9, 0.1, 0.9]\n    x0[52:56] = 0.12\n    \n    # Place central cluster\n    for i in range(4, 12):\n        angle = 2 * np.pi * (i-4) / 8\n        x0[2*i] = 0.5 + 0.25 * np.cos(angle)\n        x0[2*i+1] = 0.5 + 0.25 * np.sin(angle)\n        x0[52+i] = 0.1\n    \n    # Place edge circles\n    for i in range(12, 20):\n        side = (i-12) // 2\n        pos = 0.2 + 0.6 * ((i-12) % 2)\n        if side == 0:\n            x0[2*i] = pos\n            x0[2*i+1] = 0.05\n        elif side == 1:\n            x0[2*i] = 0.95\n            x0[2*i+1] = pos\n        elif side == 2:\n            x0[2*i] = pos\n            x0[2*i+1] = 0.95\n        else:\n            x0[2*i] = 0.05\n            x0[2*i+1] = pos\n        x0[52+i] = 0.07\n    \n    # Fill remaining circles randomly\n    x0[40:52] = np.random.uniform(0.1, 0.9, 12)\n    x0[72:] = np.random.uniform(0.03, 0.06, 6)\n    \n    # Bounds: centers in [0,1], radii in [0,0.5]\n    bounds = [(0,1)]*52 + [(0,0.5)]*26\n    \n    # Optimize\n    res = minimize(objective, x0, method='SLSQP', bounds=bounds, \n                  options={'maxiter': 1000, 'ftol': 1e-8})\n    \n    centers = res.x[:52].reshape(26, 2)\n    radii = res.x[52:]\n    sum_radii = np.sum(radii)\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.654593211702801,
+      "additional_data": {
+        "sum_radii": "1.654593",
+        "target_ratio": "0.627691",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 38,
+    "parent_id": 5,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.28 * np.cos(angle), 0.5 + 0.28 * np.sin(angle)]\n    \n    # Second ring of 16 circles\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.42 * np.cos(angle), 0.5 + 0.42 * np.sin(angle)]\n    \n    # Optimized corner circle\n    centers[25] = [0.92, 0.92]\n    \n    # Calculate radii\n    radii = np.zeros(n)\n    \n    # Start with maximum possible radii limited by borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Adjust radii based on circle distances\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:  # Gentler scaling\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.7628645012430293,
+      "additional_data": {
+        "sum_radii": "1.762865",
+        "target_ratio": "0.668765",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 39,
+    "parent_id": 3,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize, NonlinearConstraint\n\ndef run_packing():\n    n = 26\n    # Initial positions - hybrid grid/hexagonal pattern\n    centers = np.array([\n        # 4 large corner circles\n        [0.1, 0.1], [0.9, 0.1], [0.9, 0.9], [0.1, 0.9],\n        # 4 medium circles per edge (total 16)\n        [0.3, 0.05], [0.5, 0.05], [0.7, 0.05],\n        [0.95, 0.3], [0.95, 0.5], [0.95, 0.7],\n        [0.7, 0.95], [0.5, 0.95], [0.3, 0.95],\n        [0.05, 0.7], [0.05, 0.5], [0.05, 0.3],\n        # Central hexagonal pattern (6 circles)\n        [0.5, 0.5], \n        [0.5 + 0.2*np.cos(angle), 0.5 + 0.2*np.sin(angle)) for angle in np.linspace(0, 2*np.pi, 6, endpoint=False)]\n    ])\n    \n    # Initial radii - larger for corners and edges\n    radii = np.array(\n        [0.08]*4 + [0.06]*12 + [0.1] + [0.05]*6\n    )[:n]\n    \n    # Optimization function\n    def objective(x):\n        centers = x[:2*n].reshape(n, 2)\n        radii = x[2*n:]\n        return -np.sum(radii)\n    \n    # Constraints\n    def boundary_constraint(x):\n        centers = x[:2*n].reshape(n, 2)\n        radii = x[2*n:]\n        return np.concatenate([\n            centers.ravel() - radii.repeat(2),\n            1 - centers.ravel() - radii.repeat(2)\n        ])\n    \n    def non_overlap_constraint(x):\n        centers = x[:2*n].reshape(n, 2)\n        radii = x[2*n:]\n        constraints = []\n        for i in range(n):\n            for j in range(i+1, n):\n                dist = np.linalg.norm(centers[i] - centers[j])\n                constraints.append(dist - (radii[i] + radii[j]))\n        return np.array(constraints)\n    \n    # Combine variables and constraints\n    x0 = np.concatenate([centers.ravel(), radii])\n    bounds = [(0,1)]*(2*n) + [(0, 0.2)]*n\n    \n    constraints = [\n        NonlinearConstraint(boundary_constraint, 0, np.inf),\n        NonlinearConstraint(non_overlap_constraint, 0, np.inf)\n    ]\n    \n    # Optimize\n    res = minimize(\n        objective, x0, method='SLSQP',\n        bounds=bounds, constraints=constraints,\n        options={'maxiter': 1000, 'ftol': 1e-8}\n    )\n    \n    # Extract results\n    optimized = res.x\n    centers = optimized[:2*n].reshape(n, 2)\n    radii = optimized[2*n:]\n    sum_radii = np.sum(radii)\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Results file not found"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 40,
+    "parent_id": 5,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Larger central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles - tighter packing\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.28 * np.cos(angle), 0.5 + 0.28 * np.sin(angle)]\n    \n    # Second ring of 16 circles - adjusted radius\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.42 * np.cos(angle), 0.5 + 0.42 * np.sin(angle)]\n    \n    # Utilize all four corners\n    centers[25] = [0.05, 0.05]\n    centers[24] = [0.95, 0.95]\n    centers[23] = [0.05, 0.95]\n    centers[22] = [0.95, 0.05]\n    \n    # Calculate radii without arbitrary limit\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # More aggressive packing adjustment\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.995:  # Tighter packing\n                scale = (dist * 0.995) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.7300139774773307,
+      "additional_data": {
+        "sum_radii": "1.730014",
+        "target_ratio": "0.656303",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 41,
+    "parent_id": 5,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    n = 26\n    # Initial positions - hybrid grid/hexagonal pattern\n    centers = np.array([\n        [0.2, 0.2], [0.8, 0.2], [0.2, 0.8], [0.8, 0.8],  # corners\n        [0.5, 0.5],  # center\n        [0.35, 0.35], [0.65, 0.35], [0.35, 0.65], [0.65, 0.65],  # inner square\n        [0.2, 0.5], [0.8, 0.5], [0.5, 0.2], [0.5, 0.8],  # mid edges\n        [0.3, 0.3], [0.7, 0.3], [0.3, 0.7], [0.7, 0.7],  # diagonal\n        [0.15, 0.15], [0.85, 0.15], [0.15, 0.85], [0.85, 0.85],  # near corners\n        [0.25, 0.5], [0.75, 0.5], [0.5, 0.25], [0.5, 0.75],  # offset from center\n        [0.4, 0.6], [0.6, 0.4]  # asymmetric fillers\n    ])\n    \n    # Initial radii (larger in corners and center)\n    radii = np.array([\n        0.15, 0.15, 0.15, 0.15,  # corners\n        0.2,  # center\n        0.1, 0.1, 0.1, 0.1,  # inner square\n        0.12, 0.12, 0.12, 0.12,  # mid edges\n        0.08, 0.08, 0.08, 0.08,  # diagonal\n        0.1, 0.1, 0.1, 0.1,  # near corners\n        0.09, 0.09, 0.09, 0.09,  # offset center\n        0.07, 0.07  # fillers\n    ])\n    \n    # Optimization function\n    def objective(x):\n        centers = x[:2*n].reshape(n, 2)\n        radii = x[2*n:]\n        \n        # Border constraints\n        border_violation = np.sum(np.maximum(centers - (1 - radii[:, None]), 0) +\n                                np.maximum(-centers + radii[:, None], 0))\n        \n        # Overlap constraints\n        overlap = 0\n        for i in range(n):\n            for j in range(i+1, n):\n                dist = np.linalg.norm(centers[i] - centers[j])\n                min_dist = radii[i] + radii[j]\n                if dist < min_dist:\n                    overlap += (min_dist - dist) * 10\n        \n        # Maximize sum of radii while minimizing violations\n        return -np.sum(radii) + border_violation * 10 + overlap\n    \n    # Bounds (positions within [0,1], radii positive)\n    bounds = [(0,1)]*(2*n) + [(0, 0.25)]*n\n    \n    # Optimize\n    x0 = np.concatenate([centers.flatten(), radii])\n    res = minimize(objective, x0, bounds=bounds, method='L-BFGS-B', \n                  options={'maxiter': 1000})\n    \n    # Extract optimized solution\n    centers = res.x[:2*n].reshape(n, 2)\n    radii = res.x[2*n:]\n    sum_radii = np.sum(radii)\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Solution execution failed: The number of bounds is not compatible with the length of `x0`."
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 42,
+    "parent_id": 9,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles with adjusted radius\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.25 * np.cos(angle), 0.5 + 0.25 * np.sin(angle)]\n    \n    # Second ring of 16 circles with adjusted radius\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.38 * np.cos(angle), 0.5 + 0.38 * np.sin(angle)]\n    \n    # Optimally placed edge circle\n    centers[25] = [0.5, 0.94]\n    \n    # Allow circles to get closer to edges\n    centers = np.clip(centers, 0.04, 0.96)\n    \n    # Calculate radii with larger initial value\n    n = centers.shape[0]\n    radii = np.ones(n) * 0.085\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.125)\n    \n    # Limit by distance to other circles with tighter packing\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:  # Pack tighter\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.5946989767442874,
+      "additional_data": {
+        "sum_radii": "1.594699",
+        "target_ratio": "0.604969",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 43,
+    "parent_id": 8,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    n = 26\n    # Initial pattern combining grid and hexagonal packing\n    centers = np.array([\n        # Central large circle\n        [0.5, 0.5],\n        # First hexagonal ring\n        [0.5, 0.25], [0.5, 0.75],\n        [0.25, 0.5], [0.75, 0.5],\n        [0.375, 0.25], [0.625, 0.25],\n        [0.375, 0.75], [0.625, 0.75],\n        # Second hexagonal ring\n        [0.3, 0.15], [0.7, 0.15], [0.3, 0.85], [0.7, 0.85],\n        [0.15, 0.3], [0.85, 0.3], [0.15, 0.7], [0.85, 0.7],\n        # Edge fillers\n        [0.15, 0.5], [0.85, 0.5], [0.5, 0.15], [0.5, 0.85],\n        # Corners\n        [0.1, 0.1], [0.1, 0.9], [0.9, 0.1], [0.9, 0.9],\n        # Additional edge circles\n        [0.25, 0.15], [0.75, 0.15]\n    ])\n    \n    # Initial radii based on distance to nearest edge\n    radii = np.minimum(np.minimum(centers[:,0], 1-centers[:,0]), \n                      np.minimum(centers[:,1], 1-centers[:,1])).min(axis=0)\n    \n    # Optimization function\n    def objective(x):\n        new_radii = x[:n]\n        return -np.sum(new_radii)\n    \n    def constraint(x):\n        new_radii = x[:n]\n        new_centers = x[n:].reshape((n, 2))\n        \n        # Boundary constraints\n        boundary_violation = 0\n        for i in range(n):\n            x, y = new_centers[i]\n            r = new_radii[i]\n            if x - r < 0 or x + r > 1 or y - r < 0 or y + r > 1:\n                boundary_violation += 1\n        \n        # Overlap constraints\n        overlap_violation = 0\n        for i in range(n):\n            for j in range(i+1, n):\n                dist = np.linalg.norm(new_centers[i] - new_centers[j])\n                if dist < new_radii[i] + new_radii[j]:\n                    overlap_violation += 1\n        \n        return -boundary_violation - overlap_violation\n    \n    # Initial guess\n    x0 = np.concatenate([radii, centers.flatten()])\n    \n    # Bounds\n    bounds = [(0, 0.5)] * n  # Radius bounds\n    for i in range(n):\n        bounds.append((0, 1))  # x coordinate bounds\n        bounds.append((0, 1))  # y coordinate bounds\n    \n    # Optimization\n    res = minimize(objective, x0, method='SLSQP',\n                  bounds=bounds,\n                  constraints={'type': 'ineq', 'fun': constraint},\n                  options={'maxiter': 1000, 'ftol': 1e-8})\n    \n    optimized_radii = res.x[:n]\n    optimized_centers = res.x[n:].reshape((n, 2))\n    sum_radii = np.sum(optimized_radii)\n    \n    return optimized_centers, optimized_radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Solution execution failed: zero-dimensional arrays cannot be concatenated"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 44,
+    "parent_id": 27,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Larger central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles - adjusted radius\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.28 * np.cos(angle), 0.5 + 0.28 * np.sin(angle)]\n    \n    # Second ring of 16 circles - adjusted radius\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.42 * np.cos(angle), 0.5 + 0.42 * np.sin(angle)]\n    \n    # Better positioned additional circle\n    centers[25] = [0.5, 0.9]\n    \n    # Calculate radii - start with larger initial values\n    n = centers.shape[0]\n    radii = np.ones(n) * 0.1\n    \n    # Limit by distance to square borders\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.15)\n    \n    # Limit by distance to other circles - more aggressive packing\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.799602106330432,
+      "additional_data": {
+        "sum_radii": "1.799602",
+        "target_ratio": "0.682702",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 45,
+    "parent_id": 17,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize, NonlinearConstraint\n\ndef run_packing():\n    # Initial positions with slight perturbations\n    np.random.seed(42)\n    centers = np.array([\n        # Center cluster (hexagonal)\n        [0.5, 0.5], [0.4, 0.5], [0.6, 0.5],\n        [0.45, 0.433], [0.55, 0.433], [0.45, 0.567], [0.55, 0.567],\n        [0.4, 0.433], [0.6, 0.433], [0.4, 0.567], [0.6, 0.567],\n        \n        # Edge clusters\n        [0.25, 0.25], [0.25, 0.75], [0.75, 0.25], [0.75, 0.75],\n        [0.15, 0.15], [0.15, 0.85], [0.85, 0.15], [0.85, 0.85],\n        \n        # Border lines\n        [0.1, 0.5], [0.9, 0.5], [0.5, 0.1], [0.5, 0.9],\n        [0.25, 0.5], [0.75, 0.5], [0.5, 0.25], [0.5, 0.75]\n    ]) + np.random.uniform(-0.01, 0.01, (26, 2))\n    \n    # Clip to ensure centers are within square\n    centers = np.clip(centers, 0.01, 0.99)\n    \n    def objective(r):\n        return -np.sum(r)\n    \n    def border_constraints(r):\n        cons = []\n        for i in range(26):\n            x, y = centers[i]\n            cons.append(min(x, y, 1-x, 1-y) - r[i])\n        return np.array(cons)\n    \n    def overlap_constraints(r):\n        cons = []\n        for i in range(26):\n            for j in range(i+1, 26):\n                dist = np.linalg.norm(centers[i] - centers[j])\n                cons.append(dist - r[i] - r[j])\n        return np.array(cons)\n    \n    # Initial radii estimates\n    r0 = np.zeros(26)\n    for i in range(26):\n        x, y = centers[i]\n        r0[i] = min(x, y, 1-x, 1-y) * 0.95\n    \n    # Define constraints\n    border_con = NonlinearConstraint(border_constraints, 0, np.inf)\n    overlap_con = NonlinearConstraint(overlap_constraints, 0, np.inf)\n    \n    # Optimize with more robust method\n    bounds = [(0, 0.5) for _ in range(26)]\n    res = minimize(objective, r0, method='trust-constr', \n                  bounds=bounds, constraints=[border_con, overlap_con],\n                  options={'maxiter': 1000})\n    \n    radii = res.x\n    sum_radii = np.sum(radii)\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Solution execution failed: operands could not be broadcast together with shapes (27,2) (26,2) "
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 46,
+    "parent_id": 6,
+    "solution": "\nimport numpy as np\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Larger central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring - 8 circles (tighter radius)\n    for i in range(8):\n        angle = 2 * np.pi * i / 8 + 0.1  # slight asymmetry\n        centers[i + 1] = [0.5 + 0.25 * np.cos(angle), 0.5 + 0.25 * np.sin(angle)]\n    \n    # Second ring - 16 circles (tighter radius)\n    for i in range(16):\n        angle = 2 * np.pi * i / 16 + 0.05  # slight asymmetry\n        centers[i + 9] = [0.5 + 0.38 * np.cos(angle), 0.5 + 0.38 * np.sin(angle)]\n    \n    # Optimized corner placement\n    centers[25] = [0.95, 0.95]\n    \n    # Calculate radii with less aggressive constraints\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y, 0.12)  # Slightly larger max radius\n    \n    # Adjust for circle overlaps with less reduction\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.99:  # Smaller reduction\n                scale = (dist * 0.99) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    # Special treatment for central circle\n    radii[0] = min(0.18, radii[0])\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 1.6659804088362762,
+      "additional_data": {
+        "sum_radii": "1.665980",
+        "target_ratio": "0.632011",
+        "validity": "valid",
+        "target_value": "2.636"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 47,
+    "parent_id": 24,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    n = 26\n    centers = np.zeros((n, 2))\n    \n    # Central circle\n    centers[0] = [0.5, 0.5]\n    \n    # First ring of 8 circles - slightly tighter\n    for i in range(8):\n        angle = 2 * np.pi * i / 8\n        centers[i + 1] = [0.5 + 0.31 * np.cos(angle), 0.5 + 0.31 * np.sin(angle)]\n    \n    # Second ring of 16 circles - adjusted outward and tighter\n    for i in range(16):\n        angle = 2 * np.pi * i / 16\n        centers[i + 9] = [0.5 + 0.47 * np.cos(angle), 0.5 + 0.47 * np.sin(angle)]\n    \n    # Additional circle in corner - optimized position\n    centers[25] = [0.94, 0.94]\n    \n    # Calculate initial radii considering square boundaries\n    radii = np.zeros(n)\n    for i in range(n):\n        x, y = centers[i]\n        radii[i] = min(x, y, 1 - x, 1 - y)\n    \n    # Adjust radii with slightly more aggressive packing factor\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n            if radii[i] + radii[j] > dist * 0.995:  # More aggressive packing\n                scale = (dist * 0.995) / (radii[i] + radii[j])\n                radii[i] *= scale\n                radii[j] *= scale\n    \n    # Final optimization pass\n    def objective(r):\n        return -np.sum(r)\n    \n    def constraint(r, i):\n        def fn(r):\n            for j in range(n):\n                if j != i:\n                    dist = np.sqrt(np.sum((centers[i] - centers[j]) ** 2))\n                    if r[i] + r[j] > dist:\n                        return dist - (r[i] + r[j])\n            return min(centers[i][0], centers[i][1], 1 - centers[i][0], 1 - centers[i][1]) - r[i]\n        return {'type': 'ineq', 'fun': fn}\n    \n    constraints = [constraint(radii, i) for i in range(n)]\n    result = minimize(objective, radii, method='SLSQP', constraints=constraints, options={'maxiter': 100})\n    radii = result.x\n    \n    sum_radii = np.sum(radii)\n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "invalid",
+        "error": "Invalid packing (overlaps or out of bounds)"
+      }
+    },
+    "children": 0
+  },
+  {
+    "id": 48,
+    "parent_id": 8,
+    "solution": "\nimport numpy as np\nfrom scipy.optimize import minimize\n\ndef run_packing():\n    def objective(x):\n        centers = x[:52].reshape(26, 2)\n        radii = x[52:]\n        \n        # Boundary constraints\n        if np.any(centers - radii < 0) or np.any(centers + radii > 1):\n            return -np.sum(radii) * 10  # Large penalty\n        \n        # Overlap constraints\n        for i in range(26):\n            for j in range(i+1, 26):\n                dist = np.linalg.norm(centers[i] - centers[j])\n                if dist < radii[i] + radii[j]:\n                    return -np.sum(radii) * 10\n        \n        return -np.sum(radii)\n    \n    # Initial guess - hybrid grid/hexagonal pattern\n    x0 = np.zeros(78)\n    \n    # Central circle\n    x0[52] = 0.2\n    \n    # First layer - 8 circles in a square pattern\n    positions = [\n        (0.5, 0.2), (0.5, 0.8), (0.2, 0.5), (0.8, 0.5),\n        (0.35, 0.35), (0.35, 0.65), (0.65, 0.35), (0.65, 0.65)\n    ]\n    for i in range(8):\n        x0[2*i] = positions[i][0]\n        x0[2*i+1] = positions[i][1]\n        x0[52+i+1] = 0.12\n    \n    # Second layer - edge circles\n    edge_positions = [\n        (0.1, 0.1), (0.1, 0.9), (0.9, 0.1), (0.9, 0.9),\n        (0.1, 0.5), (0.5, 0.1), (0.5, 0.9), (0.9, 0.5),\n        (0.3, 0.1), (0.7, 0.1), (0.3, 0.9), (0.7, 0.9),\n        (0.1, 0.3), (0.1, 0.7), (0.9, 0.3), (0.9, 0.7)\n    ]\n    for i in range(16):\n        x0[2*(i+8)] = edge_positions[i][0]\n        x0[2*(i+8)+1] = edge_positions[i][1]\n        x0[52+8+i+1] = 0.08 if i < 4 else 0.06\n    \n    # Last circle\n    x0[50] = 0.25\n    x0[51] = 0.75\n    x0[77] = 0.05\n    \n    # Optimize\n    bounds = [(0,1)]*52 + [(0,0.5)]*26\n    res = minimize(objective, x0, method='L-BFGS-B', bounds=bounds, options={'maxiter': 1000})\n    \n    centers = res.x[:52].reshape(26, 2)\n    radii = res.x[52:]\n    sum_radii = np.sum(radii)\n    \n    return centers, radii, sum_radii\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "sum_radii": "0.0",
+        "target_ratio": "0.0",
+        "validity": "error",
+        "error": "Solution execution failed: operands could not be broadcast together with shapes (26,2) (26,) "
+      }
+    },
+    "children": 0
+  }
+]
