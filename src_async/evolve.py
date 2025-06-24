@@ -376,9 +376,13 @@ class AsyncEvolver:
         plt.savefig(fitness_plot_path, dpi=150, bbox_inches='tight')
         plt.close()
         
-        # 3. Serialize population (try JSON first, fallback to pickle)
+        # 3. Serialize population (always create both JSON and pickle)
+        # Always create pickle file
+        with open(os.path.join(full_dir_path, "population.pkl"), "wb") as f:
+            pickle.dump(self.population.get_population(), f)
+        
+        # Try to serialize as JSON with all fields
         try:
-            # Try to serialize as JSON
             population_data = []
             for org in self.population.get_population():
                 org_data = {
@@ -389,7 +393,8 @@ class AsyncEvolver:
                         "fitness": org.evaluation.fitness,
                         "additional_data": org.evaluation.additional_data
                     },
-                    "children": org.children
+                    "children": org.children,
+                    "creation_info": org.creation_info if hasattr(org, 'creation_info') else None
                 }
                 population_data.append(org_data)
             
@@ -397,10 +402,7 @@ class AsyncEvolver:
                 json.dump(population_data, f, indent=2)
                 
         except Exception as e:
-            # Fallback to pickle
-            logfire.warning(f"JSON serialization failed: {e}, using pickle instead")
-            with open(os.path.join(full_dir_path, "population.pkl"), "wb") as f:
-                pickle.dump(self.population.get_population(), f)
+            logfire.warning(f"JSON serialization failed: {e}, but pickle was created successfully")
         
         # 4. Create markdown report
         best_organism = self.population.get_best()
