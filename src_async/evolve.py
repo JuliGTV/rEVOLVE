@@ -15,7 +15,7 @@ from typing import List, Tuple
 class AsyncEvolver:
     def __init__(self, specification: ProblemSpecification, checkpoint_dir: str = None, max_concurrent: int = 20, 
                  model_mix: dict = None, big_changes_rate: float = 0.2, best_model: str = "gpt-4o", 
-                 max_children_per_organism: int = 20):
+                 max_children_per_organism: int = 20, population_path: str = None):
         self.specification = specification
         self.checkpoint_dir = checkpoint_dir or "checkpoints"
         self.checkpoint_file = os.path.join(self.checkpoint_dir, f"{specification.name.replace(' ', '_')}_async_checkpoint.pkl")
@@ -30,13 +30,25 @@ class AsyncEvolver:
         self.best_model = best_model  # Model to use for exploiting best organisms
         self.max_children_per_organism = max_children_per_organism  # Cap on children per organism
         
-        # Try to load from checkpoint first
+        # Try to load from checkpoint first, then from population_path, then create new
         if os.path.exists(self.checkpoint_file):
             self.population, self.current_step = self._load_checkpoint()
             logfire.info("Loaded from checkpoint", 
                         specification_name=specification.name,
                         current_step=self.current_step,
                         population_size=len(self.population.get_population()))
+        elif population_path and os.path.exists(population_path):
+            self.population = Population.from_pickle(
+                population_path,
+                exploration_rate=specification.hyperparameters.exploration_rate,
+                elitism_rate=specification.hyperparameters.elitism_rate
+            )
+            self.current_step = 0
+            logfire.info("Loaded from population file", 
+                        specification_name=specification.name,
+                        population_path=population_path,
+                        population_size=len(self.population.get_population()),
+                        best_fitness=self.population.get_best().evaluation.fitness)
         else:
             self.population = Population(
                 pop = specification.starting_population,
@@ -62,7 +74,8 @@ class AsyncEvolver:
                     model_mix=self.model_mix,
                     big_changes_rate=self.big_changes_rate,
                     best_model=self.best_model,
-                    max_children_per_organism=self.max_children_per_organism)
+                    max_children_per_organism=self.max_children_per_organism,
+                    population_path=population_path)
 
     async def evolve(self) -> Population:
         """Main async evolution loop with streaming concurrent LLM calls"""
@@ -504,9 +517,9 @@ class AsyncEvolver:
 class Evolver(AsyncEvolver):
     def __init__(self, specification: ProblemSpecification, checkpoint_dir: str = None, max_concurrent: int = 5, 
                  model_mix: dict = None, big_changes_rate: float = 0.25, best_model: str = "gpt-4o", 
-                 max_children_per_organism: int = 10):
+                 max_children_per_organism: int = 10, population_path: str = None):
         super().__init__(specification, checkpoint_dir, max_concurrent, model_mix, big_changes_rate, 
-                        best_model, max_children_per_organism)
+                        best_model, max_children_per_organism, population_path)
     
     def evolve(self) -> Population:
         """Sync wrapper that runs the async evolution"""

@@ -74,7 +74,9 @@ async def run_evolution():
                            model_mix={"deepseek:deepseek-reasoner": 0.01, "deepseek:deepseek-chat": 0.99},
                            big_changes_rate=0.2,
                            best_model="deepseek:deepseek-reasoner",
-                           max_children_per_organism=20)
+                           max_children_per_organism=20,
+                           population_path="example_problems/circle_packing/outputs/2025-06-24_19-19-31_circle_packing/population.pkl")
+    
     
     # Run evolution
     print("Starting evolution...")

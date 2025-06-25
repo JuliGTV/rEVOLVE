@@ -120,9 +120,9 @@ def get_circle_packing_spec() -> ProblemSpecification:
     
     # Configure hyperparameters for circle packing evolution
     hyperparameters = Hyperparameters(
-        exploration_rate=0.15,      # Higher exploration for this complex problem
-        elitism_rate=0.15,          # Keep good solutions
-        max_steps=10000,             # Run for many iterations
+        exploration_rate=0,      # Higher exploration for this complex problem
+        elitism_rate=1,          # Keep good solutions
+        max_steps=4000,             # Run for many iterations
         target_fitness=2.636,      # AlphaEvolve benchmark
         reason=True                # Enable reasoning for complex problem
     )
