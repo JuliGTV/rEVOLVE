@@ -17,10 +17,10 @@ from matplotlib.patches import Circle
 project_root = os.path.join(os.path.dirname(__file__), '..', '..')
 sys.path.insert(0, project_root)
 
-from src_async.evolve import AsyncEvolver
-from src_async.specification import ProblemSpecification, Hyperparameters
-from src_async.population import Organism
-from src_async.evaluation import Evaluation
+from src.evolve import AsyncEvolver
+from src.specification import ProblemSpecification, Hyperparameters
+from src.population import Organism
+from src.evaluation import Evaluation
 from example_problems.circle_packing.spec import get_circle_packing_spec
 from example_problems.circle_packing.evaluation import evaluate_circle_packing
 import asyncio

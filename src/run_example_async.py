@@ -1,7 +1,7 @@
-from src_async.specification import ProblemSpecification, Hyperparameters
-from src_async.evolve import AsyncEvolver, Evolver
-from src_async.population import Organism
-from src_async.evaluation import Evaluation
+from src.specification import ProblemSpecification, Hyperparameters
+from src.evolve import AsyncEvolver, Evolver
+from src.population import Organism
+from src.evaluation import Evaluation
 from typing import Optional
 import asyncio
 
