@@ -1,40 +1,25 @@
 from src.population import Organism
-import random
 import logfire
-from typing import Optional
 
 class Promptgenerator:
-    def __init__(self, systemprompt: str, reason: bool = False, big_changes: float = 0.25):
+    def __init__(self, systemprompt: str, reason: bool = False):
         self.systemprompt = systemprompt
         self.reason = reason
-        self.big_changes = big_changes
 
-    def generate_prompt(self, organism: Organism, big_changes: Optional[float] = None, change_type: Optional[str] = None) -> str:
-        if big_changes is None:
-            big_changes = self.big_changes
-
+    def generate_prompt(self, organism: Organism, change_type: str = "SMALL ITERATIVE IMPROVEMENT") -> str:
         otpt = f"""
 
 {self.systemprompt}
 
-{self._previous_solution(organism, big_changes, change_type)}
+{self._previous_solution(organism, change_type)}
 
 {self._format()}
 """
         return otpt
 
 
-    def _previous_solution(self, organism: Organism, big_changes: float, change_type: Optional[str] = None) -> str:
-        # If change_type is explicitly provided, use it
-        if change_type is not None:
-            changes = change_type
-        else:
-            # Otherwise use the old random logic for backward compatibility
-            changes = "SMALL ITERATIVE IMPROVEMENT"
-            if random.random() < big_changes:
-                changes = "LARGE QUALITATIVE CHANGE"
-        
-        logfire.debug(f"Changes: {changes}")
+    def _previous_solution(self, organism: Organism, change_type: str) -> str:
+        logfire.debug(f"Change type: {change_type}")
 
         otpt = f"""
 Look at this solution to the problem:
@@ -45,7 +30,7 @@ It achieved a fitness of {organism.evaluation.fitness}.
 Here is some additional data from the evaluation:
 {organism.evaluation.additional_data}
 
-You should propose a new solution that is a {changes} on this one.
+You should propose a new solution that is a {change_type} on this one.
 Only improve it with respect to the fitness as defined above. No other criteria will be considered.
 """
         return otpt

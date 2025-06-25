@@ -44,18 +44,3 @@ async def generate_async(prompt: str, model: str = "gpt-4.1-mini", reasoning: bo
         duration = time.time() - start_time
         logfire.error(f"Model call failed after {duration:.2f}s: {model} - {str(e)}")
         raise
-
-
-def generate(prompt: str, model: str = "gpt-4.1-mini", reasoning: bool = False) -> str:
-    """Sync wrapper for backward compatibility"""
-    if reasoning or "o4" in model:
-        output = agent.run_sync(prompt, model=model, model_settings={"max_tokens": 30000}).output
-    else:
-        output = agent.run_sync(prompt, model=model).output
-
-    if "```python" in output:
-        output = output.split("```python")[1].split("```")[0]
-    elif "```" in output:
-        output = output.split("```")[1].split("```")[0]
-
-    return output
