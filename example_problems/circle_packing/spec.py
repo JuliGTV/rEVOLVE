@@ -75,7 +75,7 @@ CONSTRAINTS:
 - sum_radii: sum of all radii (float)
 
 OPTIMIZATION GOAL:
-- The target is to achieve a sum of radii of 2.635 (AlphaEvolve benchmark)
+- The target is to achieve a sum of radii of 2.636 (AlphaEvolve benchmark)
 - Higher sum of radii = better fitness
 
 KEY GEOMETRIC INSIGHTS:

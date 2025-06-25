@@ -25,15 +25,15 @@ import asyncio
 async def run_evolution():
     """Run the circle packing evolution experiment asynchronously."""
     
-    print("Circle Packing Evolution Experiment")
-    print("=" * 40)
-    print("Goal: Pack 26 circles in a unit square to maximize sum of radii")
-    print("Target: 2.635 (AlphaEvolve benchmark)")
-    print()
-    
     # Get problem specification and evolver configuration
     spec = get_circle_packing_spec()
     evolver_config = get_circle_packing_evolver_config()
+    
+    print("Circle Packing Evolution Experiment")
+    print("=" * 40)
+    print("Goal: Pack 26 circles in a unit square to maximize sum of radii")
+    print(f"Target: {spec.hyperparameters.target_fitness} (AlphaEvolve benchmark)")
+    print()
     
     print("Configuration:")
     print(f"  Max steps: {spec.hyperparameters.max_steps}")
@@ -58,7 +58,7 @@ async def run_evolution():
         
         print("\nEvolution completed!")
         print(f"Best fitness: {best_organism.evaluation.fitness:.6f}")
-        print(f"Target ratio: {best_organism.evaluation.fitness/2.635:.6f}")
+        print(f"Target ratio: {best_organism.evaluation.fitness/spec.hyperparameters.target_fitness:.6f}")
         print(f"Report generated in: {report_dir}")
         
         # Print additional data
