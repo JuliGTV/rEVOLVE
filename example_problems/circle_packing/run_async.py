@@ -18,8 +18,14 @@ project_root = os.path.join(os.path.dirname(__file__), '..', '..')
 sys.path.insert(0, project_root)
 
 from src.evolve import AsyncEvolver
+from src.specification import ProblemSpecification
+from src.population import Organism
 from example_problems.circle_packing.spec import get_circle_packing_spec, get_circle_packing_evolver_config
 import asyncio
+
+# Rebuild the pydantic models to resolve forward references
+ProblemSpecification.model_rebuild()
+Organism.model_rebuild()
 
 
 async def run_evolution():

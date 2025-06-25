@@ -108,12 +108,12 @@ CIRCLE_PACKING_CONFIG = {
     # Basic evolution parameters
     "exploration_rate": 0.0,
     "elitism_rate": 1.0, 
-    "max_steps": 4000,
+    "max_steps": 1000,
     "target_fitness": 2.636,  # AlphaEvolve benchmark
     "reason": True,
     
     # AsyncEvolver specific parameters
-    "max_concurrent": 40,
+    "max_concurrent": 20,
     "model_mix": {"deepseek:deepseek-reasoner": 0.01, "deepseek:deepseek-chat": 0.99},
     "big_changes_rate": 0.2,
     "best_model": "deepseek:deepseek-reasoner",
