@@ -512,15 +512,3 @@ class AsyncEvolver:
             logfire.error(f"Failed to load checkpoint: {str(e)}")
             raise
 
-
-# For backward compatibility, provide a sync wrapper
-class Evolver(AsyncEvolver):
-    def __init__(self, specification: ProblemSpecification, checkpoint_dir: str = None, max_concurrent: int = 5, 
-                 model_mix: dict = None, big_changes_rate: float = 0.25, best_model: str = "gpt-4o", 
-                 max_children_per_organism: int = 10, population_path: str = None):
-        super().__init__(specification, checkpoint_dir, max_concurrent, model_mix, big_changes_rate, 
-                        best_model, max_children_per_organism, population_path)
-    
-    def evolve(self) -> Population:
-        """Sync wrapper that runs the async evolution"""
-        return asyncio.run(super().evolve())
