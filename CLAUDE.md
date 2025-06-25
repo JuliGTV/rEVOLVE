@@ -11,7 +11,7 @@ rEVOLVE is an AI-powered evolutionary programming framework that uses LLMs to ev
 ### Key Components
 - **`ProblemSpecification`** (`src/specification.py`): Defines problems with system prompts, evaluators, starting populations, and hyperparameters
 - **`Population`** (`src/population.py`): Manages solution organisms with selection strategies (exploration/elitism/weighted)  
-- **`Evolver/Evolver2/Evolver3`** (`src/evolve*.py`): Evolution engines with different capabilities and strategies
+- **`AsyncEvolver`** (`src/evolve.py`): Main evolution engine with concurrent LLM calls for high-throughput evolution
 - **`Organism`** (`src/population.py`): Individual solutions with fitness scores and parent lineage tracking
 - **Problem-specific evaluators**: Domain-specific fitness functions and constraint validation
 
@@ -19,27 +19,26 @@ rEVOLVE is an AI-powered evolutionary programming framework that uses LLMs to ev
 1. Initialize population with starting solutions
 2. Select parent organism using exploration/elitism/weighted strategies  
 3. Generate LLM prompt with system context + parent solution
-4. LLM produces mutated solution via `generate()` function
+4. LLM produces mutated solution via `generate_async()` function
 5. Evaluate solution with problem-specific evaluator
 6. Add to population with parent tracking and fitness score
 7. Save checkpoints periodically for resumption
 
-### Evolver Variants
-- **Evolver**: Basic single-threaded evolution
-- **Evolver2**: Enhanced with multiple model support and sophisticated reporting
-- **Evolver3**: Advanced with big/small change control and population loading
-- **AsyncEvolver** (`src_async/`): Concurrent LLM calls for high-throughput evolution
+### Async-Only Architecture
+- **AsyncEvolver** (`src/evolve.py`): The single evolution engine with concurrent LLM calls
+- **Configurable model selection**: Support for multiple model providers with probability mixing
+- **Advanced features**: Big/small change control, population loading, creation metadata tracking
+- **Deprecated features**: Legacy sync evolvers documented in `DEPRECATED_SRC_FEATURES.md`
 
 ## Development Commands
 
 ### Running Experiments
 ```bash
-# Run specific example problems
-cd example_problems/circle_packing && python run_circle_packing.py
-cd example_problems/guess_the_votes && python ../../run_example.py guess_the_votes
-
-# Run with async evolver for better performance
+# Run specific example problems (async-only)
 cd example_problems/circle_packing && python run_async.py
+cd example_problems/guess_the_votes && python ../../src/run_example_async.py guess_the_votes
+
+# All experiments now use AsyncEvolver by default
 ```
 
 ### Environment Setup
@@ -123,6 +122,7 @@ Uses `pydantic-ai` for LLM integration supporting:
 ### Example Problems  
 - `example_problems/circle_packing/`: Geometric optimization (maximize circle radii sum)
 - `example_problems/guess_the_votes/`: Code golf (minimize character count)
+- `example_problems/clifford/`: Reference materials for quantum circuit synthesis (upcoming)
 - Each problem includes `spec.py`, `evaluation.py`, and runner scripts
 
 ### Outputs and Checkpoints
@@ -139,13 +139,26 @@ Uses `pydantic-ai` for LLM integration supporting:
 - **Reasoning mode** (`reason=True`) provides LLM explanations for solution changes
 
 ### Performance Considerations
-- Use `AsyncEvolver` for I/O-bound workloads with multiple LLM calls
-- Checkpoint frequency balances resumption capability vs. I/O overhead  
-- Population size affects diversity vs. computational cost
-- Model selection impacts both quality and API costs
+- **Concurrency control**: Adjust `max_concurrent` parameter for LLM API rate limits
+- **Model mixing**: Configure `model_mix` dictionary for optimal cost/performance balance
+- **Checkpoint frequency**: Balances resumption capability vs. I/O overhead  
+- **Population management**: Size affects diversity vs. computational cost
+- **Model selection**: Impacts both solution quality and API costs
 
 ### Debugging Evolution
 - Check `outputs/*/report.md` for detailed run summaries
 - Use population visualizations to identify convergence patterns
 - Monitor Logfire logs for detailed execution traces
 - Examine checkpoint files for population state inspection
+- Debug scripts and utilities available in `jdebug/` directory
+- Analysis notebooks and tools in `analysis/` directory
+
+### Repository Organization
+- **Root directories**:
+  - `src/`: Core async evolution framework
+  - `example_problems/`: Problem implementations and reference materials
+  - `outputs/`: All experiment results consolidated here
+  - `checkpoints/`: Experiment state for resumption
+  - `jdebug/`: Debug scripts and development utilities
+  - `analysis/`: Jupyter notebooks and analysis tools
+  - `DEPRECATED_SRC_FEATURES.md`: Documentation of legacy evolution algorithms
