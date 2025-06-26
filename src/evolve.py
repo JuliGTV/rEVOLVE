@@ -101,10 +101,11 @@ class AsyncEvolver:
                         mutatee = self._select_organism_with_child_cap()
                         
                         # Determine change type based on probability
-                        change_type = self._determine_change_type()
+                        large_changes = self._determine_large_changes()
+                        change_type = "LARGE QUALITATIVE CHANGE" if large_changes else "SMALL ITERATIVE IMPROVEMENT"
                         
                         # Generate prompt with specific change type
-                        prompt = self.prompt_gen.generate_prompt(mutatee, change_type=change_type)
+                        prompt = self.prompt_gen.generate_prompt(mutatee, large_changes=large_changes)
                         
                         # Create async task for LLM call with metadata
                         task = asyncio.create_task(
@@ -242,13 +243,10 @@ class AsyncEvolver:
         # Fallback to first model
         return list(self.model_mix.keys())[0]
     
-    def _determine_change_type(self) -> str:
-        """Determine whether to make big or small changes based on probability"""
+    def _determine_large_changes(self) -> bool:
+        """Determine whether to make large changes based on probability"""
         import random
-        if random.random() < self.big_changes_rate:
-            return "LARGE QUALITATIVE CHANGE"
-        else:
-            return "SMALL ITERATIVE IMPROVEMENT"
+        return random.random() < self.big_changes_rate
     
     def _select_organism_with_child_cap(self) -> Organism:
         """Select organism ensuring it doesn't exceed max children limit"""
@@ -265,6 +263,14 @@ class AsyncEvolver:
                          f"selected organism {mutatee.id} with {mutatee.children} children")
         
         return mutatee
+
+    def _convert_evaluation(self, sync_evaluation) -> "Evaluation":
+        """Convert sync evaluation to async evaluation format"""
+        from src.evaluation import Evaluation
+        return Evaluation(
+            fitness=sync_evaluation.fitness,
+            additional_data=sync_evaluation.additional_data
+        )
 
     async def _generate_and_evaluate_async(self, prompt: str, parent_id: int) -> Tuple[str, object]:
         """Generate a mutation and evaluate it asynchronously"""
@@ -289,12 +295,7 @@ class AsyncEvolver:
         
         mutated = await generate_async(prompt, model=selected_model, reasoning=is_reasoning)
         sync_evaluation = self.specification.evaluator(mutated)
-        
-        # Convert sync evaluation to async evaluation
-        evaluation = Evaluation(
-            fitness=sync_evaluation.fitness,
-            additional_data=sync_evaluation.additional_data
-        )
+        evaluation = self._convert_evaluation(sync_evaluation)
         
         # Create creation info
         creation_info = {
@@ -309,9 +310,8 @@ class AsyncEvolver:
     
     async def _exploit_best_organism_async(self, best_organism: Organism, step_number: int) -> Organism:
         """Generate a small improvement on the best organism using the best model"""
-        from src.evaluation import Evaluation
         
-        prompt = self.prompt_gen.generate_prompt(best_organism, change_type="SMALL ITERATIVE IMPROVEMENT")
+        prompt = self.prompt_gen.generate_prompt(best_organism, large_changes=False)
         is_reasoning = self.reason or "o4" in self.best_model
         
         logfire.info(f"Step {step_number}: Exploiting best organism {best_organism.id} "
@@ -319,12 +319,7 @@ class AsyncEvolver:
         
         mutated = await generate_async(prompt, model=self.best_model, reasoning=is_reasoning)
         sync_evaluation = self.specification.evaluator(mutated)
-        
-        # Convert sync evaluation to async evaluation
-        evaluation = Evaluation(
-            fitness=sync_evaluation.fitness,
-            additional_data=sync_evaluation.additional_data
-        )
+        evaluation = self._convert_evaluation(sync_evaluation)
         
         # Create creation info for exploitation
         creation_info = {

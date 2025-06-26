@@ -6,7 +6,9 @@ class Promptgenerator:
         self.systemprompt = systemprompt
         self.reason = reason
 
-    def generate_prompt(self, organism: Organism, change_type: str = "SMALL ITERATIVE IMPROVEMENT") -> str:
+    def generate_prompt(self, organism: Organism, large_changes: bool = False) -> str:
+        change_type = "LARGE QUALITATIVE CHANGE" if large_changes else "SMALL ITERATIVE IMPROVEMENT"
+        
         otpt = f"""
 
 {self.systemprompt}
