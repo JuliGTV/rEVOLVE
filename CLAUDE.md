@@ -41,6 +41,25 @@ cd example_problems/guess_the_votes && python ../../src/run_example_async.py gue
 # All experiments now use AsyncEvolver by default
 ```
 
+### Git Workflow
+```bash
+# IMPORTANT: Always commit changes when appropriate
+# Commit after completing logical units of work such as:
+# - Adding new features or modules
+# - Fixing bugs or issues  
+# - Refactoring or cleanup tasks
+# - Updating documentation
+# - Any changes that represent a cohesive improvement
+
+# Check status and review changes before committing
+git status
+git diff
+
+# Add and commit with descriptive messages
+git add <files>
+git commit -m "Descriptive commit message"
+```
+
 ### Environment Setup
 ```bash
 # Install dependencies with UV
