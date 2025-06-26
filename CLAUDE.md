@@ -98,11 +98,14 @@ The population uses a three-tier selection approach:
 - **Error Handling**: Graceful failure handling with detailed error reporting in evaluations
 
 ### Visualization & Reporting
-Evolution runs automatically generate:
+The new `EvolutionReporter` class (`src/reporting.py`) generates comprehensive reports:
 - **Population visualizations**: Ancestry graphs with fitness-based coloring via graphviz
 - **Fitness progression plots**: Track improvement over generations  
-- **Comprehensive reports**: Markdown reports with embedded visualizations
-- **Best solution extraction**: Optimal solutions saved as separate files
+- **Ancestry analysis**: Complete lineage tracing of best organisms with solution code
+- **Best-so-far tracking**: Summary tables of organisms that achieved new fitness records
+- **Configuration reproducibility**: Full evolver settings saved for exact experiment replication
+- **Comprehensive markdown reports**: All visualizations and analysis embedded
+- **Multiple formats**: Both JSON and pickle serialization of population data
 
 ### Model Integration
 Uses `pydantic-ai` for LLM integration supporting:
@@ -114,10 +117,11 @@ Uses `pydantic-ai` for LLM integration supporting:
 ## Key Files and Locations
 
 ### Core Framework
-- `src/evolve*.py`: Evolution engines with different strategies
+- `src/evolve.py`: AsyncEvolver - main concurrent evolution engine
 - `src/population.py`: Population management and selection logic
 - `src/mutate.py`: LLM interface for solution generation
 - `src/prompt.py`: Prompt generation for LLM context
+- `src/reporting.py`: EvolutionReporter for comprehensive analysis and visualization
 
 ### Example Problems  
 - `example_problems/circle_packing/`: Geometric optimization (maximize circle radii sum)
@@ -126,9 +130,15 @@ Uses `pydantic-ai` for LLM integration supporting:
 - Each problem includes `spec.py`, `evaluation.py`, and runner scripts
 
 ### Outputs and Checkpoints
-- `outputs/`: Evolution run results with visualizations and reports
+- `outputs/`: Evolution run results with comprehensive reports and visualizations
 - `checkpoints/`: Automatic state saving for experiment resumption
-- Generated files include population graphs, fitness plots, and best solutions
+- Generated files include:
+  - `report.md`: Comprehensive markdown with all analysis and configuration
+  - `ancestry_graph.png`: Visualization of best organisms' evolutionary relationships  
+  - `best_ancestry.md`: Detailed lineage analysis with solution code
+  - `fitness_progression.png`: Performance over time
+  - `population_visualization.png`: Population structure graph
+  - `population.json`/`population.pkl`: Serialized population data
 
 ## Development Notes
 
@@ -146,12 +156,14 @@ Uses `pydantic-ai` for LLM integration supporting:
 - **Model selection**: Impacts both solution quality and API costs
 
 ### Debugging Evolution
-- Check `outputs/*/report.md` for detailed run summaries
-- Use population visualizations to identify convergence patterns
+- Check `outputs/*/report.md` for detailed run summaries with full configuration
+- Use `ancestry_graph.png` to visualize evolutionary relationships between best organisms
+- Review `best_ancestry.md` for complete lineage analysis of optimal solutions
 - Monitor Logfire logs for detailed execution traces
 - Examine checkpoint files for population state inspection
 - Debug scripts and utilities available in `jdebug/` directory
 - Analysis notebooks and tools in `analysis/` directory
+- Use the comprehensive reporting system for reproducible experiment analysis
 
 ### Repository Organization
 - **Root directories**:
