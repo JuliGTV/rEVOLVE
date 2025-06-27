@@ -10,6 +10,7 @@ dependencies = [
     "ipykernel>=6.29.5",
     "logfire>=3.18.0",
     "matplotlib>=3.10.3",
+    "numba>=0.61.2",
     "pydantic>=2.11.5",
     "pydantic-ai>=0.2.16",
     "python-dotenv>=1.1.0",
