@@ -43,8 +43,19 @@ def evaluate(heuristic_func: Callable[[np.ndarray], Any]) -> float:
         heuristic_values = []
         for matrix in matrices:
             matrix_array = np.array(matrix)
-            heuristic_value = heuristic_func(matrix_array)
-            heuristic_values.append(heuristic_value)
+            try:
+                heuristic_value = heuristic_func(matrix_array)
+                # Check for nan/inf values
+                if isinstance(heuristic_value, (tuple, list)):
+                    if any(not np.isfinite(x) for x in heuristic_value if isinstance(x, (int, float, np.number))):
+                        heuristic_value = 0.0  # Fallback for invalid vector heuristics
+                elif isinstance(heuristic_value, (int, float, np.number)):
+                    if not np.isfinite(heuristic_value):
+                        heuristic_value = 0.0  # Fallback for invalid scalar heuristics
+                heuristic_values.append(heuristic_value)
+            except Exception:
+                # If heuristic computation fails, use 0.0 as fallback
+                heuristic_values.append(0.0)
         
         # Convert vector heuristics to ranks for correlation
         if len(heuristic_values) > 0 and isinstance(heuristic_values[0], (tuple, list)):
@@ -62,13 +73,21 @@ def evaluate(heuristic_func: Callable[[np.ndarray], Any]) -> float:
             else:
                 spearman_rho, _ = spearman_result
                 spearman_rho = float(spearman_rho)
+            
+            # Ensure correlation is finite
+            if not np.isfinite(spearman_rho):
+                spearman_rho = 0.0
+                
         except:
             spearman_rho = 0.0
         
         spearman_scores.append(spearman_rho)
     
-    # Return average Spearman correlation
-    return float(np.mean(spearman_scores))
+    # Return average Spearman correlation with safety check
+    avg_correlation = float(np.mean(spearman_scores))
+    if not np.isfinite(avg_correlation):
+        avg_correlation = 0.0
+    return avg_correlation
 
 
 # Example usage and test functions
@@ -332,8 +351,24 @@ def evaluate_heuristic_from_string(heuristic_code: str) -> Evaluation:
         # Create a dictionary to serve as the local namespace
         local_namespace = {'np': np, 'numpy': np}
         
-        # Execute the code string in the local namespace
-        exec(heuristic_code, {'__builtins__': {}}, local_namespace)
+        # Execute the code string in the local namespace with minimal builtins
+        safe_globals = {
+            '__builtins__': {
+                '__import__': __import__,
+                'float': float,
+                'int': int,
+                'tuple': tuple,
+                'list': list,
+                'sorted': sorted,
+                'len': len,
+                'range': range,
+                'enumerate': enumerate,
+                'max': max,
+                'min': min,
+                'sum': sum,
+            }
+        }
+        exec(heuristic_code, safe_globals, local_namespace)
         
         # Look for heuristic function
         heuristic_func = None
@@ -367,6 +402,10 @@ def evaluate_heuristic_from_string(heuristic_code: str) -> Evaluation:
         
         # Convert to fitness (higher is better, so use correlation directly)
         fitness = float(spearman_correlation)
+        
+        # Final safety check for fitness
+        if not np.isfinite(fitness):
+            fitness = 0.0
         
         return Evaluation(
             fitness=fitness,

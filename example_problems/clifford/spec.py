@@ -2,15 +2,10 @@
 
 
 
-INITIAL_SOLUTION = '''
-import numpy as np
-import numba as nb
-
-
-def heuristic(matrix: np.ndarray) -> float | tuple[float]:
+INITIAL_SOLUTION = '''def heuristic(matrix):
     """Simple sum of all matrix entries."""
+    import numpy as np
     return float(np.sum(matrix))
-
 '''
 
 PROMPT = '''
@@ -32,6 +27,7 @@ using spearman correlation to see if the heuristic is useful for deciding which 
 - if you return a tuple, these will be compared lexicographically to make decisions during the search
 - operators need only be sythesized up to permutation, so any permutation of the identity matrix has cost 0
 - you cannot use an unreasonable amount of time (e.g. by actually tryingto synthesize the circuit)
+- a score of 0 suggests that the code did not run properly or returned an invalid value
 
 Domain knowledge:
 - the sum of the elements of the matrix is a good basic heuristic
@@ -51,7 +47,7 @@ sys.path.append('../../')
 from src.specification import ProblemSpecification, Hyperparameters
 from src.population import Organism
 from src.evaluation import Evaluation
-from .evaluate import evaluate_heuristic_from_string
+from evaluate import evaluate_heuristic_from_string
 
 
 # Additional initial heuristics for diversity
@@ -82,7 +78,7 @@ CLIFFORD_CONFIG = {
     "model_mix": {"deepseek:deepseek-reasoner": 0.1, "deepseek:deepseek-chat": 0.9},
     "big_changes_rate": 0.4,
     "best_model": "deepseek:deepseek-reasoner",
-    "max_children_per_organism": 15,
+    "max_children_per_organism": 30,
     "checkpoint_dir": "evolution_results/checkpoints",
     "population_path": None,
 }
