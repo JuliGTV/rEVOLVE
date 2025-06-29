@@ -5,7 +5,7 @@
 INITIAL_SOLUTION = '''
 def heuristic(matrix):
     import numpy as np
-    return tuple(np.concatenate((np.sum(U,axis=0),np.sum(U,axis=0)))) 
+    return tuple(np.concatenate((np.sum(matrix,axis=0),np.sum(matrix,axis=0)))) 
 '''
 
 PROMPT = '''
@@ -64,7 +64,7 @@ sys.path.append('../../')
 from src.specification import ProblemSpecification, Hyperparameters
 from src.population import Organism
 from src.evaluation import Evaluation
-from evaluate import evaluate_heuristic_from_string
+from evaluate2 import evaluate_heuristic_from_string
 
 
 

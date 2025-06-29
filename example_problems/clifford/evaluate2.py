@@ -1,7 +1,7 @@
 import pickle
 from typing import Callable, Optional
 import numpy as np
-from GL_search import synth_GL, paramObj
+from GL_search import synth_GL
 import sys
 import tempfile
 import os
@@ -9,6 +9,22 @@ import subprocess
 import traceback
 sys.path.append('../../')
 from src.evaluation import Evaluation
+
+
+class paramObj:
+    """Parameter object for GL_search functions."""
+    def __init__(self):
+        # Default parameter values based on GL_search.py usage
+        self.mode = 'GL'
+        self.method = 'greedy'
+        self.minDepth = False
+        self.hv = 1  # vector heuristic
+        self.hi = 1  # include inverse
+        self.ht = 1  # include transpose
+        self.hl = 1  # log of columns
+        self.hr = 3  # scaling factor for heuristic
+        self.wMax = 10  # maximum wait
+        self.custom_heuristic = None
 
 def evaluate(h: Optional[Callable[[np.ndarray], tuple[float, tuple[int]]]] = None, dataset_path: str = 'search_dataset.pkl'):
 
@@ -195,7 +211,8 @@ def create_safe_heuristic_wrapper(heuristic_code: str, function_name: str) -> Ca
     def safe_heuristic(matrix: np.ndarray):
         """Safe wrapper for heuristic function execution."""
         with tempfile.NamedTemporaryFile(mode='w', suffix=".py", delete=False) as temp_file:
-            # Create execution code
+            # Create execution code with proper indentation
+            indented_heuristic_code = '\n'.join('    ' + line for line in heuristic_code.strip().split('\n'))
             exec_code = f"""
 import numpy as np
 import pickle
@@ -208,7 +225,7 @@ with open('{temp_file.name}.input', 'rb') as f:
 
 try:
     # Heuristic code
-    {heuristic_code}
+{indented_heuristic_code}
     
     # Execute the heuristic
     result = {function_name}(matrix)
@@ -253,7 +270,13 @@ except Exception as e:
                     else:
                         raise RuntimeError(f"Heuristic execution failed: {result['error']}")
                 else:
-                    raise RuntimeError("Output file not found")
+                    # Enhanced error message with subprocess output
+                    error_msg = f"Output file not found. Return code: {process.returncode}"
+                    if stderr:
+                        error_msg += f", stderr: {stderr.decode()[:200]}"
+                    if stdout:
+                        error_msg += f", stdout: {stdout.decode()[:200]}"
+                    raise RuntimeError(error_msg)
                     
             except subprocess.TimeoutExpired:
                 process.kill()
@@ -280,29 +303,166 @@ def evaluate_heuristic_from_string(heuristic_code: str) -> Evaluation:
     Returns:
         Evaluation object with fitness based on the evaluation function
     """
+    # Create a temporary file to execute the entire evaluation in one subprocess
+    with tempfile.NamedTemporaryFile(mode='w', suffix=".py", delete=False) as temp_file:
+        # Write the complete evaluation script
+        full_eval_code = f"""
+import pickle
+import numpy as np
+import sys
+import traceback
+from typing import Callable, Optional
+
+# Parameter object class
+class paramObj:
+    def __init__(self):
+        self.mode = 'GL'
+        self.method = 'greedy'
+        self.minDepth = False
+        self.hv = 1
+        self.hi = 1
+        self.ht = 1
+        self.hl = 1
+        self.hr = 3
+        self.wMax = 10
+        self.custom_heuristic = None
+
+# Import GL_search functions
+sys.path.append('.')
+from GL_search import synth_GL
+
+# Heuristic code
+{heuristic_code}
+
+def evaluate_single(h: Optional[Callable] = None, dataset_path: str = 'search_dataset.pkl'):
+    with open(dataset_path, 'rb') as f:
+        dataset = pickle.load(f)
+
+    params = paramObj()
+    params.mode = 'GL'
+    params.method = 'greedy'
+    params.minDepth = False
+    params.hv = 1
+    params.hi = 1
+    params.ht = 1
+    params.hl = 1
+    params.hr = 3
+    params.wMax = 10
+    params.custom_heuristic = h
+
+    total_gate_count = 0
+    total_compute_time = 0
+
+    for matrix in dataset:
+        n, gateCount, depth, procTime, check, circ = synth_GL(matrix, params)
+        total_gate_count += gateCount
+        total_compute_time += procTime
+    
+    avg_gate_count = total_gate_count / len(dataset)
+    avg_compute_time = total_compute_time / len(dataset)
+
+    if total_compute_time > 100:
+        return 0
+    if total_compute_time > 10:
+        return 80 - total_compute_time - avg_gate_count
+    return 70 - avg_gate_count
+
+try:
+    # Find the heuristic function
+    heuristic_func = None
+    possible_names = ['heuristic', 'compute_heuristic', 'gl_heuristic', 'matrix_heuristic']
+    
+    for name in possible_names:
+        if name in globals() and callable(globals()[name]):
+            heuristic_func = globals()[name]
+            break
+    
+    if heuristic_func is None:
+        for name, obj in globals().items():
+            if (callable(obj) and 
+                not name.startswith('_') and 
+                name not in ['pickle', 'numpy', 'np', 'sys', 'traceback', 'paramObj', 'synth_GL', 'evaluate_single']):
+                heuristic_func = obj
+                break
+    
+    if heuristic_func is None:
+        raise RuntimeError("No suitable heuristic function found")
+    
+    # Run the evaluation
+    score = evaluate_single(heuristic_func)
+    
+    # Save result
+    result = {{
+        'success': True,
+        'score': score,
+        'function_name': heuristic_func.__name__
+    }}
+    
+    with open('{temp_file.name}.result', 'wb') as f:
+        pickle.dump(result, f)
+        
+except Exception as e:
+    # Save error
+    result = {{
+        'success': False,
+        'error': str(e),
+        'traceback': traceback.format_exc()
+    }}
+    
+    with open('{temp_file.name}.result', 'wb') as f:
+        pickle.dump(result, f)
+"""
+        temp_file.write(full_eval_code)
+        temp_file_path = temp_file.name
+    
+    result_path = f"{temp_file_path}.result"
+    
     try:
-        # Create a safe heuristic function using subprocess execution
-        heuristic_func = run_heuristic_safely(heuristic_code, timeout_seconds=20)
-        
-        # Evaluate the heuristic using the existing evaluation logic
-        score = evaluate(heuristic_func)
-        
-        # Convert to fitness (higher is better)
-        fitness = float(score)
-        
-        # Final safety check for fitness
-        if not np.isfinite(fitness):
-            fitness = 0.0
-        
-        return Evaluation(
-            fitness=fitness,
-            additional_data={
-                "score": f"{score:.6f}",
-                "validity": "valid",
-                "execution_method": "subprocess"
-            }
+        # Run the evaluation in subprocess with timeout
+        process = subprocess.Popen(
+            [sys.executable, temp_file_path],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
         )
         
+        try:
+            stdout, stderr = process.communicate(timeout=60)  # 60 second timeout for full evaluation
+            
+            # Load results
+            if os.path.exists(result_path):
+                with open(result_path, 'rb') as f:
+                    result = pickle.load(f)
+                
+                if result['success']:
+                    score = result['score']
+                    fitness = float(score)
+                    
+                    # Final safety check for fitness
+                    if not np.isfinite(fitness):
+                        fitness = 0.0
+                    
+                    return Evaluation(
+                        fitness=fitness,
+                        additional_data={
+                            "score": f"{score:.6f}",
+                            "validity": "valid",
+                            "execution_method": "single_subprocess",
+                            "function_name": result.get('function_name', 'unknown')
+                        }
+                    )
+                else:
+                    raise RuntimeError(f"Evaluation failed: {result['error']}")
+            else:
+                error_msg = f"Result file not found. Return code: {process.returncode}"
+                if stderr:
+                    error_msg += f", stderr: {stderr.decode()[:500]}"
+                raise RuntimeError(error_msg)
+                
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+            raise RuntimeError("Evaluation timed out after 60 seconds")
+            
     except Exception as e:
         return Evaluation(
             fitness=0.0,
@@ -310,6 +470,12 @@ def evaluate_heuristic_from_string(heuristic_code: str) -> Evaluation:
                 "score": "0.0",
                 "validity": "error", 
                 "error": str(e),
-                "execution_method": "subprocess"
+                "execution_method": "single_subprocess"
             }
         )
+    finally:
+        # Clean up
+        if os.path.exists(temp_file_path):
+            os.unlink(temp_file_path)
+        if os.path.exists(result_path):
+            os.unlink(result_path)
