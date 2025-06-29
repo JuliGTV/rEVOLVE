@@ -193,3 +193,33 @@ Uses `pydantic-ai` for LLM integration supporting:
   - `jdebug/`: Debug scripts and development utilities
   - `analysis/`: Jupyter notebooks and analysis tools
   - `DEPRECATED_SRC_FEATURES.md`: Documentation of legacy evolution algorithms
+
+## Testing and Validation
+
+### No Traditional Test Suite
+rEVOLVE does not use conventional unit testing frameworks. Instead, validation occurs through:
+- **Problem-specific evaluators**: Each problem implements its own validation logic in `evaluation.py`
+- **Sandboxed execution**: Solutions are tested in isolated subprocesses with timeouts
+- **Sample solution validation**: Reference implementations in `sample_solutions/` directories
+- **Manual testing**: Individual problem test files (e.g., `example_problems/guess_the_votes/test.py`)
+
+### Validation Commands
+```bash
+# Test specific problem solutions
+cd example_problems/guess_the_votes && python test.py
+
+# Validate solutions work by running evaluators directly
+python -c "from example_problems.circle_packing.evaluation import evaluate_solution; print(evaluate_solution('your_code_here'))"
+```
+
+## Important Development Context
+
+### Async-Only Architecture
+- **All evolution is async**: `AsyncEvolver` in `src/evolve.py` is the only supported evolution engine
+- **Deprecated sync methods**: Legacy sync evolvers documented in `DEPRECATED_SRC_FEATURES.md` should not be used
+- **Concurrent execution**: Framework designed for high-throughput parallel LLM calls
+
+### Environment Dependencies
+- **UV package manager**: Use `uv install` instead of pip for dependency management
+- **Python 3.13+**: Required for async features and type annotations
+- **Logfire integration**: Optional telemetry for evolution monitoring via `LOGFIRE_TOKEN` environment variable
