@@ -3,15 +3,26 @@ import numpy as np
 import time
 import itertools as iter
 
-
-
-
-    
-
-# ==== IMPORTED FUNCTIONS FROM CLIFFORDOPT PACKAGE ====
-
 class paramObj:
     pass
+
+def search(U):
+    params = paramObj()
+    params.mode = 'GL'
+    params.method = 'greedy'
+    params.minDepth = False
+    params.hv = 1 ## vector
+    params.hi = 1 ## include inverse
+    params.ht = 1 ## include transpose
+    params.hl = 1 ## log of cols 1 or sums 0
+    params.hr = 3 # scaling factor for heuristic
+    params.wMax = 10
+
+    n,gateCount,depth,procTime,check,circ = synth_GL(U)
+
+    return n,gateCount,depth,procTime,check,circ
+
+# ==== IMPORTED FUNCTIONS FROM CLIFFORDOPT PACKAGE ====
 
 # From common.py
 def currTime():
@@ -180,34 +191,7 @@ def ZMatBlockify(A, tB):
     '''Helper for blocked operations'''
     return A
 
-# From clifford_synthesis.py
-def heuristic(matrix):
-    """Improved column-focused heuristic with enhanced sparsity and column distribution terms."""
-    import numpy as np
-    
-    def get_heuristic(m):
-        n = m.shape[0]
-        col_nonzeros = np.count_nonzero(m, axis=0)
-        
-        # Column completion with log2 weighting
-        col_completion = np.sum(np.log2(col_nonzeros + 1))
-        
-        # Enhanced column distribution penalty using squared differences
-        col_dist = np.sum((np.sum(m, axis=0) - 1)**2)
-        
-        # More meaningful sparsity term using log2
-        sparsity = np.log2(np.count_nonzero(m) + 1) - np.log2(n)
-        
-        return (col_completion, col_dist, sparsity)
-    
-    variants = [
-        matrix,
-        np.linalg.inv(matrix),
-        matrix.T,
-        np.linalg.inv(matrix.T)
-    ]
-    
-    return min(get_heuristic(v) for v in variants)
+
 
 def GLHeuristic(U,params):
     '''calculate heuristics - vector and scalar - for symplectic matrices'''
@@ -215,10 +199,8 @@ def GLHeuristic(U,params):
     if params.hi == 0:
         U = U[:m,:n]
     sA = vecJoin(matColSum(U),matColSum(U.T)) if params.ht else matColSum(U)
-    if params.custom_heuristic:
-        w = params.custom_heuristic(U)
-    else:
-        w = tuple(sorted(sA))
+   
+    w = tuple(sorted(sA))
     Ls = len(sA)
     h =  matSum(np.log(sA))/Ls if params.hl else (matSum(U)/len(U) - 1)
     return params.hr * h, w

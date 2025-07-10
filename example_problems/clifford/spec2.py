@@ -5,7 +5,7 @@
 INITIAL_SOLUTION = '''
 def heuristic(matrix):
     import numpy as np
-    return tuple(np.concatenate((np.sum(matrix,axis=0),np.sum(matrix,axis=0)))) 
+    return tuple(sorted(np.concatenate((np.sum(matrix,axis=0),np.sum(matrix,axis=0))))) 
 '''
 
 PROMPT = '''
@@ -41,7 +41,7 @@ Here is some relevant information:
 - operators need only be sythesized up to permutation, so any permutation of the identity matrix has cost 0
 - The score will be the calculated as 70 - (average number of gates synthesized)   where 70 has been chosen as a weak baseline.
 - Every second over 10 that it takes to synthesize the dataset will be penalized by 1 point.
-- if it takes more than 20 seconds or the code does not run properly, the score will be 0.
+- if it takes more than 20 seconds or the code does not run properly, or it fails to synthesize any of the circuits in the dataset, the score will be 0.
 
 
 Domain knowledge:
@@ -74,14 +74,14 @@ from evaluate2 import evaluate_heuristic_from_string
 CLIFFORD_CONFIG = {
     "exploration_rate": 0.1,
     "elitism_rate": 0.3,
-    "max_steps": 1000,
-    "target_fitness": 0.95,
+    "max_steps": 100,
+    "target_fitness": 70,
     "reason": True,
-    "max_concurrent": 15,
+    "max_concurrent": 7,
     "model_mix": {"deepseek:deepseek-reasoner": 0.1, "deepseek:deepseek-chat": 0.9},
     "big_changes_rate": 0.4,
     "best_model": "deepseek:deepseek-reasoner",
-    "max_children_per_organism": 30,
+    "max_children_per_organism": 15,
     "checkpoint_dir": "evolution_results/checkpoints",
     "population_path": None,
 }

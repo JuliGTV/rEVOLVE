@@ -1,0 +1,2523 @@
+[
+  {
+    "id": 1,
+    "parent_id": null,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    return tuple(sorted(np.concatenate((np.sum(matrix,axis=0),np.sum(matrix,axis=0))))) \n",
+    "evaluation": {
+      "fitness": -4.911450624465942,
+      "additional_data": {
+        "score": "-4.911451",
+        "total_compute_time": "12.411451",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 9,
+    "creation_info": null
+  },
+  {
+    "id": 2,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    row_sums = np.sum(matrix, axis=1)\n    col_sums = np.sum(matrix, axis=0)\n    transposed = matrix.T\n    trans_row_sums = np.sum(transposed, axis=1)\n    trans_col_sums = np.sum(transposed, axis=0)\n    return tuple(np.concatenate((row_sums, col_sums, trans_row_sums, trans_col_sums)))\n",
+    "evaluation": {
+      "fitness": -13.239907455444339,
+      "additional_data": {
+        "score": "-13.239907",
+        "total_compute_time": "18.539907",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 5,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 3,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    col_sums = np.sum(parity_matrix, axis=0)\n    row_sums = np.sum(parity_matrix, axis=1)\n    trans_col_sums = np.sum(parity_matrix.T, axis=0)\n    trans_row_sums = np.sum(parity_matrix.T, axis=1)\n    return tuple(sorted(np.concatenate((col_sums, row_sums, trans_col_sums, trans_row_sums))))\n",
+    "evaluation": {
+      "fitness": 1.922285731633508,
+      "additional_data": {
+        "score": "1.922286",
+        "total_compute_time": "14.011048",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 5,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 6,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 4,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = binMatInv(parity)\n    \n    # Column metrics\n    col_sums = np.sum(parity, axis=0)\n    col_log = np.sum(np.log2(col_sums + 1))\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_col_log = np.sum(np.log2(inv_col_sums + 1))\n    \n    # Row metrics\n    row_sums = np.sum(parity, axis=1)\n    row_log = np.sum(np.log2(row_sums + 1))\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    inv_row_log = np.sum(np.log2(inv_row_sums + 1))\n    \n    # Combined metrics\n    metrics = [\n        col_log,\n        inv_col_log,\n        row_log,\n        inv_row_log,\n        np.sum(col_sums),\n        np.sum(inv_col_sums),\n        np.sum(row_sums),\n        np.sum(inv_row_sums)\n    ]\n    \n    return tuple(sorted(metrics))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: name 'binMatInv' is not defined",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 4,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 5,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    log_col = np.log(col_sums + 1e-6)\n    log_row = np.log(row_sums + 1e-6)\n    log_inv_col = np.log(inv_col_sums + 1e-6)\n    log_inv_row = np.log(inv_row_sums + 1e-6)\n    \n    combined = np.concatenate((\n        col_sums, row_sums, inv_col_sums, inv_row_sums,\n        log_col, log_row, log_inv_col, log_inv_row\n    ))\n    \n    return tuple(sorted(combined))\n",
+    "evaluation": {
+      "fitness": -3.551583449045822,
+      "additional_data": {
+        "score": "-3.551583",
+        "total_compute_time": "18.384917",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 1,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 6,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Column metrics\n    col_sums = np.sum(parity, axis=0)\n    log_col = np.sum(np.log2(col_sums + 1))\n    \n    # Row metrics\n    row_sums = np.sum(parity, axis=1)\n    log_row = np.sum(np.log2(row_sums + 1))\n    \n    # Inverse metrics\n    inv_col = np.sum(inv_parity, axis=0)\n    log_inv_col = np.sum(np.log2(inv_col + 1))\n    \n    # Combine all metrics\n    metrics = np.concatenate((\n        col_sums, \n        row_sums, \n        inv_col,\n        [log_col],\n        [log_row],\n        [log_inv_col]\n    ))\n    \n    return tuple(sorted(metrics))\n",
+    "evaluation": {
+      "fitness": -4.591144466400152,
+      "additional_data": {
+        "score": "-4.591144",
+        "total_compute_time": "17.691144",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 2,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 2,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 7,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_parity = matrix[n:,n:]\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    return tuple(sorted(np.concatenate((col_sums, row_sums, inv_col_sums, inv_row_sums))))\n",
+    "evaluation": {
+      "fitness": 2.192411263783768,
+      "additional_data": {
+        "score": "2.192411",
+        "total_compute_time": "12.640922",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 7,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 8,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 6
+    }
+  },
+  {
+    "id": 8,
+    "parent_id": 5,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        basis_proximity = np.minimum(col_sums, n - col_sums) + np.minimum(row_sums, n - row_sums)\n        \n        upper_tri = np.triu(mat)\n        lower_tri = np.tril(mat)\n        tri_diff = np.sum(np.abs(upper_tri - lower_tri))\n        \n        col_nonzeros = np.count_nonzero(mat, axis=0)\n        row_nonzeros = np.count_nonzero(mat, axis=1)\n        \n        return (np.sum(col_sums), np.sum(row_sums), \n                np.sum(basis_proximity), tri_diff,\n                np.sum(col_nonzeros), np.sum(row_nonzeros))\n    \n    metrics = get_metrics(parity) + get_metrics(inv_parity)\n    return metrics\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "32.310288",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 3,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 10,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 9,
+    "parent_id": 3,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    inv_parity = binMatInv(parity_matrix)\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_col = np.log(col_sums + 1e-10)\n        log_row = np.log(row_sums + 1e-10)\n        return np.concatenate((col_sums, row_sums, log_col, log_row))\n    \n    metrics = np.concatenate((\n        get_metrics(parity_matrix),\n        get_metrics(parity_matrix.T),\n        get_metrics(inv_parity),\n        get_metrics(inv_parity.T)\n    ))\n    return tuple(sorted(metrics))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: name 'binMatInv' is not defined",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 2,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 11,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 10,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    return tuple(sorted(np.concatenate((col_sums, row_sums, inv_col_sums))))\n",
+    "evaluation": {
+      "fitness": 1.5191889762878361,
+      "additional_data": {
+        "score": "1.519189",
+        "total_compute_time": "11.580811",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 9,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 7
+    }
+  },
+  {
+    "id": 11,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    col_sums = np.sum(matrix, axis=0)\n    row_sums = np.sum(matrix, axis=1)\n    combined = np.concatenate((col_sums, row_sums))\n    return tuple(sorted(combined))\n",
+    "evaluation": {
+      "fitness": 4.009983857472733,
+      "additional_data": {
+        "score": "4.009984",
+        "total_compute_time": "10.823349",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 8,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 3,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 8
+    }
+  },
+  {
+    "id": 12,
+    "parent_id": 7,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_cols = np.log(np.maximum(col_sums, 1))\n        log_rows = np.log(np.maximum(row_sums, 1))\n        off_diag = np.sum(mat) - np.trace(mat)\n        basis_proximity = np.sum(mat * np.eye(n), np.sum(mat.T * np.eye(n))\n        return np.concatenate([\n            col_sums, row_sums, log_cols, log_rows,\n            [off_diag], basis_proximity\n        ])\n    \n    metrics = np.concatenate([get_metrics(parity), get_metrics(inv_parity)])\n    return tuple(sorted(metrics))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmp34gkveaz.py\", line 40\n    basis_proximity = np.sum(mat * np.eye(n), np.sum(mat.T * np.eye(n))\n                            ^\nSyntaxError: '(' was never closed\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 3,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 14,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 13,
+    "parent_id": 6,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Column metrics\n    col_sums = np.sum(parity, axis=0)\n    col_logs = np.log2(col_sums + 1)\n    max_col = np.max(col_sums)\n    \n    # Row metrics\n    row_sums = np.sum(parity, axis=1)\n    row_logs = np.log2(row_sums + 1)\n    max_row = np.max(row_sums)\n    \n    # Inverse column metrics\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_col_logs = np.log2(inv_col_sums + 1)\n    max_inv_col = np.max(inv_col_sums)\n    \n    # Build tuple with structured ordering\n    return tuple([\n        max_col,\n        max_row,\n        max_inv_col,\n        *col_sums,\n        *row_sums,\n        *inv_col_sums,\n        *col_logs,\n        *row_logs,\n        *inv_col_logs,\n        np.sum(col_sums),\n        np.sum(row_sums),\n        np.sum(inv_col_sums),\n    ])\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 13,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 14,
+    "parent_id": 7,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_parity = matrix[n:,n:]\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    # Apply logarithmic scaling and weights\n    def process_sums(sums):\n        processed = []\n        for s in sums:\n            if s == 1:\n                processed.append(0)  # best case\n            elif s == 0:\n                processed.append(2*n)  # worst case\n            else:\n                # Logarithmic scaling with weight favoring values close to 1\n                processed.append(np.log(s) + (1/(s-1))**2)\n        return processed\n    \n    col_processed = process_sums(col_sums)\n    row_processed = process_sums(row_sums)\n    inv_col_processed = process_sums(inv_col_sums)\n    inv_row_processed = process_sums(inv_row_sums)\n    \n    # Include total sum as additional metric\n    total_sum = np.sum(parity)\n    \n    return tuple(sorted(np.concatenate((col_processed, row_processed, \n                                      inv_col_processed, inv_row_processed))) + (total_sum,)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmpia1lx72c.py\", line 59\n    return tuple(sorted(np.concatenate((col_processed, row_processed, \n                ^\nSyntaxError: '(' was never closed\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 2,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 12,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 15,
+    "parent_id": 9,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    \n    def binMatInv(mat):\n        return np.linalg.inv(mat).astype(int) % 2\n    \n    inv_parity = binMatInv(parity_matrix)\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_col = np.log(col_sums + 1e-10)\n        log_row = np.log(row_sums + 1e-10)\n        col_vars = np.var(mat, axis=0)\n        row_vars = np.var(mat, axis=1)\n        return np.concatenate((\n            col_sums,\n            row_sums,\n            log_col,\n            log_row,\n            col_vars,\n            row_vars,\n            [np.sum(np.abs(mat))]\n        ))\n    \n    metrics = np.concatenate((\n        get_metrics(parity_matrix),\n        get_metrics(inv_parity)\n    ))\n    return tuple(sorted(metrics)[::2])  # Take every other metric to keep tuple size reasonable\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 15,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 16,
+    "parent_id": 11,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_col = np.log2(np.maximum(col_sums, 1))\n        log_row = np.log2(np.maximum(row_sums, 1))\n        return np.concatenate((col_sums * log_col, row_sums * log_row))\n    \n    metrics = np.concatenate((get_metrics(original), get_metrics(inverse)))\n    return tuple(sorted(metrics))\n",
+    "evaluation": {
+      "fitness": -2.4106549421946255,
+      "additional_data": {
+        "score": "-2.410655",
+        "total_compute_time": "17.243988",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 3,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 17,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 17,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    col_sums = np.sum(matrix, axis=0)\n    row_sums = np.sum(matrix, axis=1)\n    col_dev = np.abs(col_sums - 1)\n    row_dev = np.abs(row_sums - 1)\n    sorted_col_dev = np.sort(col_dev)\n    sorted_row_dev = np.sort(row_dev)\n    return tuple(np.concatenate((sorted_col_dev, sorted_row_dev)))\n",
+    "evaluation": {
+      "fitness": -6.120904334386196,
+      "additional_data": {
+        "score": "-6.120904",
+        "total_compute_time": "13.487571",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 7,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 9
+    }
+  },
+  {
+    "id": 18,
+    "parent_id": 12,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_cols = np.log(np.maximum(col_sums, 1))\n        log_rows = np.log(np.maximum(row_sums, 1))\n        off_diag = np.sum(mat) - np.trace(mat)\n        basis_proximity = np.sum(mat * np.eye(n)) + np.sum(mat.T * np.eye(n))\n        return np.concatenate([\n            col_sums, row_sums, log_cols, log_rows,\n            [off_diag], [basis_proximity]\n        ])\n    \n    metrics_parity = get_metrics(parity)\n    metrics_inv = get_metrics(inv_parity)\n    metrics_trans = get_metrics(parity.T)\n    \n    # Return the minimum metrics among original, inverse and transpose\n    min_metrics = np.minimum.reduce([metrics_parity, metrics_inv, metrics_trans])\n    return tuple(min_metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "58.340281",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 16,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 19,
+    "parent_id": 14,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_parity = matrix[n:,n:]\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    def process_sums(sums):\n        processed = []\n        for s in sums:\n            if s == 1:\n                processed.append(0)\n            elif s == 0:\n                processed.append(2*n)\n            else:\n                processed.append(np.log(s) + (1/(s-1))**2)\n        return processed\n    \n    col_processed = process_sums(col_sums)\n    row_processed = process_sums(row_sums)\n    inv_col_processed = process_sums(inv_col_sums)\n    inv_row_processed = process_sums(inv_row_sums)\n    \n    total_sum = np.sum(parity)\n    inv_total_sum = np.sum(inv_parity)\n    \n    return tuple(sorted(col_processed + row_processed + inv_col_processed + inv_row_processed) + [total_sum, inv_total_sum])\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 21,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 20,
+    "parent_id": 7,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Column metrics for both matrices\n    col_sums_p = np.sum(parity, axis=0)\n    col_sums_ip = np.sum(inv_parity, axis=0)\n    \n    # Row metrics for both matrices\n    row_sums_p = np.sum(parity, axis=1)\n    row_sums_ip = np.sum(inv_parity, axis=1)\n    \n    # Logarithmic weighting for near-complete columns/rows\n    log_col_p = np.where(col_sums_p > 0, np.log(col_sums_p), 0)\n    log_col_ip = np.where(col_sums_ip > 0, np.log(col_sums_ip), 0)\n    log_row_p = np.where(row_sums_p > 0, np.log(row_sums_p), 0)\n    log_row_ip = np.where(row_sums_ip > 0, np.log(row_sums_ip), 0)\n    \n    # Diagonal dominance metrics\n    diag_p = np.abs(np.diag(parity) - 1)\n    diag_ip = np.abs(np.diag(inv_parity) - 1)\n    \n    # Combine all metrics with careful ordering\n    combined = np.concatenate((\n        log_col_p, log_col_ip,\n        log_row_p, log_row_ip,\n        diag_p, diag_ip,\n        col_sums_p, col_sums_ip,\n        row_sums_p, row_sums_ip\n    ))\n    \n    return tuple(sorted(combined))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 18,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 21,
+    "parent_id": 7,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Calculate column and row sums for both matrices\n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    # Count how many columns/rows are already basis vectors\n    basis_cols = np.sum(col_sums == 1)\n    basis_rows = np.sum(row_sums == 1)\n    inv_basis_cols = np.sum(inv_col_sums == 1)\n    inv_basis_rows = np.sum(inv_row_sums == 1)\n    \n    # Calculate column similarities\n    col_dot = np.sum(parity.T @ parity)\n    inv_col_dot = np.sum(inv_parity.T @ inv_parity)\n    \n    # Calculate distance from permutation matrix\n    perm_distance = np.sum(np.abs(col_sums - 1)) + np.sum(np.abs(row_sums - 1))\n    inv_perm_distance = np.sum(np.abs(inv_col_sums - 1)) + np.sum(np.abs(inv_row_sums - 1))\n    \n    # Combine all metrics\n    metrics = [\n        -basis_cols, -basis_rows, -inv_basis_cols, -inv_basis_rows,\n        col_dot, inv_col_dot,\n        perm_distance, inv_perm_distance,\n        np.sum(col_sums), np.sum(row_sums),\n        np.sum(inv_col_sums), np.sum(inv_row_sums)\n    ]\n    \n    return tuple(metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 19,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 22,
+    "parent_id": 16,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def get_col_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        log_weights = np.log2(np.maximum(col_sums, 1))\n        weighted = col_sums * (log_weights + 1/(col_sums + 0.1))\n        return weighted\n    \n    orig_cols = get_col_metrics(original)\n    inv_cols = get_col_metrics(inverse)\n    \n    return tuple(np.concatenate((orig_cols, inv_cols)))\n",
+    "evaluation": {
+      "fitness": -7.915794356664023,
+      "additional_data": {
+        "score": "-7.915794",
+        "total_compute_time": "14.182461",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 22,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 23,
+    "parent_id": 8,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        log_cols = np.sum(np.log2(col_sums + 1))\n        min_cols = np.sum(np.minimum(col_sums, n - col_sums))\n        return (log_cols, min_cols, np.sum(col_sums))\n    \n    metrics = get_metrics(parity) + get_metrics(inv_parity)\n    return metrics\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 20,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 24,
+    "parent_id": 9,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    np.random.seed(42)  # for reproducibility\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    \n    col_sums = np.sum(parity_matrix, axis=0)\n    row_sums = np.sum(parity_matrix, axis=1)\n    \n    # Primary metric: column sums (sorted ascending)\n    # Secondary metric: row sums (sorted ascending)\n    # Small random component to break symmetry\n    return tuple(sorted(col_sums)) + tuple(sorted(row_sums)) + (np.random.random(),)\n",
+    "evaluation": {
+      "fitness": 3.244044383366898,
+      "additional_data": {
+        "score": "3.244044",
+        "total_compute_time": "10.089289",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 23,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 25,
+    "parent_id": 22,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        col_weights = np.log2(np.maximum(col_sums, 1)) + 1/(col_sums + 0.5)\n        row_weights = np.log2(np.maximum(row_sums, 1)) + 1/(row_sums + 0.5)\n        return np.concatenate((col_sums * col_weights, row_sums * row_weights))\n    \n    orig_metrics = get_metrics(original)\n    inv_metrics = get_metrics(inverse)\n    \n    return tuple(np.concatenate((orig_metrics, inv_metrics)))\n",
+    "evaluation": {
+      "fitness": -10.080573987960818,
+      "additional_data": {
+        "score": "-10.080574",
+        "total_compute_time": "12.380574",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 26,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 26,
+    "parent_id": 3,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    inv_parity = matrix[n:, n:]\n    \n    # Column metrics\n    col_sums = np.sum(parity_matrix, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    col_log_weights = np.where(col_sums > 0, np.log2(col_sums + 1), 0)\n    inv_col_log_weights = np.where(inv_col_sums > 0, np.log2(inv_col_sums + 1), 0)\n    \n    # Row metrics\n    row_sums = np.sum(parity_matrix, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    row_log_weights = np.where(row_sums > 0, np.log2(row_sums + 1), 0)\n    inv_row_log_weights = np.where(inv_row_sums > 0, np.log2(inv_row_sums + 1), 0)\n    \n    # Combined metrics\n    col_priority = tuple(sorted(col_sums + inv_col_sums + col_log_weights + inv_col_log_weights))\n    row_priority = tuple(sorted(row_sums + inv_row_sums + row_log_weights + inv_row_log_weights))\n    \n    return col_priority + row_priority\n",
+    "evaluation": {
+      "fitness": -16.031558227539065,
+      "additional_data": {
+        "score": "-16.031558",
+        "total_compute_time": "15.331558",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 25,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 27,
+    "parent_id": 11,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums_p = np.sum(parity, axis=0)\n    row_sums_p = np.sum(parity, axis=1)\n    col_sums_i = np.sum(inv_parity, axis=0)\n    row_sums_i = np.sum(inv_parity, axis=1)\n    \n    log_col_p = np.log2(col_sums_p + 1)\n    log_row_p = np.log2(row_sums_p + 1)\n    log_col_i = np.log2(col_sums_i + 1)\n    log_row_i = np.log2(row_sums_i + 1)\n    \n    diag_p = np.diag(parity)\n    diag_i = np.diag(inv_parity)\n    \n    combined = np.concatenate((\n        col_sums_p, row_sums_p, \n        col_sums_i, row_sums_i,\n        log_col_p, log_row_p,\n        log_col_i, log_row_i,\n        diag_p, diag_i\n    ))\n    return tuple(sorted(combined))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 24,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 28,
+    "parent_id": 3,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    V = matrix[n:, n:]\n    col_errors_U = np.abs(np.sum(U, axis=0) - 1)\n    row_errors_U = np.abs(np.sum(U, axis=1) - 1)\n    col_errors_V = np.abs(np.sum(V, axis=0) - 1)\n    row_errors_V = np.abs(np.sum(V, axis=1) - 1)\n    errors = np.concatenate((col_errors_U, row_errors_U, col_errors_V, row_errors_V))\n    return tuple(sorted(errors))\n",
+    "evaluation": {
+      "fitness": 4.833333333333329,
+      "additional_data": {
+        "score": "4.833333",
+        "total_compute_time": "8.816103",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 4,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 6,
+      "is_reasoning": true,
+      "exploitation": true,
+      "exploited_organism_id": 3,
+      "exploited_organism_fitness": 1.922285731633508,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 29,
+    "parent_id": 7,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_parity = matrix[n:,n:]\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    return (tuple(sorted(col_sums)) + \n            tuple(sorted(row_sums)) + \n            tuple(sorted(inv_col_sums)) + \n            tuple(sorted(inv_row_sums)))\n",
+    "evaluation": {
+      "fitness": 3.3333333333333286,
+      "additional_data": {
+        "score": "3.333333",
+        "total_compute_time": "6.983223",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 8,
+      "is_reasoning": true,
+      "exploitation": true,
+      "exploited_organism_id": 7,
+      "exploited_organism_fitness": 2.192411263783768,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 30,
+    "parent_id": 12,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_cols = np.log(np.maximum(col_sums, 1))\n        log_rows = np.log(np.maximum(row_sums, 1))\n        off_diag = np.sum(mat) - np.trace(mat)\n        basis_proximity = np.sum(mat * np.eye(n)) + np.sum(mat.T * np.eye(n))\n        return np.concatenate([\n            col_sums, row_sums, log_cols, log_rows,\n            [off_diag], [basis_proximity]\n        ])\n    \n    metrics = np.concatenate([\n        get_metrics(parity),\n        get_metrics(inv_parity),\n        get_metrics(parity.T),\n        get_metrics(inv_parity.T)\n    ])\n    return tuple(sorted(metrics))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "37.143665",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 29,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 31,
+    "parent_id": 16,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_col = np.log2(np.maximum(col_sums, 1))\n        log_row = np.log2(np.maximum(row_sums, 1))\n        diag = np.diag(mat)\n        return np.concatenate((\n            col_sums * (log_col ** 2),\n            row_sums * (log_row ** 2),\n            [np.sum(diag), np.trace(mat)]\n        ))\n    \n    metrics = np.concatenate((get_metrics(original), get_metrics(inverse)))\n    return tuple(metrics)\n",
+    "evaluation": {
+      "fitness": -14.471171490351352,
+      "additional_data": {
+        "score": "-14.471171",
+        "total_compute_time": "16.604505",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 28,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 32,
+    "parent_id": 11,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    \n    # Consider original, inverse and transpose variants\n    variants = [\n        original,\n        binMatInv(original),\n        original.T,\n        binMatInv(original.T)\n    ]\n    \n    best_metrics = None\n    \n    for variant in variants:\n        # Column metrics\n        col_sums = np.sum(variant, axis=0)\n        log_col_sums = np.log2(np.maximum(col_sums, 1))\n        col_metrics = np.concatenate((col_sums, log_col_sums))\n        \n        # Row metrics\n        row_sums = np.sum(variant, axis=1)\n        log_row_sums = np.log2(np.maximum(row_sums, 1))\n        row_metrics = np.concatenate((row_sums, log_row_sums))\n        \n        # Combined metrics for this variant\n        variant_metrics = np.concatenate((col_metrics, row_metrics))\n        \n        if best_metrics is None or tuple(variant_metrics) < tuple(best_metrics):\n            best_metrics = variant_metrics\n    \n    return tuple(best_metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: name 'binMatInv' is not defined",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 27,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 33,
+    "parent_id": 17,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    \n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def compute_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        col_log = np.sum(np.log2(np.maximum(col_sums, 1)))\n        row_log = np.sum(np.log2(np.maximum(row_sums, 1)))\n        col_dev = np.sum(np.abs(col_sums - 1))\n        row_dev = np.sum(np.abs(row_sums - 1))\n        return (col_log + row_log, col_dev + row_dev)\n    \n    metrics_original = compute_metrics(original)\n    metrics_inverse = compute_metrics(inverse)\n    \n    if metrics_original < metrics_inverse:\n        mat = original\n    else:\n        mat = inverse\n    \n    col_sums = np.sum(mat, axis=0)\n    row_sums = np.sum(mat, axis=1)\n    col_weights = np.log2(np.maximum(col_sums, 1))\n    row_weights = np.log2(np.maximum(row_sums, 1))\n    col_dev = np.abs(col_sums - 1) * col_weights\n    row_dev = np.abs(row_sums - 1) * row_weights\n    \n    return tuple(np.concatenate((col_dev, row_dev)))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "26.308698",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 2,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 32,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 34,
+    "parent_id": 28,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    V = matrix[n:, n:]\n    \n    def get_metrics(M):\n        col_sums = np.sum(M, axis=0)\n        row_sums = np.sum(M, axis=1)\n        col_log = np.log(np.maximum(col_sums, 1))\n        row_log = np.log(np.maximum(row_sums, 1))\n        col_errors = np.abs(col_sums - 1)\n        row_errors = np.abs(row_sums - 1)\n        col_interaction = np.sum(np.outer(col_sums, col_sums) * (1 - np.eye(n)))\n        row_interaction = np.sum(np.outer(row_sums, row_sums) * (1 - np.eye(n)))\n        return np.concatenate([col_log, row_log, col_errors, row_errors, [col_interaction], [row_interaction]])\n    \n    metrics_U = get_metrics(U)\n    metrics_V = get_metrics(V)\n    metrics_Ut = get_metrics(U.T)\n    metrics_Vt = get_metrics(V.T)\n    \n    all_metrics = np.concatenate([metrics_U, metrics_V, metrics_Ut, metrics_Vt])\n    return tuple(sorted(all_metrics))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "44.507694",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 31,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 35,
+    "parent_id": 11,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    col_sums = np.sum(matrix, axis=0)\n    row_sums = np.sum(matrix, axis=1)\n    log_col = np.log(col_sums)\n    log_row = np.log(row_sums)\n    combined = np.concatenate((log_col, log_row))\n    return tuple(sorted(combined))\n",
+    "evaluation": {
+      "fitness": 4.833333333333329,
+      "additional_data": {
+        "score": "4.833333",
+        "total_compute_time": "8.592525",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 3,
+      "is_reasoning": true,
+      "exploitation": true,
+      "exploited_organism_id": 11,
+      "exploited_organism_fitness": 4.009983857472733,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 36,
+    "parent_id": 11,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    \n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    transpose = original.T\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        \n        # Logarithmic scaling for sums close to 1\n        log_col = np.where(col_sums > 1, np.log2(col_sums), 1 - col_sums)\n        log_row = np.where(row_sums > 1, np.log2(row_sums), 1 - row_sums)\n        \n        # Combine with original sums\n        combined_col = col_sums * 0.7 + log_col * 0.3\n        combined_row = row_sums * 0.7 + log_row * 0.3\n        return np.concatenate((combined_col, combined_row))\n    \n    metrics = []\n    for mat in [original, inverse, transpose]:\n        metrics.extend(get_metrics(mat))\n    \n    return tuple(sorted(metrics))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "24.435474",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 30,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 37,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        log_cols = np.sum(np.log2(col_sums + 1))\n        min_cols = np.sum(np.minimum(col_sums, n - col_sums))\n        return log_cols + min_cols\n    \n    metric1 = get_metrics(parity)\n    metric2 = get_metrics(inv_parity)\n    return (min(metric1, metric2), max(metric1, metric2))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 35,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 38,
+    "parent_id": 21,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    \n    perm_distance = min(np.sum(np.abs(col_sums - 1)), np.sum(np.abs(inv_col_sums - 1)))\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    \n    return (perm_distance, -basis_cols)\n",
+    "evaluation": {
+      "fitness": 8.93333333333333,
+      "additional_data": {
+        "score": "8.933333",
+        "total_compute_time": "9.760759",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 17,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 36,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 39,
+    "parent_id": 3,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    inv_parity = binMatInv(parity_matrix)\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_col = np.log(np.maximum(col_sums, 1))\n        log_row = np.log(np.maximum(row_sums, 1))\n        return np.concatenate((col_sums, row_sums, log_col, log_row))\n    \n    metrics = np.concatenate((\n        get_metrics(parity_matrix),\n        get_metrics(parity_matrix.T),\n        get_metrics(inv_parity),\n        get_metrics(inv_parity.T)\n    ))\n    return tuple(sorted(metrics))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: name 'binMatInv' is not defined",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 2,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 33,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 40,
+    "parent_id": 27,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums_p = np.sum(parity, axis=0)\n    col_sums_i = np.sum(inv_parity, axis=0)\n    \n    log_col_p = np.sum(np.log2(col_sums_p + 1))\n    log_col_i = np.sum(np.log2(col_sums_i + 1))\n    \n    matrix_sum = np.sum(matrix)\n    log_sum = log_col_p + log_col_i\n    \n    return (matrix_sum, log_sum)\n",
+    "evaluation": {
+      "fitness": 8.5,
+      "additional_data": {
+        "score": "8.500000",
+        "total_compute_time": "8.623928",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 37,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 41,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    \n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def compute_metric(mat):\n        col_sums = np.sum(mat, axis=0)\n        # Prioritize columns with sum close to 1\n        col_metric = np.sum(np.abs(col_sums - 1))\n        return col_metric\n    \n    metric_original = compute_metric(original)\n    metric_inverse = compute_metric(inverse)\n    \n    if metric_original <= metric_inverse:\n        mat = original\n    else:\n        mat = inverse\n    \n    col_sums = np.sum(mat, axis=0)\n    # Simple weighted deviation favoring columns near completion\n    col_weights = 1 / np.maximum(col_sums, 1)\n    col_dev = np.abs(col_sums - 1) * col_weights\n    \n    return tuple(col_dev)\n",
+    "evaluation": {
+      "fitness": -4.87217741012573,
+      "additional_data": {
+        "score": "-4.872177",
+        "total_compute_time": "13.072177",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 38,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 42,
+    "parent_id": 28,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    V = matrix[n:, n:]\n    \n    # Column and row metrics for U\n    U_col_sums = np.sum(U, axis=0)\n    U_row_sums = np.sum(U, axis=1)\n    U_col_prods = np.prod(U, axis=0)\n    U_row_prods = np.prod(U, axis=1)\n    \n    # Column and row metrics for V\n    V_col_sums = np.sum(V, axis=0)\n    V_row_sums = np.sum(V, axis=1)\n    V_col_prods = np.prod(V, axis=0)\n    V_row_prods = np.prod(V, axis=1)\n    \n    # Combined metrics\n    col_metrics = np.concatenate((\n        np.abs(U_col_sums - 1) + np.abs(V_col_sums - 1),\n        U_col_prods + V_col_prods\n    ))\n    row_metrics = np.concatenate((\n        np.abs(U_row_sums - 1) + np.abs(V_row_sums - 1),\n        U_row_prods + V_row_prods\n    ))\n    \n    # Include transposed matrix metrics\n    UT = U.T\n    VT = V.T\n    UT_col_sums = np.sum(UT, axis=0)\n    VT_col_sums = np.sum(VT, axis=0)\n    trans_col_metrics = np.abs(UT_col_sums - 1) + np.abs(VT_col_sums - 1)\n    \n    # Combine all metrics\n    combined = np.concatenate((\n        col_metrics,\n        row_metrics,\n        trans_col_metrics,\n        [np.sum(matrix)]  # Include total sum as final tiebreaker\n    ))\n    \n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "28.452308",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 39,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 43,
+    "parent_id": 28,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    V = matrix[n:, n:]\n    \n    # Calculate errors for U and its transpose\n    col_errors_U = np.abs(np.sum(U, axis=0) - 1\n    row_errors_U = np.abs(np.sum(U, axis=1) - 1)\n    col_errors_Ut = np.abs(np.sum(U.T, axis=0) - 1)\n    row_errors_Ut = np.abs(np.sum(U.T, axis=1) - 1)\n    \n    # Calculate errors for V and its transpose (weighted less)\n    col_errors_V = (np.abs(np.sum(V, axis=0) - 1) * 0.7\n    row_errors_V = (np.abs(np.sum(V, axis=1) - 1)) * 0.7\n    col_errors_Vt = (np.abs(np.sum(V.T, axis=0) - 1) * 0.7\n    row_errors_Vt = (np.abs(np.sum(V.T, axis=1) - 1)) * 0.7\n    \n    # Combine all errors with U parts first\n    errors = np.concatenate((\n        col_errors_U, row_errors_U, col_errors_Ut, row_errors_Ut,\n        col_errors_V, row_errors_V, col_errors_Vt, row_errors_Vt\n    ))\n    \n    # Return sorted tuple with log transformation to prioritize small errors\n    return tuple(sorted(np.log1p(np.abs(errors))))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmp9i7lb4ii.py\", line 35\n    col_errors_U = np.abs(np.sum(U, axis=0) - 1\n                          ^^^^^^^^^^^^^^^^^^^^^\nSyntaxError: invalid syntax. Perhaps you forgot a comma?\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 34,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 44,
+    "parent_id": 39,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        col_nonzero = np.count_nonzero(mat, axis=0)\n        row_nonzero = np.count_nonzero(mat, axis=1)\n        return np.concatenate((col_sums, row_sums, col_nonzero, row_nonzero))\n    \n    metrics = get_metrics(parity_matrix)\n    return tuple(sorted(metrics))\n",
+    "evaluation": {
+      "fitness": 4.523758109410608,
+      "additional_data": {
+        "score": "4.523758",
+        "total_compute_time": "11.409575",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 3,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 44,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 45,
+    "parent_id": 6,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Column metrics - prioritize columns with sum near 1\n    col_sums = np.sum(parity, axis=0)\n    col_metrics = np.concatenate((\n        col_sums,\n        np.log2(col_sums + 1),\n        np.log2(np.abs(col_sums - 1) + 1)\n    ))\n    \n    # Row metrics - prioritize rows with sum near 1\n    row_sums = np.sum(parity, axis=1)\n    row_metrics = np.concatenate((\n        row_sums,\n        np.log2(row_sums + 1),\n        np.log2(np.abs(row_sums - 1) + 1)\n    ))\n    \n    # Inverse column metrics\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_col_metrics = np.concatenate((\n        inv_col_sums,\n        np.log2(inv_col_sums + 1),\n        np.log2(np.abs(inv_col_sums - 1) + 1)\n    ))\n    \n    # Combine metrics while maintaining structure\n    combined = np.concatenate((\n        col_metrics,\n        row_metrics,\n        inv_col_metrics,\n        [np.sum(parity)],\n        [np.sum(inv_parity)]\n    ))\n    \n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": -14.952931865056357,
+      "additional_data": {
+        "score": "-14.952932",
+        "total_compute_time": "17.219599",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 40,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 46,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    perm_distance = min(\n        np.sum(np.abs(col_sums - 1)) + np.sum(np.abs(row_sums - 1)),\n        np.sum(np.abs(inv_col_sums - 1)) + np.sum(np.abs(inv_row_sums - 1))\n    )\n    basis_cols = max(\n        np.sum(col_sums == 1) + np.sum(row_sums == 1),\n        np.sum(inv_col_sums == 1) + np.sum(inv_row_sums == 1)\n    )\n    \n    return (perm_distance, -basis_cols, np.sum(matrix))\n",
+    "evaluation": {
+      "fitness": 3.956198247273761,
+      "additional_data": {
+        "score": "3.956198",
+        "total_compute_time": "15.077135",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 45,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 47,
+    "parent_id": 39,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    \n    def binMatInv(mat):\n        return np.linalg.inv(mat).astype(int) % 2\n    \n    inv_parity = binMatInv(parity_matrix)\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_col = np.log(np.maximum(col_sums, 1))\n        log_row = np.log(np.maximum(row_sums, 1))\n        col_vars = np.var(mat, axis=0)\n        row_vars = np.var(mat, axis=1)\n        lower_tri = np.tril(mat)\n        upper_tri = np.triu(mat)\n        tri_metrics = np.concatenate((\n            np.sum(lower_tri, axis=0),\n            np.sum(upper_tri, axis=1),\n            np.sum(lower_tri),\n            np.sum(upper_tri)\n        ))\n        return np.concatenate((\n            col_sums, row_sums, log_col, log_row,\n            col_vars, row_vars, tri_metrics,\n            [np.sum(mat)]\n        ))\n    \n    metrics = np.concatenate((\n        get_metrics(parity_matrix),\n        get_metrics(parity_matrix.T),\n        get_metrics(inv_parity),\n        get_metrics(inv_parity.T),\n        get_metrics(np.fliplr(parity_matrix)),\n        get_metrics(np.flipud(parity_matrix))\n    ))\n    return tuple(sorted(metrics))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: all the input arrays must have same number of dimensions, but the array at index 0 has 1 dimension(s) and the array at index 2 has 0 dimension(s)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 42,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 48,
+    "parent_id": 7,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Original matrix metrics\n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    log_cols = np.log2(col_sums + 1)\n    log_rows = np.log2(row_sums + 1)\n    \n    # Transposed matrix metrics\n    parity_T = parity.T\n    col_sums_T = np.sum(parity_T, axis=0)\n    row_sums_T = np.sum(parity_T, axis=1)\n    log_cols_T = np.log2(col_sums_T + 1)\n    log_rows_T = np.log2(row_sums_T + 1)\n    \n    # Inverse matrix metrics\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    inv_log_cols = np.log2(inv_col_sums + 1)\n    inv_log_rows = np.log2(inv_row_sums + 1)\n    \n    # Inverse transposed metrics\n    inv_parity_T = inv_parity.T\n    inv_col_sums_T = np.sum(inv_parity_T, axis=0)\n    inv_row_sums_T = np.sum(inv_parity_T, axis=1)\n    inv_log_cols_T = np.log2(inv_col_sums_T + 1)\n    inv_log_rows_T = np.log2(inv_row_sums_T + 1)\n    \n    # Combine all metrics in priority order\n    combined = np.concatenate((\n        log_cols, log_rows, \n        log_cols_T, log_rows_T,\n        inv_log_cols, inv_log_rows,\n        inv_log_cols_T, inv_log_rows_T,\n        col_sums, row_sums,\n        col_sums_T, row_sums_T,\n        inv_col_sums, inv_row_sums,\n        inv_col_sums_T, inv_row_sums_T\n    ))\n    \n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "22.280921",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 43,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 6
+    }
+  },
+  {
+    "id": 49,
+    "parent_id": 44,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    inv_matrix = matrix[n:, n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        col_nonzero = np.count_nonzero(mat, axis=0)\n        row_nonzero = np.count_nonzero(mat, axis=1)\n        col_log = np.sum(np.log2(col_sums + 1))\n        row_log = np.sum(np.log2(row_sums + 1))\n        return np.concatenate((col_sums, row_sums, col_nonzero, row_nonzero, [col_log, row_log]))\n    \n    metrics = np.concatenate((get_metrics(parity_matrix), get_metrics(inv_matrix))\n    return tuple(metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmpv2vxh4qh.py\", line 43\n    metrics = np.concatenate((get_metrics(parity_matrix), get_metrics(inv_matrix))\n                            ^\nSyntaxError: '(' was never closed\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 46,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 50,
+    "parent_id": 28,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    V = matrix[n:, n:]\n    col_errors_U = np.log(np.abs(np.sum(U, axis=0) - 1) + 1)\n    row_errors_U = np.abs(np.sum(U, axis=1) - 1)\n    col_errors_V = np.log(np.abs(np.sum(V, axis=0) - 1) + 1\n    row_errors_V = np.abs(np.sum(V, axis=1) - 1)\n    matrix_sum = np.sum(np.abs(matrix))\n    errors = np.concatenate(([matrix_sum], col_errors_U, row_errors_U, col_errors_V, row_errors_V))\n    return tuple(sorted(errors))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmpnssbwh1n.py\", line 35\n    col_errors_V = np.log(np.abs(np.sum(V, axis=0) - 1) + 1\n                         ^\nSyntaxError: '(' was never closed\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 50,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 51,
+    "parent_id": 30,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    \n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    \n    # Prioritize columns with single 1 (weight 1)\n    weight1_cols = np.sum(col_sums == 1)\n    weight1_rows = np.sum(row_sums == 1)\n    \n    # Off-diagonal elements\n    off_diag = np.sum(parity) - np.trace(parity)\n    \n    # Distance from identity (basis proximity)\n    basis_proximity = np.sum(parity * np.eye(n))\n    \n    # Column/row sum statistics\n    max_col = np.max(col_sums)\n    min_col = np.min(col_sums)\n    mean_col = np.mean(col_sums)\n    \n    return (off_diag, -basis_proximity, -weight1_cols, -weight1_rows, max_col, mean_col, min_col)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 48,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 52,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    col_perm = np.sum(np.abs(col_sums - 1))\n    row_perm = np.sum(np.abs(row_sums - 1))\n    inv_col_perm = np.sum(np.abs(inv_col_sums - 1))\n    inv_row_perm = np.sum(np.abs(inv_row_sums - 1))\n    \n    perm_distance = min(col_perm + row_perm, inv_col_perm + inv_row_perm)\n    basis_cols = max(np.sum(col_sums == 1) + np.sum(row_sums == 1),\n                    np.sum(inv_col_sums == 1) + np.sum(inv_row_sums == 1))\n    \n    return (perm_distance, -basis_cols)\n",
+    "evaluation": {
+      "fitness": 3.6440395991007506,
+      "additional_data": {
+        "score": "3.644040",
+        "total_compute_time": "15.322627",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 49,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 53,
+    "parent_id": 14,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_features(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        diag = np.diag(mat)\n        hamming = np.sum(mat)\n        \n        col_features = []\n        for s in col_sums:\n            if s == 0:\n                col_features.append(2*n)\n            elif s == 1:\n                col_features.append(0)\n            else:\n                col_features.append(np.log(s) + 1/(s**0.5))\n                \n        row_features = []\n        for s in row_sums:\n            if s == 0:\n                row_features.append(2*n)\n            elif s == 1:\n                row_features.append(0)\n            else:\n                row_features.append(np.log(s) + 1/(s**0.5))\n                \n        diag_features = []\n        for d in diag:\n            if d == 1:\n                diag_features.append(-1)\n            else:\n                diag_features.append(1)\n                \n        return col_features + row_features + diag_features + [hamming]\n    \n    features = (get_features(parity) + \n               get_features(inv_parity) + \n               get_features(parity.T) + \n               get_features(inv_parity.T))\n    \n    return tuple(sorted(features))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 47,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 54,
+    "parent_id": 35,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    upper = matrix[:n, :n]\n    lower = matrix[n:, n:]\n    \n    # Upper block metrics\n    upper_col = np.sum(upper, axis=0)\n    upper_row = np.sum(upper, axis=1)\n    upper_log_col = np.log(upper_col + 1e-10)\n    upper_log_row = np.log(upper_row + 1e-10)\n    \n    # Lower block metrics\n    lower_col = np.sum(lower, axis=0)\n    lower_row = np.sum(lower, axis=1)\n    lower_log_col = np.log(lower_col + 1e-10)\n    lower_log_row = np.log(lower_row + 1e-10)\n    \n    # Combined metrics\n    metrics = []\n    metrics.extend(upper_col)\n    metrics.extend(upper_row)\n    metrics.extend(lower_col)\n    metrics.extend(lower_row)\n    metrics.extend(upper_log_col)\n    metrics.extend(upper_log_row)\n    metrics.extend(lower_log_col)\n    metrics.extend(lower_log_row)\n    \n    # Add transpose consideration\n    upper_T = upper.T\n    lower_T = lower.T\n    metrics.extend(np.sum(upper_T, axis=0))\n    metrics.extend(np.sum(lower_T, axis=0))\n    \n    return tuple(metrics)\n",
+    "evaluation": {
+      "fitness": -13.975691509246829,
+      "additional_data": {
+        "score": "-13.975692",
+        "total_compute_time": "16.275692",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 52,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 55,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    perm_distance = min(np.sum(np.abs(col_sums - 1)), np.sum(np.abs(inv_col_sums - 1)))\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    basis_rows = max(np.sum(row_sums == 1), np.sum(inv_row_sums == 1))\n    \n    return (perm_distance, -basis_cols, -basis_rows)\n",
+    "evaluation": {
+      "fitness": 7.002778704961138,
+      "additional_data": {
+        "score": "7.002779",
+        "total_compute_time": "11.930555",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 55,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 56,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    \n    perm_distance = min(np.sum(np.abs(col_sums - 1)), np.sum(np.abs(inv_col_sums - 1)))\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    row_perm_distance = np.sum(np.abs(row_sums - 1))\n    \n    return (perm_distance, row_perm_distance, -basis_cols)\n",
+    "evaluation": {
+      "fitness": 8.445291519165039,
+      "additional_data": {
+        "score": "8.445292",
+        "total_compute_time": "10.554708",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 56,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 57,
+    "parent_id": 44,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    inverse_matrix = matrix[n:, n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        col_nonzero = np.count_nonzero(mat, axis=0)\n        row_nonzero = np.count_nonzero(mat, axis=1)\n        return (col_sums, row_sums, col_nonzero, row_nonzero)\n    \n    p_metrics = get_metrics(parity_matrix)\n    i_metrics = get_metrics(inverse_matrix)\n    \n    combined = (\n        *p_metrics[0], *p_metrics[1],  # parity sums\n        *i_metrics[0], *i_metrics[1],  # inverse sums\n        *p_metrics[2], *p_metrics[3],  # parity nonzeros\n        *i_metrics[2], *i_metrics[3]   # inverse nonzeros\n    )\n    return combined\n",
+    "evaluation": {
+      "fitness": -12.99156565666199,
+      "additional_data": {
+        "score": "-12.991566",
+        "total_compute_time": "15.291566",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 53,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 58,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Column metrics\n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    col_metrics = min(np.sum(np.abs(col_sums - 1)), np.sum(np.abs(inv_col_sums - 1)))\n    \n    # Row metrics\n    row_sums = np.sum(parity, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    row_metrics = min(np.sum(np.abs(row_sums - 1)), np.sum(np.abs(inv_row_sums - 1)))\n    \n    # Basis quality metrics\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    basis_rows = max(np.sum(row_sums == 1), np.sum(inv_row_sums == 1))\n    \n    # Interaction metrics\n    interaction = np.sum(parity * inv_parity.T)\n    \n    return (col_metrics + row_metrics, -basis_cols - basis_rows, interaction, np.sum(matrix))\n",
+    "evaluation": {
+      "fitness": -3.453036324183145,
+      "additional_data": {
+        "score": "-3.453036",
+        "total_compute_time": "17.686370",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 54,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 59,
+    "parent_id": 8,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        col_nonzeros = np.count_nonzero(mat, axis=0)\n        return (np.sum(col_sums), np.sum(col_nonzeros))\n    \n    metrics = get_metrics(parity) + get_metrics(inv_parity)\n    return metrics\n",
+    "evaluation": {
+      "fitness": 8.399999999999999,
+      "additional_data": {
+        "score": "8.400000",
+        "total_compute_time": "8.439343",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 58,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 60,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    trans_parity = parity.T\n    trans_inv = inv_parity.T\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        col_dist = np.sum(np.abs(col_sums - 1))\n        row_dist = np.sum(np.abs(row_sums - 1))\n        basis_cols = np.sum(col_sums == 1)\n        near_basis = np.sum((col_sums > 0) & (col_sums < 2))\n        return (min(col_dist, row_dist), -basis_cols, -near_basis)\n    \n    metrics = [\n        get_metrics(parity),\n        get_metrics(inv_parity),\n        get_metrics(trans_parity),\n        get_metrics(trans_inv)\n    ]\n    \n    return min(metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "25.260429",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 57,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 6
+    }
+  },
+  {
+    "id": 61,
+    "parent_id": 56,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Original matrix metrics\n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    upper_tri = np.sum(np.triu(parity, k=1))\n    lower_tri = np.sum(np.tril(parity, k=-1))\n    \n    # Inverse matrix metrics\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    inv_upper_tri = np.sum(np.triu(inv_parity, k=1))\n    inv_lower_tri = np.sum(np.tril(inv_parity, k=-1))\n    \n    # Combined metrics\n    min_col_dist = min(np.sum(np.abs(col_sums - 1)), np.sum(np.abs(inv_col_sums - 1)))\n    min_row_dist = min(np.sum(np.abs(row_sums - 1)), np.sum(np.abs(inv_row_sums - 1)))\n    min_tri = min(upper_tri + lower_tri, inv_upper_tri + inv_lower_tri)\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    overlap = np.sum(parity & inv_parity.T)\n    \n    return (min_col_dist, min_row_dist, min_tri, -basis_cols, -overlap)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 59,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 62,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Consider both original and transposed versions\n    variants = [\n        (parity, inv_parity),\n        (parity.T, inv_parity.T),\n        (binMatInv(parity), binMatInv(inv_parity)),\n        (binMatInv(parity).T, binMatInv(inv_parity).T)\n    ]\n    \n    best_metrics = []\n    for p, inv_p in variants:\n        col_sums = np.sum(p, axis=0)\n        row_sums = np.sum(p, axis=1)\n        inv_col_sums = np.sum(inv_p, axis=0)\n        inv_row_sums = np.sum(inv_p, axis=1)\n        \n        # Multiple distance metrics\n        perm_distance_col = np.sum(np.abs(col_sums - 1))\n        perm_distance_row = np.sum(np.abs(row_sums - 1))\n        basis_cols = np.sum(col_sums == 1)\n        basis_rows = np.sum(row_sums == 1)\n        \n        # Consider near-basis columns/rows (weight 2)\n        near_basis_cols = np.sum(col_sums == 2)\n        near_basis_rows = np.sum(row_sums == 2)\n        \n        # Interaction metric - how many columns share common rows\n        interaction = np.sum(p @ p.T > 1)\n        \n        metrics = (\n            min(perm_distance_col, perm_distance_row),\n            -max(basis_cols, basis_rows),\n            -max(near_basis_cols, near_basis_rows),\n            interaction\n        )\n        best_metrics.append(metrics)\n    \n    # Return the best metrics found across all variants\n    return min(best_metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: name 'binMatInv' is not defined",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 60,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 7
+    }
+  },
+  {
+    "id": 63,
+    "parent_id": 61,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    min_col_dist = min(np.sum(np.abs(col_sums - 1)), np.sum(np.abs(inv_col_sums - 1)))\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    \n    return (min_col_dist, -basis_cols)\n",
+    "evaluation": {
+      "fitness": 8.93333333333333,
+      "additional_data": {
+        "score": "8.933333",
+        "total_compute_time": "9.158027",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 64,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 64,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Column metrics\n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    \n    # Row metrics\n    row_sums = np.sum(parity, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    # Distance from permutation matrix (considering both original and inverse)\n    perm_distance = min(\n        np.sum(np.abs(col_sums - 1)) + np.sum(np.abs(row_sums - 1)),\n        np.sum(np.abs(inv_col_sums - 1)) + np.sum(np.abs(inv_row_sums - 1))\n    )\n    \n    # Count of basis vectors (columns/rows with single 1)\n    basis_cols = max(\n        np.sum(col_sums == 1) + np.sum(row_sums == 1),\n        np.sum(inv_col_sums == 1) + np.sum(inv_row_sums == 1)\n    )\n    \n    # Measure of how spread out the 1s are (variance)\n    spread = min(\n        np.var(col_sums) + np.var(row_sums),\n        np.var(inv_col_sums) + np.var(inv_row_sums)\n    )\n    \n    return (perm_distance, -basis_cols, spread)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 62,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 8
+    }
+  },
+  {
+    "id": 65,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Column metrics\n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    \n    # Row metrics\n    row_sums = np.sum(parity, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    # Column interaction metrics\n    col_dot = np.sum(parity.T @ parity)\n    inv_col_dot = np.sum(inv_parity.T @ inv_parity)\n    \n    # Distance metrics\n    def distance_metric(mat):\n        basis_dist = np.sum(np.abs(mat - np.eye(n, dtype=int)))\n        col_norms = np.sum(mat, axis=0)\n        row_norms = np.sum(mat, axis=1)\n        return (basis_dist + \n                np.sum(np.abs(col_norms - 1)) + \n                np.sum(np.abs(row_norms - 1)))\n    \n    dist_parity = distance_metric(parity)\n    dist_inv = distance_metric(inv_parity)\n    \n    # Almost basis columns (weight between 1 and 2)\n    almost_basis = np.sum((col_sums >= 1) & (col_sums <= 2))\n    inv_almost_basis = np.sum((inv_col_sums >= 1) & (inv_col_sums <= 2))\n    \n    # Choose the better option between matrix and inverse\n    if dist_parity <= dist_inv:\n        return (dist_parity, \n                -almost_basis,\n                col_dot,\n                -np.sum(col_sums == 1))\n    else:\n        return (dist_inv,\n                -inv_almost_basis,\n                inv_col_dot,\n                -np.sum(inv_col_sums == 1))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 61,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 9
+    }
+  },
+  {
+    "id": 66,
+    "parent_id": 20,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums_p = np.sum(parity)\n    col_sums_ip = np.sum(inv_parity)\n    \n    return (col_sums_p, col_sums_ip)\n",
+    "evaluation": {
+      "fitness": 8.399999999999999,
+      "additional_data": {
+        "score": "8.400000",
+        "total_compute_time": "4.695143",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 65,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 67,
+    "parent_id": 44,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    inv_matrix = matrix[n:, n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        col_log = np.sum(np.log2(col_sums + 1))\n        row_log = np.sum(np.log2(row_sums + 1))\n        col_nonzero = np.count_nonzero(mat, axis=0)\n        row_nonzero = np.count_nonzero(mat, axis=1)\n        return np.concatenate((col_sums, row_sums, col_nonzero, row_nonzero, [col_log, row_log]))\n    \n    metrics = np.concatenate((get_metrics(parity_matrix), get_metrics(inv_matrix))\n    return tuple(metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmpzv7ci3jg.py\", line 43\n    metrics = np.concatenate((get_metrics(parity_matrix), get_metrics(inv_matrix))\n                            ^\nSyntaxError: '(' was never closed\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 67,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 68,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    min_col_dist = min(np.sum(np.abs(col_sums - 1)), np.sum(np.abs(inv_col_sums - 1)))\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    \n    row_sums = np.sum(parity, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    min_row_dist = min(np.sum(np.abs(row_sums - 1)), np.sum(np.abs(inv_row_sums - 1)))\n    \n    return (min_col_dist, min_row_dist, -basis_cols)\n",
+    "evaluation": {
+      "fitness": 6.112807687123613,
+      "additional_data": {
+        "score": "6.112808",
+        "total_compute_time": "12.820526",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 68,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 69,
+    "parent_id": 29,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n, :n]\n    inv_parity = matrix[n:, n:]\n    \n    row_sums_parity = np.sum(parity, axis=1)\n    col_sums_parity = np.sum(parity, axis=0)\n    row_sums_inv = np.sum(inv_parity, axis=1)\n    col_sums_inv = np.sum(inv_parity, axis=0)\n    \n    l1_row_parity = float(np.sum(np.abs(row_sums_parity - 1)))\n    l1_col_parity = float(np.sum(np.abs(col_sums_parity - 1)))\n    l1_row_inv = float(np.sum(np.abs(row_sums_inv - 1)))\n    l1_col_inv = float(np.sum(np.abs(col_sums_inv - 1)))\n    \n    sorted_row_parity = sorted(row_sums_parity)\n    sorted_col_parity = sorted(col_sums_parity)\n    sorted_row_inv = sorted(row_sums_inv)\n    sorted_col_inv = sorted(col_sums_inv)\n    \n    return (l1_row_parity, l1_col_parity, l1_row_inv, l1_col_inv) + \\\n           tuple(sorted_row_parity) + \\\n           tuple(sorted_col_parity) + \\\n           tuple(sorted_row_inv) + \\\n           tuple(sorted_col_inv)\n",
+    "evaluation": {
+      "fitness": 7.279522562026976,
+      "additional_data": {
+        "score": "7.279523",
+        "total_compute_time": "11.120477",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 51,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 70,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums_orig = np.sum(parity, axis=0)\n    col_sums_inv = np.sum(inv_parity, axis=0)\n    \n    # Calculate squared deviations from ideal weight (1)\n    dev_orig = np.sum((col_sums_orig - 1) ** 2)\n    dev_inv = np.sum((col_sums_inv - 1) ** 2)\n    perm_distance = min(dev_orig, dev_inv)\n    \n    # Count basis columns (weight exactly 1)\n    basis_cols_orig = np.sum(col_sums_orig == 1)\n    basis_cols_inv = np.sum(col_sums_inv == 1)\n    basis_cols = max(basis_cols_orig, basis_cols_inv)\n    \n    return (perm_distance, -basis_cols)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 36,
+      "is_reasoning": true,
+      "exploitation": true,
+      "exploited_organism_id": 38,
+      "exploited_organism_fitness": 8.93333333333333,
+      "child_number": 10
+    }
+  },
+  {
+    "id": 71,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n, :n]\n    inv_parity = matrix[n:, n:]\n    \n    col_sums_parity = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    \n    log_sum_parity = np.sum(np.log2(col_sums_parity))\n    log_sum_inv = np.sum(np.log2(inv_col_sums))\n    min_log_sum = min(log_sum_parity, log_sum_inv)\n    \n    basis_cols_parity = np.sum(col_sums_parity == 1)\n    basis_cols_inv = np.sum(inv_col_sums == 1)\n    max_basis_cols = max(basis_cols_parity, basis_cols_inv)\n    \n    return (min_log_sum, -max_basis_cols)\n",
+    "evaluation": {
+      "fitness": 7.133333333333333,
+      "additional_data": {
+        "score": "7.133333",
+        "total_compute_time": "9.591482",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 41,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 11
+    }
+  },
+  {
+    "id": 72,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    perm_distance = min(np.sum(np.abs(col_sums - 1)) + np.sum(np.abs(row_sums - 1)), \n                     np.sum(np.abs(inv_col_sums - 1)) + np.sum(np.abs(inv_row_sums - 1)))\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    \n    return (perm_distance, -basis_cols)\n",
+    "evaluation": {
+      "fitness": 6.030579503377275,
+      "additional_data": {
+        "score": "6.030580",
+        "total_compute_time": "12.902754",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 69,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 12
+    }
+  },
+  {
+    "id": 73,
+    "parent_id": 68,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    min_col_dist = min(np.sum(np.abs(col_sums - 1) * np.log2(col_sums + 1)), \n                      np.sum(np.abs(inv_col_sums - 1) * np.log2(inv_col_sums + 1)))\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    \n    total_sum = min(np.sum(parity), np.sum(inv_parity))\n    \n    return (min_col_dist, total_sum, -basis_cols)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 74,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 74,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    perm_distance_cols = min(np.sum(np.abs(col_sums - 1)), np.sum(np.abs(inv_col_sums - 1)))\n    perm_distance_rows = min(np.sum(np.abs(row_sums - 1)), np.sum(np.abs(inv_row_sums - 1)))\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    basis_rows = max(np.sum(row_sums == 1), np.sum(inv_row_sums == 1))\n    \n    return (perm_distance_cols + perm_distance_rows, -basis_cols - basis_rows)\n",
+    "evaluation": {
+      "fitness": 4.128443415959673,
+      "additional_data": {
+        "score": "4.128443",
+        "total_compute_time": "14.804890",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 73,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 13
+    }
+  },
+  {
+    "id": 75,
+    "parent_id": 58,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Weighted column sums (logarithmic weighting)\n    col_sums_p = np.sum(parity, axis=0)\n    col_sums_ip = np.sum(inv_parity, axis=0)\n    log_col_p = np.sum(np.log(col_sums_p + 1))\n    log_col_ip = np.sum(np.log(col_sums_ip + 1))\n    \n    # Weighted row sums\n    row_sums_p = np.sum(parity, axis=1)\n    row_sums_ip = np.sum(inv_parity, axis=1)\n    log_row_p = np.sum(np.log(row_sums_p + 1))\n    log_row_ip = np.sum(np.log(row_sums_ip + 1))\n    \n    # Basis vector closeness\n    basis_col_p = np.sum((col_sums_p == 1).astype(int))\n    basis_col_ip = np.sum((col_sums_ip == 1).astype(int))\n    basis_row_p = np.sum((row_sums_p == 1).astype(int))\n    basis_row_ip = np.sum((row_sums_ip == 1).astype(int))\n    \n    # Off-diagonal elements in identity blocks\n    off_diag_p = np.sum(parity) - np.trace(parity)\n    off_diag_ip = np.sum(inv_parity) - np.trace(inv_parity)\n    \n    # Column/row interaction terms\n    interaction = np.sum(parity * inv_parity.T)\n    \n    return (\n        min(log_col_p, log_col_ip) + min(log_row_p, log_row_ip),\n        -(max(basis_col_p, basis_col_ip) + max(basis_row_p, basis_row_ip)),\n        min(off_diag_p, off_diag_ip),\n        interaction,\n        np.sum(matrix)\n    )\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "21.218159",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 70,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 76,
+    "parent_id": 70,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums_orig = np.sum(parity, axis=0)\n    col_sums_inv = np.sum(inv_parity, axis=0)\n    row_sums_orig = np.sum(parity, axis=1)\n    row_sums_inv = np.sum(inv_parity, axis=1)\n    \n    # Use log sums to prioritize almost-done columns\n    log_col_orig = np.sum(np.log(col_sums_orig + 1e-10))\n    log_col_inv = np.sum(np.log(col_sums_inv + 1e-10))\n    \n    # Combine row and column metrics\n    dev_orig = np.sum((col_sums_orig - 1) ** 2) + np.sum((row_sums_orig - 1) ** 2)\n    dev_inv = np.sum((col_sums_inv - 1) ** 2) + np.sum((row_sums_inv - 1) ** 2)\n    perm_distance = min(dev_orig, dev_inv)\n    \n    basis_cols_orig = np.sum(col_sums_orig == 1)\n    basis_cols_inv = np.sum(col_sums_inv == 1)\n    basis_cols = max(basis_cols_orig, basis_cols_inv)\n    \n    return (perm_distance, log_col_orig + log_col_inv, -basis_cols)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 72,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 77,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Column and row statistics for both matrices\n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    # Combined metrics\n    log_col_weights = np.sum(np.log(col_sums + 1e-6) + np.sum(np.log(inv_col_sums + 1e-6))\n    sum_off_diag = np.sum(parity) - np.trace(parity) + np.sum(inv_parity) - np.trace(inv_parity)\n    \n    # Uniqueness metrics\n    _, col_counts = np.unique(parity, axis=1, return_counts=True)\n    col_duplicates = np.sum(col_counts - 1)\n    _, row_counts = np.unique(parity, axis=0, return_counts=True)\n    row_duplicates = np.sum(row_counts - 1)\n    \n    return (log_col_weights, sum_off_diag, col_duplicates + row_duplicates)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmpn8y7jqzm.py\", line 41\n    log_col_weights = np.sum(np.log(col_sums + 1e-6) + np.sum(np.log(inv_col_sums + 1e-6))\n                            ^\nSyntaxError: '(' was never closed\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 71,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 14
+    }
+  },
+  {
+    "id": 78,
+    "parent_id": 4,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    \n    # Column metrics\n    col_sums = np.sum(parity, axis=0)\n    min_col_sum = np.min(col_sums)\n    sum_col_log = np.sum(np.log2(col_sums + 1))\n    \n    # Transpose metrics (equivalent to row operations)\n    row_sums = np.sum(parity, axis=1)\n    min_row_sum = np.min(row_sums)\n    sum_row_log = np.sum(np.log2(row_sums + 1))\n    \n    # Basic element count\n    total_ones = np.sum(parity)\n    \n    return (min_col_sum, min_row_sum, sum_col_log, sum_row_log, total_ones)\n",
+    "evaluation": {
+      "fitness": 6.666666666666664,
+      "additional_data": {
+        "score": "6.666667",
+        "total_compute_time": "8.964517",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 77,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 79,
+    "parent_id": 69,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n, :n]\n    inv_parity = matrix[n:, n:]\n    \n    def get_metrics(mat):\n        row_sums = np.sum(mat, axis=1)\n        col_sums = np.sum(mat, axis=0)\n        l1_row = float(np.sum(np.abs(row_sums - 1)))\n        l1_col = float(np.sum(np.abs(col_sums - 1)))\n        log_row = float(np.sum(np.log2(np.maximum(row_sums, 1))))\n        log_col = float(np.sum(np.log2(np.maximum(col_sums, 1))))\n        sorted_row = sorted(row_sums)\n        sorted_col = sorted(col_sums)\n        nnz = float(np.sum(mat))\n        return (l1_row, l1_col, log_row, log_col, nnz) + tuple(sorted_row) + tuple(sorted_col)\n    \n    metrics_parity = get_metrics(parity)\n    metrics_inv = get_metrics(inv_parity)\n    \n    return metrics_parity + metrics_inv\n",
+    "evaluation": {
+      "fitness": -0.017120615641275094,
+      "additional_data": {
+        "score": "-0.017121",
+        "total_compute_time": "18.250454",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 76,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 80,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    UinvT = matrix[n:, n:]\n    \n    def compute_metrics(M):\n        col_sums = M.sum(axis=0)\n        row_sums = M.sum(axis=1)\n        col_dev = np.sum(np.abs(col_sums - 1))\n        row_dev = np.sum(np.abs(row_sums - 1))\n        total_dev = col_dev + row_dev\n        basis_count = np.sum(col_sums == 1) + np.sum(row_sums == 1)\n        return total_dev, basis_count\n    \n    dev_U, basis_U = compute_metrics(U)\n    dev_UinvT, basis_UinvT = compute_metrics(UinvT)\n    \n    total_dev = min(dev_U, dev_UinvT)\n    basis_total = max(basis_U, basis_UinvT)\n    \n    return (float(total_dev), float(-basis_total))\n",
+    "evaluation": {
+      "fitness": 4.124689785639447,
+      "additional_data": {
+        "score": "4.124690",
+        "total_compute_time": "14.841977",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 66,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 15
+    }
+  },
+  {
+    "id": 81,
+    "parent_id": 16,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_col = np.log2(np.maximum(col_sums, 0.5))\n        log_row = np.log2(np.maximum(row_sums, 0.5))\n        min_col = np.min(col_sums)\n        min_row = np.min(row_sums)\n        return np.concatenate((\n            col_sums * log_col,\n            row_sums * log_row,\n            [min_col, min_row]\n        ))\n    \n    metrics = np.concatenate((\n        get_metrics(original),\n        get_metrics(inverse),\n        [np.sum(original), np.sum(inverse)]\n    ))\n    return tuple(metrics)\n",
+    "evaluation": {
+      "fitness": -16.844719362258914,
+      "additional_data": {
+        "score": "-16.844719",
+        "total_compute_time": "19.144719",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 78,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 82,
+    "parent_id": 11,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n, :n]\n    inv_parity = matrix[n:, n:]\n    \n    col_sums_p = np.sum(parity, axis=0)\n    row_sums_p = np.sum(parity, axis=1)\n    col_sums_i = np.sum(inv_parity, axis=0)\n    row_sums_i = np.sum(inv_parity, axis=1)\n    \n    # Add small bonus for columns/rows with sum=1\n    bonus_p = 0.1 * (col_sums_p == 1).astype(float) + 0.1 * (row_sums_p == 1).astype(float)\n    bonus_i = 0.1 * (col_sums_i == 1).astype(float) + 0.1 * (row_sums_i == 1).astype(float)\n    \n    combined = np.concatenate((col_sums_p + bonus_p[:len(col_sums_p)], \n                              row_sums_p + bonus_p[len(col_sums_p):],\n                              col_sums_i + bonus_i[:len(col_sums_i)],\n                              row_sums_i + bonus_i[len(col_sums_i):]))\n    return tuple(sorted(combined))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: operands could not be broadcast together with shapes (16,) (0,) ",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 63,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 6
+    }
+  },
+  {
+    "id": 83,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Column metrics\n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    \n    # Row metrics\n    row_sums = np.sum(parity, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    # Distance to basis vectors (considering both exact and approximate matches)\n    col_basis_dist = np.sum(np.minimum(col_sums, np.abs(col_sums - 1)))\n    inv_col_basis_dist = np.sum(np.minimum(inv_col_sums, np.abs(inv_col_sums - 1)))\n    \n    row_basis_dist = np.sum(np.minimum(row_sums, np.abs(row_sums - 1)))\n    inv_row_basis_dist = np.sum(np.minimum(inv_row_sums, np.abs(inv_row_sums - 1)))\n    \n    # Interaction metrics (dot products between columns)\n    col_interactions = np.sum(np.triu(parity.T @ parity, k=1))\n    inv_col_interactions = np.sum(np.triu(inv_parity.T @ inv_parity, k=1))\n    \n    # Choose best metrics from original vs inverse\n    min_basis_dist = min(col_basis_dist + row_basis_dist, \n                        inv_col_basis_dist + inv_row_basis_dist)\n    min_interactions = min(col_interactions, inv_col_interactions)\n    \n    return (min_basis_dist, min_interactions, -np.sum(parity))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 75,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 16
+    }
+  },
+  {
+    "id": 84,
+    "parent_id": 38,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    perm_distance_cols = min(np.sum(np.abs(col_sums - 1)), np.sum(np.abs(inv_col_sums - 1)))\n    perm_distance_rows = min(np.sum(np.abs(row_sums - 1)), np.sum(np.abs(inv_row_sums - 1)))\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    \n    return (perm_distance_cols + perm_distance_rows, -basis_cols)\n",
+    "evaluation": {
+      "fitness": 6.299404319127397,
+      "additional_data": {
+        "score": "6.299404",
+        "total_compute_time": "12.633929",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 79,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 17
+    }
+  },
+  {
+    "id": 85,
+    "parent_id": 50,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    V = matrix[n:, n:]\n    col_errors_U = np.log(np.abs(np.sum(U, axis=0) - 1 + 1e-6)\n    row_errors_U = np.log(np.abs(np.sum(U, axis=1) - 1 + 1e-6)\n    col_errors_V = np.log(np.abs(np.sum(V, axis=0) - 1 + 1e-6)\n    row_errors_V = np.log(np.abs(np.sum(V, axis=1) - 1 + 1e-6)\n    matrix_sum = np.sum(np.abs(matrix))\n    errors = np.concatenate(([matrix_sum], col_errors_U, row_errors_U, col_errors_V, row_errors_V))\n    return tuple(errors)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmpkrjnrrut.py\", line 33\n    col_errors_U = np.log(np.abs(np.sum(U, axis=0) - 1 + 1e-6)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nSyntaxError: invalid syntax. Perhaps you forgot a comma?\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 83,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 86,
+    "parent_id": 84,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    \n    perm_distance_cols = min(np.sum(np.abs(col_sums - 1)), np.sum(np.abs(inv_col_sums - 1)))\n    log_sum = min(np.sum(np.log2(col_sums + 1)), np.sum(np.log2(inv_col_sums + 1)))\n    basis_cols = max(np.sum(col_sums == 1), np.sum(inv_col_sums == 1))\n    \n    return (perm_distance_cols, log_sum, -basis_cols)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "31.228832",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 84,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 87,
+    "parent_id": 78,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    parity_inv = binMatInv(parity)\n    \n    # Column metrics for original and inverse\n    col_sums = np.sum(parity, axis=0)\n    col_sums_inv = np.sum(parity_inv, axis=0)\n    min_col_sum = min(np.min(col_sums), np.min(col_sums_inv))\n    sum_col_log = min(np.sum(np.log2(col_sums + 1e-6)), np.sum(np.log2(col_sums_inv + 1e-6)))\n    \n    # Row metrics for original and inverse (transpose operations)\n    row_sums = np.sum(parity, axis=1)\n    row_sums_inv = np.sum(parity_inv, axis=1)\n    min_row_sum = min(np.min(row_sums), np.min(row_sums_inv))\n    sum_row_log = min(np.sum(np.log2(row_sums + 1e-6)), np.sum(np.log2(row_sums_inv + 1e-6)))\n    \n    # Combined element counts\n    total_ones = min(np.sum(parity), np.sum(parity_inv))\n    \n    # Prioritize columns first (more impact on CNOT count)\n    return (min_col_sum, sum_col_log, min_row_sum, sum_row_log, total_ones)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: name 'binMatInv' is not defined",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 85,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 88,
+    "parent_id": 59,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        col_nonzeros = np.count_nonzero(mat, axis=0)\n        log_sums = np.sum(np.log(col_sums[col_sums > 0] + 1))  # +1 to avoid log(1)=0\n        return (np.sum(col_sums), np.sum(col_nonzeros), -log_sums  # negative for minimization\n    \n    metrics = get_metrics(parity) + get_metrics(inv_parity)\n    return metrics\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmp44et5uc4.py\", line 38\n    return (np.sum(col_sums), np.sum(col_nonzeros), -log_sums  # negative for minimization\n           ^\nSyntaxError: '(' was never closed\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 81,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 89,
+    "parent_id": 12,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_cols = np.log(np.maximum(col_sums, 1))\n        log_rows = np.log(np.maximum(row_sums, 1))\n        off_diag = np.sum(mat) - np.trace(mat)\n        basis_proximity = np.sum(mat * np.eye(n)) + np.sum(mat.T * np.eye(n))\n        return np.concatenate([\n            col_sums, row_sums, log_cols, log_rows,\n            [off_diag], [basis_proximity]\n        ])\n    \n    metrics = np.concatenate([\n        get_metrics(parity),\n        get_metrics(inv_parity),\n        get_metrics(parity.T),\n        get_metrics(inv_parity.T)\n    ])\n    return tuple(sorted(metrics))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "48.386776",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 86,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 90,
+    "parent_id": 3,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n, :n]\n    parity_inv = matrix[n:, n:]\n    \n    def get_metrics(p):\n        col_sums = np.sum(p, axis=0)\n        row_sums = np.sum(p, axis=1)\n        log_cols = np.log2(np.maximum(col_sums, 1))\n        log_rows = np.log2(np.maximum(row_sums, 1))\n        col_vars = np.var(p, axis=0)\n        row_vars = np.var(p, axis=1)\n        return (col_sums, row_sums, log_cols, log_rows, col_vars, row_vars)\n    \n    m1 = get_metrics(parity)\n    m2 = get_metrics(parity_inv)\n    \n    combined = []\n    for a, b in zip(m1, m2):\n        combined.extend(a)\n        combined.extend(b)\n    \n    return tuple(sorted(combined, reverse=True))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 87,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 91,
+    "parent_id": 49,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity_matrix = matrix[:n, :n]\n    inv_matrix = matrix[n:, n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        col_nonzero = np.count_nonzero(mat, axis=0)\n        row_nonzero = np.count_nonzero(mat, axis=1)\n        col_log = np.sum(np.log2(col_sums + 1))\n        row_log = np.sum(np.log2(row_sums + 1))\n        total_sum = np.sum(mat)\n        return np.concatenate((col_sums, row_sums, col_nonzero, row_nonzero, [col_log, row_log, total_sum]))\n    \n    metrics_parity = get_metrics(parity_matrix)\n    metrics_inv = get_metrics(inv_matrix)\n    metrics_parity_T = get_metrics(parity_matrix.T)\n    metrics_inv_T = get_metrics(inv_matrix.T)\n    \n    metrics = np.concatenate((metrics_parity, metrics_inv, metrics_parity_T, metrics_inv_T))\n    return tuple(metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "38.174154",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 80,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 92,
+    "parent_id": 37,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        log_cols = np.sum(np.log2(col_sums + 1))\n        min_cols = np.sum(np.minimum(col_sums, n - col_sums))\n        return log_cols + min_cols\n    \n    metric1 = float(get_metrics(parity))\n    metric2 = float(get_metrics(inv_parity))\n    return (min(metric1, metric2), max(metric1, metric2)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmpreu981nc.py\", line 42\n    return (min(metric1, metric2), max(metric1, metric2)\n           ^\nSyntaxError: '(' was never closed\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 89,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 93,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    \n    n = matrix.shape[0] // 2\n    mat = matrix[:n, :n]\n    \n    col_sums = np.sum(mat, axis=0)\n    col_weights = np.log2(np.maximum(col_sums, 1))\n    col_dev = np.abs(col_sums - 1) * col_weights\n    \n    row_sums = np.sum(mat, axis=1)\n    row_weights = np.log2(np.maximum(row_sums, 1))\n    row_dev = np.abs(row_sums - 1) * row_weights\n    \n    return (np.sum(col_dev), np.sum(row_dev))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 91,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 94,
+    "parent_id": 8,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        # Prioritize columns/rows close to 0 or n (almost done)\n        col_priority = np.sum(np.log2(np.minimum(col_sums, n - col_sums) + 1))\n        row_priority = np.sum(np.log2(np.minimum(row_sums, n - row_sums) + 1))\n        total_ones = np.sum(col_sums)\n        return (total_ones, col_priority, row_priority)\n    \n    metrics = get_metrics(parity) + get_metrics(inv_parity)\n    return metrics\n",
+    "evaluation": {
+      "fitness": 5.8144119739532485,
+      "additional_data": {
+        "score": "5.814412",
+        "total_compute_time": "11.285588",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 92,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 95,
+    "parent_id": 55,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Combined metrics for original and inverse\n    total_nonzero = np.sum(parity != 0) + np.sum(inv_parity != 0)\n    log_col_sums = np.sum(np.log1p(np.sum(parity, axis=0))) + np.sum(np.log1p(np.sum(inv_parity, axis=0)))\n    log_row_sums = np.sum(np.log1p(np.sum(parity, axis=1))) + np.sum(np.log1p(np.sum(inv_parity, axis=1)))\n    \n    # Structural metrics\n    col_variance = np.var(np.sum(parity, axis=0)) + np.var(np.sum(inv_parity, axis=0))\n    row_variance = np.var(np.sum(parity, axis=1)) + np.var(np.sum(inv_parity, axis=1))\n    diag_dominance = np.sum(np.diag(parity)) + np.sum(np.diag(inv_parity))\n    \n    # Basis metrics\n    basis_cols = max(np.sum(np.sum(parity, axis=0) == 1), np.sum(np.sum(inv_parity, axis=0) == 1))\n    basis_rows = max(np.sum(np.sum(parity, axis=1) == 1), np.sum(np.sum(inv_parity, axis=1) == 1))\n    \n    return (total_nonzero, log_col_sums, log_row_sums, -col_variance, -row_variance, -diag_dominance, -basis_cols, -basis_rows)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "32.350724",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 93,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 96,
+    "parent_id": 7,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_parity = matrix[n:,n:]\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    log_col = np.log(col_sums + 1)\n    log_row = np.log(row_sums + 1)\n    log_inv_col = np.log(inv_col_sums + 1)\n    log_inv_row = np.log(inv_row_sums + 1)\n    \n    max_vals = (np.max(col_sums), np.max(row_sums), np.max(inv_col_sums), np.max(inv_row_sums))\n    total_sum = (np.sum(parity) + np.sum(inv_parity),)\n    \n    return tuple(sorted(np.concatenate((col_sums, row_sums, inv_col_sums, inv_row_sums, log_col, log_row, log_inv_col, log_inv_row)))) + max_vals + total_sum\n",
+    "evaluation": {
+      "fitness": -2.472365299860641,
+      "additional_data": {
+        "score": "-2.472365",
+        "total_compute_time": "17.305699",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 88,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 7
+    }
+  },
+  {
+    "id": 97,
+    "parent_id": 64,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Column sums for both original and inverse\n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    \n    # Row sums for both original and inverse\n    row_sums = np.sum(parity, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    # Combined distance metric (original and inverse)\n    distance = min(\n        np.sum(np.abs(col_sums - 1)) + np.sum(np.abs(row_sums - 1)),\n        np.sum(np.abs(inv_col_sums - 1)) + np.sum(np.abs(inv_row_sums - 1))\n    )\n    \n    # Combined basis/spread metric\n    basis_spread = min(\n        np.sum(col_sums == 1) - np.var(col_sums),\n        np.sum(inv_col_sums == 1) - np.var(inv_col_sums)\n    )\n    \n    return (distance, basis_spread)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 96,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 98,
+    "parent_id": 87,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    \n    def binMatInv(mat):\n        \"\"\"Invert a binary matrix using Gaussian elimination\"\"\"\n        n = mat.shape[0]\n        inv = np.eye(n, dtype=int)\n        for col in range(n):\n            pivot = -1\n            for row in range(col, n):\n                if mat[row, col]:\n                    pivot = row\n                    break\n            if pivot == -1:\n                return None\n            if pivot != col:\n                mat[[col, pivot]] = mat[[pivot, col]]\n                inv[[col, pivot]] = inv[[pivot, col]]\n            for row in range(n):\n                if row != col and mat[row, col]:\n                    mat[row] ^= mat[col]\n                    inv[row] ^= inv[col]\n        return inv\n    \n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    parity_inv = binMatInv(parity)\n    if parity_inv is None:\n        return (float('inf'),)\n    \n    # Calculate metrics for both original and inverse\n    def get_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        return (\n            np.sum(m),  # Total ones\n            np.sum(np.log2(col_sums + 1)),  # Column log sum\n            np.sum(np.log2(row_sums + 1)),  # Row log sum\n            np.max(col_sums),  # Max column sum\n            np.max(row_sums),  # Max row sum\n            np.sum(col_sums * (col_sums - 1)),  # Column pairs\n            np.sum(row_sums * (row_sums - 1))   # Row pairs\n        )\n    \n    metrics = get_metrics(parity)\n    metrics_inv = get_metrics(parity_inv)\n    \n    # Return the minimal metrics between original and inverse\n    return tuple(min(m, mi) for m, mi in zip(metrics, metrics_inv))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'NoneType' object is not subscriptable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 97,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 99,
+    "parent_id": 76,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    col_sums_orig = np.sum(parity, axis=0)\n    col_sums_inv = np.sum(inv_parity, axis=0)\n    row_sums_orig = np.sum(parity, axis=1)\n    row_sums_inv = np.sum(inv_parity, axis=1)\n    \n    log_col_orig = np.sum(np.log(col_sums_orig + 1e-10))\n    log_col_inv = np.sum(np.log(col_sums_inv + 1e-10))\n    \n    dev_orig = np.sum((col_sums_orig - 1) ** 2) + np.sum((row_sums_orig - 1) ** 2)\n    dev_inv = np.sum((col_sums_inv - 1) ** 2) + np.sum((row_sums_inv - 1) ** 2)\n    perm_distance = min(dev_orig, dev_inv)\n    \n    log_combined = log_col_orig + log_col_inv\n    \n    return (perm_distance, log_combined)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 99,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 100,
+    "parent_id": 85,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    V = matrix[n:, n:]\n    \n    def compute_metrics(M):\n        col_sums = np.sum(M, axis=0)\n        row_sums = np.sum(M, axis=1)\n        col_errors = np.log(np.abs(col_sums - 1) + 1e-6)\n        row_errors = np.log(np.abs(row_sums - 1) + 1e-6)\n        diag_dominance = np.sum(np.abs(M - np.diag(np.diagonal(M))))\n        return col_errors, row_errors, diag_dominance\n    \n    # Compute metrics for original and transposed versions\n    col_U, row_U, diag_U = compute_metrics(U)\n    col_V, row_V, diag_V = compute_metrics(V)\n    col_Ut, row_Ut, diag_Ut = compute_metrics(U.T)\n    col_Vt, row_Vt, diag_Vt = compute_metrics(V.T)\n    \n    total_sum = np.sum(np.abs(matrix))\n    metrics = [\n        total_sum,\n        np.sum(col_U), np.sum(row_U), diag_U,\n        np.sum(col_V), np.sum(row_V), diag_V,\n        np.sum(col_Ut), np.sum(row_Ut), diag_Ut,\n        np.sum(col_Vt), np.sum(row_Vt), diag_Vt\n    ]\n    return tuple(metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.000000",
+        "total_compute_time": "27.427102",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 100,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 101,
+    "parent_id": 15,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    Uinv = matrix[n:, n:].T\n    a = np.sum(U) - n\n    b = np.sum(Uinv) - n\n    return (min(a, b), max(a, b))\n",
+    "evaluation": {
+      "fitness": 9.200000000000003,
+      "additional_data": {
+        "score": "9.200000",
+        "total_compute_time": "5.504313",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 82,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 102,
+    "parent_id": 80,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    UinvT = matrix[n:, n:]\n    \n    def compute_metrics(M):\n        col_sums = M.sum(axis=0)\n        row_sums = M.sum(axis=1)\n        col_dev = np.sum(np.abs(col_sums - 1))\n        row_dev = np.sum(np.abs(row_sums - 1))\n        total_dev = col_dev + row_dev\n        basis_count = np.sum(col_sums == 1) + np.sum(row_sums == 1)\n        return total_dev, basis_count\n    \n    dev_U, basis_U = compute_metrics(U)\n    dev_UinvT, basis_UinvT = compute_metrics(UinvT)\n    \n    total_dev = min(dev_U, dev_UinvT)\n    total_basis = basis_U + basis_UinvT\n    \n    return (float(total_dev), float(-total_basis))\n",
+    "evaluation": {
+      "fitness": 6.039224354426068,
+      "additional_data": {
+        "score": "6.039224",
+        "total_compute_time": "12.927442",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 94,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 103,
+    "parent_id": 11,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    col_sums = np.sum(matrix, axis=0)\n    row_sums = np.sum(matrix, axis=1)\n    combined = np.concatenate((col_sums, row_sums))\n    return tuple(np.sort(combined)[::-1])\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 95,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 7
+    }
+  },
+  {
+    "id": 104,
+    "parent_id": 67,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    inv_matrix = matrix[n:, n:]\n    \n    def get_block_metrics(block):\n        total_ones = np.sum(block)\n        row_weights = np.sum(block, axis=1)\n        col_weights = np.sum(block, axis=0)\n        logsum_row = np.sum(np.log2(row_weights + 1))\n        nonunit_row = np.sum(row_weights != 1)\n        logsum_col = np.sum(np.log2(col_weights + 1))\n        nonunit_col = np.sum(col_weights != 1)\n        return (total_ones, logsum_row, nonunit_row, logsum_col, nonunit_col)\n    \n    metrics_U = get_block_metrics(U)\n    metrics_inv = get_block_metrics(inv_matrix)\n    metrics = metrics_U + metrics_inv\n    return tuple(float(x) for x in metrics)\n",
+    "evaluation": {
+      "fitness": 4.36232616106669,
+      "additional_data": {
+        "score": "4.362326",
+        "total_compute_time": "13.904341",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 98,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 105,
+    "parent_id": 11,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    V = matrix[n:, n:]\n    dev_U_rows = np.abs(np.sum(U, axis=1) - 1)\n    dev_U_cols = np.abs(np.sum(U, axis=0) - 1)\n    dev_V_rows = np.abs(np.sum(V, axis=1) - 1)\n    dev_V_cols = np.abs(np.sum(V, axis=0) - 1)\n    all_deviations = np.concatenate((dev_U_rows, dev_U_cols, dev_V_rows, dev_V_cols))\n    sorted_deviations = sorted(all_deviations, reverse=True)\n    return tuple(float(x) for x in sorted_deviations)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "total_compute_time": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 90,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 8
+    }
+  }
+]

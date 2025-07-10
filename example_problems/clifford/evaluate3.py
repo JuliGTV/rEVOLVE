@@ -1,7 +1,6 @@
 import pickle
 from typing import Callable, Optional
 import numpy as np
-from GL_search import synth_GL
 import sys
 import tempfile
 import os
@@ -26,22 +25,12 @@ class paramObj:
         self.wMax = 10  # maximum wait
         self.custom_heuristic = None
 
-def evaluate(h: Optional[Callable[[np.ndarray], tuple[float, tuple[int]]]] = None, dataset_path: str = 'search_dataset.pkl'):
+def evaluate(search: Callable, dataset_path: str = 'search_dataset.pkl'):
 
     with open(dataset_path, 'rb') as f:
         dataset = pickle.load(f)
 
-    params = paramObj()
-    params.mode = 'GL'
-    params.method = 'greedy'
-    params.minDepth = False
-    params.hv = 1 ## vector
-    params.hi = 1 ## include inverse
-    params.ht = 1 ## include transpose
-    params.hl = 1 ## log of cols 1 or sums 0
-    params.hr = 3 # scaling factor for heuristic
-    params.wMax = 10
-    params.custom_heuristic = h
+    
 
     total_gate_count = 0
     total_compute_time = 0
@@ -49,7 +38,7 @@ def evaluate(h: Optional[Callable[[np.ndarray], tuple[float, tuple[int]]]] = Non
     compute_times = []
 
     for matrix in dataset:
-        n,gateCount,depth,procTime,check,circ = synth_GL(matrix,params)
+        n,gateCount,depth,procTime,check,circ = search(matrix)
 
         if not check:
             return 0
@@ -337,27 +326,15 @@ from GL_search import synth_GL
 # Heuristic code
 {heuristic_code}
 
-def evaluate_single(h: Optional[Callable] = None, dataset_path: str = 'search_dataset.pkl'):
+def evaluate_single(search: Callable, dataset_path: str = 'search_dataset.pkl'):
     with open(dataset_path, 'rb') as f:
         dataset = pickle.load(f)
-
-    params = paramObj()
-    params.mode = 'GL'
-    params.method = 'greedy'
-    params.minDepth = False
-    params.hv = 1
-    params.hi = 1
-    params.ht = 1
-    params.hl = 1
-    params.hr = 3
-    params.wMax = 10
-    params.custom_heuristic = h
 
     total_gate_count = 0
     total_compute_time = 0
 
     for matrix in dataset:
-        n, gateCount, depth, procTime, check, circ = synth_GL(matrix, params)
+        n, gateCount, depth, procTime, check, circ = search(matrix)
         if not check:
             return 0, total_compute_time  # Return score and compute time
         total_gate_count += gateCount
@@ -376,35 +353,35 @@ def evaluate_single(h: Optional[Callable] = None, dataset_path: str = 'search_da
     return score, total_compute_time
 
 try:
-    # Find the heuristic function
-    heuristic_func = None
-    possible_names = ['heuristic', 'compute_heuristic', 'gl_heuristic', 'matrix_heuristic']
+    # Find the search function
+    search_func = None
+    possible_names = ['search', 'search_function', 'synthesize', 'synth']
     
     for name in possible_names:
         if name in globals() and callable(globals()[name]):
-            heuristic_func = globals()[name]
+            search_func = globals()[name]
             break
     
-    if heuristic_func is None:
+    if search_func is None:
         for name, obj in globals().items():
             if (callable(obj) and 
                 not name.startswith('_') and 
                 name not in ['pickle', 'numpy', 'np', 'sys', 'traceback', 'paramObj', 'synth_GL', 'evaluate_single']):
-                heuristic_func = obj
+                search_func = obj
                 break
     
-    if heuristic_func is None:
-        raise RuntimeError("No suitable heuristic function found")
+    if search_func is None:
+        raise RuntimeError("No suitable search function found")
     
     # Run the evaluation
-    score, total_compute_time = evaluate_single(heuristic_func)
+    score, total_compute_time = evaluate_single(search_func)
     
     # Save result
     result = {{
         'success': True,
         'score': score,
         'total_compute_time': total_compute_time,
-        'function_name': heuristic_func.__name__
+        'function_name': search_func.__name__
     }}
     
     with open('{temp_file.name}.result', 'wb') as f:
@@ -479,6 +456,7 @@ except Exception as e:
             fitness=0.0,
             additional_data={
                 "score": "0.0",
+                "total_compute_time": "0.0",
                 "validity": "error", 
                 "error": str(e),
                 "execution_method": "single_subprocess"

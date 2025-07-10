@@ -72,11 +72,18 @@ class Population:
     def get_best(self) -> Organism:
         return max(self.population, key=lambda x: x.evaluation.fitness)
     
+    def get_worst(self) -> Organism:
+        return min(self.population, key=lambda x: x.evaluation.fitness)
+    
     def get_random(self) -> Organism:
         return random.choice(self.population)
     
     def get_weighted_random(self) -> Organism:
-        weights = [organism.evaluation.fitness ** 4 + 1 for organism in self.population]
+        worst_fitness = self.get_worst().evaluation.fitness
+        norm = 0
+        if worst_fitness < 0:
+            norm = - worst_fitness
+        weights = [(organism.evaluation.fitness + norm + 1) ** 2 for organism in self.population]
         return random.choices(self.population, weights=weights, k=1)[0]
     
     def get_next(self) -> Organism:

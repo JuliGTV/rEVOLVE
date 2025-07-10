@@ -1,0 +1,2203 @@
+[
+  {
+    "id": 1,
+    "parent_id": null,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    return tuple(np.concatenate((np.sum(matrix,axis=0),np.sum(matrix,axis=0)))) \n",
+    "evaluation": {
+      "fitness": -2.0999999999999943,
+      "additional_data": {
+        "score": "-2.100000",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 5,
+    "creation_info": null
+  },
+  {
+    "id": 2,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    return tuple(np.concatenate((np.sum(original,axis=0), np.sum(original,axis=1), np.sum(inverse,axis=0), np.sum(inverse,axis=1))))\n",
+    "evaluation": {
+      "fitness": 4.833333333333329,
+      "additional_data": {
+        "score": "4.833333",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 15,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 4,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 3,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    \n    # Original matrix features\n    col_sums = np.sum(matrix, axis=0)\n    row_sums = np.sum(matrix, axis=1)\n    log_col = np.log(col_sums + 1)\n    log_row = np.log(row_sums + 1)\n    \n    # Transpose matrix features\n    matrix_t = matrix.T\n    col_sums_t = np.sum(matrix_t, axis=0)\n    row_sums_t = np.sum(matrix_t, axis=1)\n    log_col_t = np.log(col_sums_t + 1)\n    log_row_t = np.log(row_sums_t + 1)\n    \n    # Combine all features into tuple\n    return tuple(np.concatenate((\n        col_sums, row_sums, log_col, log_row,\n        col_sums_t, row_sums_t, log_col_t, log_row_t\n    )))\n",
+    "evaluation": {
+      "fitness": 2.3549883365631104,
+      "additional_data": {
+        "score": "2.354988",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 7,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 4,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    parity = matrix[:n, :n]\n    inv_parity = matrix[n:, n:]\n    \n    col_sums = np.sum(parity, axis=0)\n    row_sums = np.sum(parity, axis=1)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    \n    log_col = np.log(col_sums + 1e-10)\n    log_row = np.log(row_sums + 1e-10)\n    log_inv_col = np.log(inv_col_sums + 1e-10)\n    log_inv_row = np.log(inv_row_sums + 1e-10)\n    \n    return tuple(np.concatenate((col_sums, row_sums, inv_col_sums, inv_row_sums, log_col, log_row, log_inv_col, log_inv_row)))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 1,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 5,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    forward = matrix[:n,:n]\n    inv = matrix[n:,n:]\n    \n    def weighted_sum(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        weighted_col = np.sum(np.log(col_sums + 1))\n        weighted_row = np.sum(np.log(row_sums + 1))\n        return weighted_col, weighted_row\n    \n    f_col, f_row = weighted_sum(forward)\n    i_col, i_row = weighted_sum(inv)\n    \n    return (f_col, i_col, f_row, i_row, np.sum(forward), np.sum(inv))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'NoneType' object is not subscriptable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 5,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 6,
+    "parent_id": 1,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    \n    n = matrix.shape[0] // 2\n    parity = matrix[:n,:n]\n    inv_parity = matrix[n:,n:]\n    \n    # Column metrics\n    col_sums = np.sum(parity, axis=0)\n    inv_col_sums = np.sum(inv_parity, axis=0)\n    col_log = np.sum(np.log2(col_sums + 1))\n    inv_col_log = np.sum(np.log2(inv_col_sums + 1))\n    \n    # Row metrics\n    row_sums = np.sum(parity, axis=1)\n    inv_row_sums = np.sum(inv_parity, axis=1)\n    row_log = np.sum(np.log2(row_sums + 1))\n    inv_row_log = np.sum(np.log2(inv_row_sums + 1))\n    \n    # Sparsity metrics\n    sparsity = np.sum(parity)\n    inv_sparsity = np.sum(inv_parity)\n    \n    return (col_log, inv_col_log, row_log, inv_row_log, sparsity, inv_sparsity)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'NoneType' object is not subscriptable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 2,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 7,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    # Column sums with logarithmic weighting\n    orig_col = np.sum(original, axis=0)\n    inv_col = np.sum(inverse, axis=0)\n    \n    # Row sums\n    orig_row = np.sum(original, axis=1)\n    inv_row = np.sum(inverse, axis=1)\n    \n    # Logarithmic terms for columns close to weight 1\n    log_orig_col = np.log2(orig_col + 1e-10)\n    log_inv_col = np.log2(inv_col + 1e-10)\n    \n    # Additional metrics\n    max_orig_col = np.max(original, axis=0)\n    max_inv_col = np.max(inverse, axis=0)\n    \n    # Combine all features\n    features = np.concatenate((\n        orig_col, inv_col,\n        orig_row, inv_row,\n        log_orig_col, log_inv_col,\n        max_orig_col, max_inv_col\n    ))\n    \n    return tuple(features)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 11,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 8,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    col_sums_original = np.sum(original, axis=0)\n    row_sums_original = np.sum(original, axis=1)\n    col_sums_inverse = np.sum(inverse, axis=0)\n    row_sums_inverse = np.sum(inverse, axis=1)\n    diag_original = np.diagonal(original)\n    diag_inverse = np.diagonal(inverse)\n    log_col_original = np.log(col_sums_original + 1)\n    log_col_inverse = np.log(col_sums_inverse + 1)\n    return tuple(np.concatenate((\n        col_sums_original, row_sums_original,\n        col_sums_inverse, row_sums_inverse,\n        diag_original, diag_inverse,\n        log_col_original, log_col_inverse\n    )))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 8,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 9,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    # Original matrix features\n    col_sums_orig = np.sum(original, axis=0)\n    row_sums_orig = np.sum(original, axis=1)\n    diag_orig = np.diag(original)\n    \n    # Inverse matrix features\n    col_sums_inv = np.sum(inverse, axis=0)\n    row_sums_inv = np.sum(inverse, axis=1)\n    diag_inv = np.diag(inverse)\n    \n    # Weighted features\n    log_col_orig = np.log(np.maximum(col_sums_orig, 1))\n    log_row_orig = np.log(np.maximum(row_sums_orig, 1))\n    log_col_inv = np.log(np.maximum(col_sums_inv, 1))\n    log_row_inv = np.log(np.maximum(row_sums_inv, 1))\n    \n    # Diagonal indicators\n    diag_dist_orig = 1 - diag_orig\n    diag_dist_inv = 1 - diag_inv\n    \n    # Cross terms\n    cross_col = col_sums_orig * col_sums_inv\n    cross_row = row_sums_orig * row_sums_inv\n    \n    # Combine all features\n    return tuple(np.concatenate((\n        col_sums_orig, row_sums_orig,\n        col_sums_inv, row_sums_inv,\n        log_col_orig, log_row_orig,\n        log_col_inv, log_row_inv,\n        diag_dist_orig, diag_dist_inv,\n        cross_col, cross_row\n    )))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 9,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 10,
+    "parent_id": 3,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    \n    n = matrix.shape[0] // 2\n    X = matrix[:n, :n]\n    Z = matrix[n:, n:]\n    XZ = matrix[:n, n:]\n    ZX = matrix[n:, :n]\n    \n    # Block-wise features\n    x_col_sums = np.sum(X, axis=0)\n    z_row_sums = np.sum(Z, axis=1)\n    xz_col_sums = np.sum(XZ, axis=0)\n    zx_row_sums = np.sum(ZX, axis=1)\n    \n    # Distance to identity metrics\n    x_dist = np.sum(X != np.eye(n))\n    z_dist = np.sum(Z != np.eye(n))\n    xz_dist = np.sum(XZ)\n    zx_dist = np.sum(ZX)\n    \n    # Non-linear transformations\n    x_col_entropy = -np.sum(X * np.log(X + 1e-10), axis=0)\n    z_row_entropy = -np.sum(Z * np.log(Z + 1e-10), axis=1)\n    \n    # Matrix norm features\n    x_norm = np.linalg.norm(X, 'fro')\n    z_norm = np.linalg.norm(Z, 'fro')\n    xz_norm = np.linalg.norm(XZ, 'fro')\n    zx_norm = np.linalg.norm(ZX, 'fro')\n    \n    # Combined features\n    return tuple(np.concatenate((\n        x_col_sums, z_row_sums, xz_col_sums, zx_row_sums,\n        [x_dist, z_dist, xz_dist, zx_dist],\n        x_col_entropy, z_row_entropy,\n        [x_norm, z_norm, xz_norm, zx_norm]\n    )))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 10,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 11,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    orig_col_sums = np.sum(original, axis=0)\n    orig_row_sums = np.sum(original, axis=1)\n    inv_col_sums = np.sum(inverse, axis=0)\n    inv_row_sums = np.sum(inverse, axis=1)\n    \n    log_orig_col = np.log(orig_col_sums + 1)\n    log_inv_col = np.log(inv_col_sums + 1)\n    \n    return tuple(np.concatenate((\n        orig_col_sums,\n        orig_row_sums,\n        inv_col_sums,\n        inv_row_sums,\n        log_orig_col,\n        log_inv_col,\n        [np.prod(orig_col_sums + 1)],\n        [np.prod(inv_col_sums + 1)]\n    )))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'NoneType' object is not subscriptable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 12,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 12,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    orig_col_sums = np.sum(original, axis=0)\n    orig_row_sums = np.sum(original, axis=1)\n    inv_col_sums = np.sum(inverse, axis=0)\n    inv_row_sums = np.sum(inverse, axis=1)\n    \n    log_orig_col = np.log(orig_col_sums + 1)\n    log_orig_row = np.log(orig_row_sums + 1)\n    log_inv_col = np.log(inv_col_sums + 1)\n    log_inv_row = np.log(inv_row_sums + 1)\n    \n    total_sum = np.sum(original) + np.sum(inverse)\n    \n    min_orig_col = np.min(orig_col_sums)\n    min_orig_row = np.min(orig_row_sums)\n    min_inv_col = np.min(inv_col_sums)\n    min_inv_row = np.min(inv_row_sums)\n    \n    return (total_sum,) + tuple(np.concatenate((\n        orig_col_sums, orig_row_sums, inv_col_sums, inv_row_sums,\n        log_orig_col, log_orig_row, log_inv_col, log_inv_row,\n        [min_orig_col, min_orig_row, min_inv_col, min_inv_row]\n    )))\n",
+    "evaluation": {
+      "fitness": 1.656003379821776,
+      "additional_data": {
+        "score": "1.656003",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 13,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 13,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def col_log_sums(m):\n        sums = np.sum(m, axis=0)\n        return np.where(sums > 0, np.log(sums), 0)\n    \n    def row_log_sums(m):\n        sums = np.sum(m, axis=1)\n        return np.where(sums > 0, np.log(sums), 0)\n    \n    orig_col = np.sum(original, axis=0)\n    orig_row = np.sum(original, axis=1)\n    inv_col = np.sum(inverse, axis=0)\n    inv_row = np.sum(inverse, axis=1)\n    \n    orig_col_log = col_log_sums(original)\n    orig_row_log = row_log_sums(original)\n    inv_col_log = col_log_sums(inverse)\n    inv_row_log = row_log_sums(inverse)\n    \n    return tuple(np.concatenate((\n        orig_col, orig_row, inv_col, inv_row,\n        orig_col_log, orig_row_log, inv_col_log, inv_row_log\n    )))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 14,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 6
+    }
+  },
+  {
+    "id": 14,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_col = np.log(np.maximum(col_sums, 1))\n        log_row = np.log(np.maximum(row_sums, 1))\n        inv_col = 1/(col_sums + 0.1)\n        inv_row = 1/(row_sums + 0.1)\n        return np.concatenate([col_sums, row_sums, log_col, log_row, inv_col, inv_row])\n    \n    orig_terms = weighted_sums(original)\n    inv_terms = weighted_sums(inverse)\n    \n    interaction = np.sum(original * inverse.T, axis=None)\n    \n    return tuple(np.concatenate([orig_terms, inv_terms, [interaction]]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 15,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 7
+    }
+  },
+  {
+    "id": 15,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    transpose = original.T\n    inv_transpose = inverse.T\n    \n    def weighted_sum(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        weighted_col = np.sum(np.log(col_sums + 1))\n        weighted_row = np.sum(np.log(row_sums + 1))\n        return weighted_col + weighted_row\n    \n    original_score = weighted_sum(original)\n    inverse_score = weighted_sum(inverse)\n    transpose_score = weighted_sum(transpose)\n    inv_transpose_score = weighted_sum(inv_transpose)\n    \n    return (original_score, inverse_score, transpose_score, inv_transpose_score)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'NoneType' object is not subscriptable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 16,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 8
+    }
+  },
+  {
+    "id": 16,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    orig_col = np.sum(original, axis=0)\n    orig_row = np.sum(original, axis=1)\n    inv_col = np.sum(inverse, axis=0)\n    inv_row = np.sum(inverse, axis=1)\n    \n    log_orig_col = np.log(orig_col + 1)\n    log_orig_row = np.log(orig_row + 1)\n    log_inv_col = np.log(inv_col + 1)\n    log_inv_row = np.log(inv_row + 1)\n    \n    return tuple(np.concatenate((\n        orig_col, orig_row, inv_col, inv_row,\n        log_orig_col, log_orig_row, log_inv_col, log_inv_row,\n        [np.min(orig_col), np.max(orig_col)],\n        [np.min(orig_row), np.max(orig_row)],\n        [np.min(inv_col), np.max(inv_col)],\n        [np.min(inv_row), np.max(inv_row)]\n    )))\n",
+    "evaluation": {
+      "fitness": 0.29308177630106513,
+      "additional_data": {
+        "score": "0.293082",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 18,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 9
+    }
+  },
+  {
+    "id": 17,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    trans_original = original.T\n    trans_inverse = inverse.T\n    \n    def get_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_col = np.log(col_sums + 1e-10)\n        log_row = np.log(row_sums + 1e-10)\n        entropy_col = -np.sum(mat * np.log(mat + 1e-10), axis=0)\n        entropy_row = -np.sum(mat * np.log(mat + 1e-10), axis=1)\n        return np.concatenate([\n            col_sums, row_sums, log_col, log_row, \n            entropy_col, entropy_row,\n            np.sum(mat * (1 - mat), axis=0),\n            np.sum(mat * (1 - mat), axis=1)\n        ])\n    \n    metrics = np.concatenate([\n        get_metrics(original),\n        get_metrics(inverse),\n        get_metrics(trans_original),\n        get_metrics(trans_inverse)\n    ])\n    \n    return tuple(metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 20,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 10
+    }
+  },
+  {
+    "id": 18,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted(arr):\n        return np.sum(np.log2(np.maximum(arr, 1)), np.sum(np.log2(np.maximum(arr.T, 1)))\n    \n    orig_col_log, orig_row_log = weighted(original)\n    inv_col_log, inv_row_log = weighted(inverse)\n    \n    orig_diag = np.sum(np.diag(original))\n    inv_diag = np.sum(np.diag(inverse))\n    \n    return (orig_col_log, orig_row_log, inv_col_log, inv_row_log, orig_diag, inv_diag)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmpdwcn_ouv.py\", line 35\n    return np.sum(np.log2(np.maximum(arr, 1)), np.sum(np.log2(np.maximum(arr.T, 1)))\n                 ^\nSyntaxError: '(' was never closed\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 17,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 11
+    }
+  },
+  {
+    "id": 19,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sum(arr):\n        return np.sum(np.where(arr != 0, np.log2(arr + 1), 0))\n    \n    original_cols = [weighted_sum(original[:,i]) for i in range(n)]\n    original_rows = [weighted_sum(original[i,:]) for i in range(n)]\n    inverse_cols = [weighted_sum(inverse[:,i]) for i in range(n)]\n    inverse_rows = [weighted_sum(inverse[i,:]) for i in range(n)]\n    \n    return tuple(original_cols + original_rows + inverse_cols + inverse_rows)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 22,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 12
+    }
+  },
+  {
+    "id": 20,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    # Column and row sums with log weighting\n    orig_col = np.sum(original, axis=0)\n    orig_row = np.sum(original, axis=1)\n    inv_col = np.sum(inverse, axis=0)\n    inv_row = np.sum(inverse, axis=1)\n    \n    # Logarithmic terms that prioritize near-complete columns/rows\n    log_orig_col = np.log(orig_col + 1)\n    log_orig_row = np.log(orig_row + 1)\n    log_inv_col = np.log(inv_col + 1)\n    log_inv_row = np.log(inv_row + 1)\n    \n    # Combine original and inverse information\n    min_col = np.minimum(orig_col, inv_col)\n    min_row = np.minimum(orig_row, inv_row)\n    \n    # Sparsity term (count of single entries)\n    sparsity = (orig_col == 1).sum() + (orig_row == 1).sum() + (inv_col == 1).sum() + (inv_row == 1).sum()\n    \n    return tuple(np.concatenate((\n        orig_col, orig_row, inv_col, inv_row,\n        log_orig_col, log_orig_row, log_inv_col, log_inv_row,\n        min_col, min_row,\n        [sparsity]\n    )))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 21,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 13
+    }
+  },
+  {
+    "id": 21,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    trans_orig = original.T\n    trans_inv = inverse.T\n    \n    def col_metrics(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_col = np.where(col_sums > 0, np.log2(col_sums), 0)\n        log_row = np.where(row_sums > 0, np.log2(row_sums), 0)\n        return np.concatenate([\n            col_sums,\n            row_sums,\n            log_col,\n            log_row,\n            np.sum(mat != trans_orig, axis=0),\n            np.sum(mat != trans_orig, axis=1)\n        ])\n    \n    orig_metrics = col_metrics(original)\n    inv_metrics = col_metrics(inverse)\n    combined = np.minimum(orig_metrics, inv_metrics)\n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 24,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 14
+    }
+  },
+  {
+    "id": 22,
+    "parent_id": 7,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n].astype(float)\n    inverse = matrix[n:,n:].astype(float)\n    \n    # Column metrics\n    orig_col_sums = np.sum(original, axis=0)\n    inv_col_sums = np.sum(inverse, axis=0)\n    \n    # Row metrics\n    orig_row_sums = np.sum(original, axis=1)\n    inv_row_sums = np.sum(inverse, axis=1)\n    \n    # Column near-completion metrics\n    orig_col_near1 = np.sum(np.abs(orig_col_sums - 1))\n    inv_col_near1 = np.sum(np.abs(inv_col_sums - 1))\n    \n    # Row near-completion metrics\n    orig_row_near1 = np.sum(np.abs(orig_row_sums - 1))\n    inv_row_near1 = np.sum(np.abs(inv_row_sums - 1))\n    \n    # Matrix sparsity\n    orig_sparsity = np.sum(original != 0)\n    inv_sparsity = np.sum(inverse != 0)\n    \n    # Column overlaps\n    orig_col_overlaps = np.sum(original[:,:,None] * original[:,None,:], axis=0).flatten()\n    inv_col_overlaps = np.sum(inverse[:,:,None] * inverse[:,None,:], axis=0).flatten()\n    \n    # Combined features\n    features = [\n        np.sum(orig_col_sums), np.sum(inv_col_sums),\n        np.sum(orig_row_sums), np.sum(inv_row_sums),\n        orig_col_near1, inv_col_near1,\n        orig_row_near1, inv_row_near1,\n        orig_sparsity, inv_sparsity,\n        *orig_col_overlaps, *inv_col_overlaps\n    ]\n    \n    return tuple(features)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 25,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 23,
+    "parent_id": 2,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        return np.concatenate((col_sums, row_sums, log_col, log_row))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 31.93333333333333,
+      "additional_data": {
+        "score": "31.933333",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 20,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 26,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 15
+    }
+  },
+  {
+    "id": 24,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 0.1)\n        log_row = np.log(row_sums + 0.1)\n        max_col = np.max(col_sums)\n        max_row = np.max(row_sums)\n        total_sum = np.sum(np.abs(m))\n        return np.concatenate((col_sums, row_sums, log_col, log_row, [max_col, max_row, total_sum]))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 28,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 25,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        loglog_col = np.log(log_col + 1)\n        loglog_row = np.log(log_row + 1)\n        col_prod = np.prod(col_sums + 1)\n        row_prod = np.prod(row_sums + 1)\n        return np.concatenate((col_sums, row_sums, log_col, log_row, loglog_col, loglog_row, [col_prod], [row_prod]))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 6.786777528127033,
+      "additional_data": {
+        "score": "6.786778",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 30,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 26,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    transpose = original.T\n    inverse_transpose = inverse.T\n    \n    def compute_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        \n        # Count of columns/rows that are already correct (weight 1)\n        correct_cols = np.sum(col_sums == 1)\n        correct_rows = np.sum(row_sums == 1)\n        \n        # Measure of how spread out the 1s are\n        col_nonzeros = np.sum(col_sums > 0)\n        row_nonzeros = np.sum(row_sums > 0)\n        \n        # Interaction between columns (how many pairs share rows)\n        interaction = np.sum(m.T @ m)\n        \n        return np.concatenate((\n            col_sums, row_sums, \n            log_col, log_row,\n            [correct_cols, correct_rows],\n            [col_nonzeros, row_nonzeros],\n            [interaction]\n        ))\n    \n    metrics = [\n        compute_metrics(original),\n        compute_metrics(inverse),\n        compute_metrics(transpose),\n        compute_metrics(inverse_transpose)\n    ]\n    \n    # Return the best metrics (minimum) across all variations\n    return tuple(np.min(metrics, axis=0))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 33,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 27,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    \n    def get_variants(m):\n        original = m[:n,:n]\n        inverse = m[n:,n:]\n        transpose = original.T\n        inv_transpose = inverse.T\n        return [original, inverse, transpose, inv_transpose]\n    \n    variants = get_variants(matrix)\n    \n    def weighted_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        \n        # Position weights (earlier columns more important)\n        pos_weights = np.arange(n, 0, -1)\n        \n        # Column metrics\n        col_nonzeros = col_sums + 1e-9\n        col_entropy = -col_nonzeros * np.log(col_nonzeros)\n        col_score = (1 / (col_nonzeros ** 2)) * pos_weights\n        \n        # Row metrics\n        row_nonzeros = row_sums + 1e-9\n        row_entropy = -row_nonzeros * np.log(row_nonzeros)\n        row_score = (1 / (row_nonzeros ** 2)) * pos_weights\n        \n        return np.concatenate([\n            col_score, row_score, \n            col_entropy, row_entropy,\n            np.log(col_nonzeros), np.log(row_nonzeros)\n        ])\n    \n    all_metrics = []\n    for variant in variants:\n        all_metrics.append(weighted_metrics(variant))\n    \n    return tuple(np.min(all_metrics, axis=0))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 32,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 28,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 0.5)\n        log_row = np.log2(row_sums + 0.5)\n        single_col = (col_sums == 1).astype(float)\n        single_row = (row_sums == 1).astype(float)\n        return np.concatenate((col_sums, row_sums, log_col, log_row, single_col, single_row))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 37,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 29,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def enhanced_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        exp_col = np.exp(-(col_sums - 1)**2)\n        exp_row = np.exp(-(row_sums - 1)**2)\n        col_var = np.var(m, axis=0)\n        row_var = np.var(m, axis=1)\n        rank = np.linalg.matrix_rank(m)\n        return np.concatenate((\n            col_sums * exp_col,\n            row_sums * exp_row,\n            log_col * (1 + col_var),\n            log_row * (1 + row_var),\n            [rank]\n        ))\n    \n    original_metrics = enhanced_metrics(original)\n    inverse_metrics = enhanced_metrics(inverse)\n    \n    combined = np.concatenate((\n        np.minimum(original_metrics, inverse_metrics),\n        np.maximum(original_metrics, inverse_metrics)\n    ))\n    \n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 38,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 6
+    }
+  },
+  {
+    "id": 30,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def enhanced_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        col_vars = np.var(m, axis=0)\n        row_vars = np.var(m, axis=1)\n        near_complete_col = np.exp(-np.abs(col_sums - 1))\n        near_complete_row = np.exp(-np.abs(row_sums - 1))\n        return np.concatenate((\n            col_sums * near_complete_col,\n            row_sums * near_complete_row,\n            log_col * (1 + col_vars),\n            log_row * (1 + row_vars),\n            col_vars,\n            row_vars\n        ))\n    \n    original_metrics = enhanced_metrics(original)\n    inverse_metrics = enhanced_metrics(inverse)\n    combined = 0.7 * np.minimum(original_metrics, inverse_metrics) + 0.3 * np.maximum(original_metrics, inverse_metrics)\n    \n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 36,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 7
+    }
+  },
+  {
+    "id": 31,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 0.5)  # More aggressive log transform\n        log_row = np.log(row_sums + 0.5)\n        bonus_col = (col_sums == 1).astype(float)  # Bonus for columns with sum=1\n        bonus_row = (row_sums == 1).astype(float)\n        return np.concatenate((col_sums, row_sums, log_col, log_row, bonus_col, bonus_row))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 40,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 8
+    }
+  },
+  {
+    "id": 32,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def enhanced_features(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 1)  # changed to log2\n        log_row = np.log2(row_sums + 1)\n        col_var = np.var(m, axis=0)\n        row_var = np.var(m, axis=1)\n        col_max = np.max(m, axis=0)\n        row_max = np.max(m, axis=1)\n        return np.concatenate((\n            col_sums, row_sums, \n            log_col, log_row,\n            col_var, row_var,\n            col_max, row_max\n        ))\n    \n    original_features = enhanced_features(original)\n    inverse_features = enhanced_features(inverse)\n    \n    return tuple(np.minimum(original_features, inverse_features))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 41,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 9
+    }
+  },
+  {
+    "id": 33,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 0.1)\n        log_row = np.log2(row_sums + 0.1)\n        prod_col = np.prod(col_sums + 1)\n        prod_row = np.prod(row_sums + 1)\n        return np.concatenate((col_sums, row_sums, log_col, log_row, [prod_col], [prod_row]))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 30.67433501879374,
+      "additional_data": {
+        "score": "30.674335",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 11,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 39,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 10
+    }
+  },
+  {
+    "id": 34,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 0.1)\n        log_row = np.log(row_sums + 0.1)\n        return np.concatenate((col_sums, row_sums, log_col, log_row))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 42,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 11
+    }
+  },
+  {
+    "id": 35,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 0.5)\n        log_row = np.log(row_sums + 0.5)\n        sum_col = np.sum(col_sums)\n        sum_row = np.sum(row_sums)\n        max_col = np.max(col_sums)\n        max_row = np.max(row_sums)\n        return np.concatenate((col_sums, row_sums, log_col, log_row, [sum_col], [sum_row], [max_col], [max_row]))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 44,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 36,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def enhanced_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        \n        # Column features\n        col_nonzero = np.count_nonzero(m, axis=0)\n        col_entropy = -np.sum(m * np.log(m + 1e-10), axis=0)\n        col_weight = np.exp(-(col_sums - 1)**2)\n        \n        # Row features\n        row_nonzero = np.count_nonzero(m, axis=1)\n        row_entropy = -np.sum(m * np.log(m + 1e-10), axis=1)\n        row_weight = np.exp(-(row_sums - 1)**2)\n        \n        # Interaction terms\n        col_interaction = np.sum(m.T @ m, axis=1)\n        row_interaction = np.sum(m @ m.T, axis=1)\n        \n        return np.concatenate((\n            col_sums, row_sums,\n            col_nonzero, row_nonzero,\n            col_entropy, row_entropy,\n            col_weight, row_weight,\n            col_interaction, row_interaction\n        ))\n    \n    original_metrics = enhanced_metrics(original)\n    inverse_metrics = enhanced_metrics(inverse)\n    \n    # Weight inverse metrics slightly higher\n    combined = 0.4 * original_metrics + 0.6 * inverse_metrics\n    \n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 45,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 12
+    }
+  },
+  {
+    "id": 37,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def enhanced_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        \n        # Distance to nearest basis vector for columns\n        basis_dist = np.minimum(col_sums, n - col_sums + 1)\n        \n        # Column-wise metrics\n        col_metrics = np.sqrt(col_sums + 1e-6) + basis_dist\n        \n        # Row-wise metrics\n        row_metrics = np.sqrt(row_sums + 1e-6)\n        \n        # Sparsity measure\n        sparsity = np.sum(m) / (n*n)\n        \n        # Combine all metrics\n        return np.concatenate((\n            col_metrics,\n            row_metrics,\n            [sparsity],\n            np.sum(m, axis=0) / (np.sum(m, axis=1) + 1)  # Column/row ratio\n        ))\n    \n    original_metrics = enhanced_metrics(original)\n    inverse_metrics = enhanced_metrics(inverse)\n    \n    return tuple(np.minimum(original_metrics, inverse_metrics))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 43,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 13
+    }
+  },
+  {
+    "id": 38,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 0.1)\n        log_row = np.log(row_sums + 0.1)\n        return np.concatenate((col_sums, row_sums, log_col, log_row))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 47,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 14
+    }
+  },
+  {
+    "id": 39,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 1)\n        log_row = np.log2(row_sums + 1)\n        bonus_col = np.where(col_sums == 1, -1, 0)\n        bonus_row = np.where(row_sums == 1, -1, 0)\n        return np.concatenate((col_sums, row_sums, log_col, log_row, bonus_col, bonus_row))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 48,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 15
+    }
+  },
+  {
+    "id": 40,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def enhanced_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        \n        # Position weights (center more important)\n        pos_weights = np.abs(np.arange(n) - n/2 + 0.5)\n        weighted_cols = np.sum(m * pos_weights, axis=0)\n        weighted_rows = np.sum(m * pos_weights[:,None], axis=1)\n        \n        # Off-diagonal elements\n        off_diag = m - np.diag(np.diag(m))\n        off_col = np.sum(off_diag, axis=0)\n        off_row = np.sum(off_diag, axis=1)\n        \n        # Column/row variances\n        col_var = np.var(m, axis=0)\n        row_var = np.var(m, axis=1)\n        \n        # Hamming distances\n        col_hamming = np.sum(m[:,:,None] != m[:,None,:], axis=0).sum(axis=1)\n        row_hamming = np.sum(m[:,:,None] != m[None,:,:], axis=2).sum(axis=1)\n        \n        return np.concatenate((\n            col_sums, row_sums, \n            log_col, log_row,\n            weighted_cols, weighted_rows,\n            off_col, off_row,\n            col_var, row_var,\n            col_hamming, row_hamming\n        ))\n    \n    orig_metrics = enhanced_metrics(original)\n    inv_metrics = enhanced_metrics(inverse)\n    \n    # Combine using both min and max for more information\n    combined = np.concatenate((\n        np.minimum(orig_metrics, inv_metrics),\n        np.maximum(orig_metrics, inv_metrics)\n    ))\n    \n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 46,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 16
+    }
+  },
+  {
+    "id": 41,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 0.5)\n        log_row = np.log2(row_sums + 0.5)\n        inv_col = 1/(col_sums + 1)\n        inv_row = 1/(row_sums + 1)\n        max_col = np.max(m, axis=0)\n        max_row = np.max(m, axis=1)\n        return np.concatenate((col_sums, row_sums, log_col, log_row, inv_col, inv_row, max_col, max_row))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    transposed_sums = weighted_sums(original.T)\n    \n    return tuple(np.minimum.reduce([original_sums, inverse_sums, transposed_sums]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 49,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 42,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def enhanced_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 0.1)\n        log_row = np.log2(row_sums + 0.1)\n        \n        # Additional sophisticated metrics\n        col_nonzeros = np.count_nonzero(m, axis=0)\n        row_nonzeros = np.count_nonzero(m, axis=1)\n        col_entropy = -np.sum(m * np.log2(m + 1e-10), axis=0)\n        row_entropy = -np.sum(m * np.log2(m + 1e-10), axis=1)\n        \n        # Block-wise metrics\n        block_diag = np.trace(m)\n        block_off_diag = np.sum(m) - block_diag\n        \n        # Distance from permutation\n        perm_dist = min(np.sum(np.abs(m - np.eye(n))), \n                       np.sum(np.abs(m - np.eye(n)[::-1])))\n        \n        return np.concatenate((\n            col_sums, row_sums, \n            log_col, log_row,\n            col_nonzeros, row_nonzeros,\n            col_entropy, row_entropy,\n            [block_diag, block_off_diag, perm_dist]\n        ))\n    \n    original_metrics = enhanced_metrics(original)\n    inverse_metrics = enhanced_metrics(inverse)\n    transposed_metrics = enhanced_metrics(original.T)\n    \n    return tuple(np.minimum.reduce([original_metrics, inverse_metrics, transposed_metrics]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 50,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 43,
+    "parent_id": 34,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def get_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 0.1)\n        log_row = np.log(row_sums + 0.1)\n        col_entropy = -np.sum(m * np.log(m + 0.1), axis=0)\n        row_entropy = -np.sum(m * np.log(m + 0.1), axis=1)\n        col_var = np.var(m, axis=0)\n        row_var = np.var(m, axis=1)\n        return np.concatenate([\n            col_sums, row_sums, log_col, log_row, \n            col_entropy, row_entropy, col_var, row_var\n        ])\n    \n    original_metrics = get_metrics(original)\n    inverse_metrics = get_metrics(inverse)\n    transposed_metrics = get_metrics(original.T)\n    \n    combined = np.concatenate([\n        original_metrics, \n        inverse_metrics, \n        transposed_metrics,\n        np.minimum(original_metrics, inverse_metrics),\n        np.minimum(original_metrics, transposed_metrics)\n    ])\n    \n    return tuple(float(x) for x in combined)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 51,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 44,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 0.5)\n        log_row = np.log2(row_sums + 0.5)\n        sq_col = np.sum(m**2, axis=0)\n        sq_row = np.sum(m**2, axis=1)\n        var_col = np.var(m, axis=0)\n        var_row = np.var(m, axis=1)\n        return np.concatenate((col_sums, row_sums, log_col, log_row, sq_col, sq_row, var_col, var_row))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 52,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 45,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        col_lin = col_sums - 1\n        row_lin = row_sums - 1\n        col_log = np.log(col_sums + 1)\n        row_log = np.log(row_sums + 1)\n        return np.concatenate((col_sums, row_sums, col_lin, row_lin, col_log, row_log))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 29,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 17
+    }
+  },
+  {
+    "id": 46,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def enhanced_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 0.1)\n        log_row = np.log(row_sums + 0.1)\n        geo_col = np.exp(np.mean(log_col))\n        geo_row = np.exp(np.mean(log_row))\n        unique_cols = len(set(tuple(col) for col in m.T))\n        unique_rows = len(set(tuple(row) for row in m))\n        rank = np.linalg.matrix_rank(m)\n        norm_fro = np.linalg.norm(m, 'fro')\n        return np.concatenate((\n            col_sums, row_sums, \n            log_col, log_row, \n            [geo_col, geo_row],\n            [unique_cols, unique_rows],\n            [rank, norm_fro]\n        ))\n    \n    orig_metrics = enhanced_metrics(original)\n    inv_metrics = enhanced_metrics(inverse)\n    \n    return tuple(np.minimum(orig_metrics, inv_metrics))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 56,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 47,
+    "parent_id": 26,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    transpose = original.T\n    inverse_transpose = inverse.T\n    \n    def compute_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        \n        correct_cols = np.sum(col_sums == 1)\n        correct_rows = np.sum(row_sums == 1)\n        \n        col_nonzeros = np.sum(col_sums > 0)\n        row_nonzeros = np.sum(row_sums > 0)\n        \n        interaction = np.sum(m.T @ m)\n        \n        return np.concatenate((\n            col_sums.astype(float), \n            row_sums.astype(float),\n            log_col, \n            log_row,\n            [float(correct_cols), float(correct_rows)],\n            [float(col_nonzeros), float(row_nonzeros)],\n            [float(interaction)]\n        ))\n    \n    metrics = np.array([\n        compute_metrics(original),\n        compute_metrics(inverse),\n        compute_metrics(transpose),\n        compute_metrics(inverse_transpose)\n    ])\n    \n    min_metrics = np.min(metrics, axis=0)\n    return tuple(float(x) for x in min_metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 57,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 48,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        return np.concatenate((log_col, log_row, col_sums, row_sums))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 31.9,
+      "additional_data": {
+        "score": "31.900000",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 8,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 34,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 18
+    }
+  },
+  {
+    "id": 49,
+    "parent_id": 8,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    # Calculate column sums with stabilization\n    col_sums_original = np.sum(original, axis=0) + 1e-10\n    col_sums_inverse = np.sum(inverse, axis=0) + 1e-10\n    \n    # Calculate log sums with stabilization\n    log_col_original = np.log(col_sums_original)\n    log_col_inverse = np.log(col_sums_inverse)\n    \n    # Calculate row sums\n    row_sums_original = np.sum(original, axis=1)\n    row_sums_inverse = np.sum(inverse, axis=1)\n    \n    # Combine metrics with weights\n    metrics = np.concatenate([\n        col_sums_original,\n        col_sums_inverse,\n        log_col_original,\n        log_col_inverse,\n        row_sums_original / n,\n        row_sums_inverse / n\n    ])\n    \n    return tuple(float(x) for x in metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 58,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 50,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def enhanced_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        \n        # Basic metrics\n        log_col = np.log2(col_sums + 0.1)\n        log_row = np.log2(row_sums + 0.1)\n        \n        # Additional sophisticated metrics\n        col_nonzero = np.count_nonzero(m, axis=0)\n        row_nonzero = np.count_nonzero(m, axis=1)\n        \n        # Column/row interaction metrics\n        col_overlap = np.sum(np.outer(col_sums, col_sums) * (1 - np.eye(n)), axis=0)\n        row_overlap = np.sum(np.outer(row_sums, row_sums) * (1 - np.eye(n)), axis=0)\n        \n        # Diagonal metrics\n        diag_dist = np.abs(np.arange(n) - np.argmax(m, axis=1))\n        anti_diag_dist = np.abs((n-1-np.arange(n)) - np.argmax(m, axis=1))\n        \n        # Almost-done metrics\n        near_single = np.exp(-np.abs(col_sums - 1))\n        near_zero = np.exp(-col_sums)\n        \n        return np.concatenate((\n            col_sums, row_sums,\n            log_col, log_row,\n            col_nonzero, row_nonzero,\n            col_overlap, row_overlap,\n            diag_dist, anti_diag_dist,\n            near_single, near_zero,\n            [np.sum(m)], [np.sum(np.abs(np.diff(m, axis=0)))]\n        ))\n    \n    original_metrics = enhanced_metrics(original)\n    inverse_metrics = enhanced_metrics(inverse)\n    transposed_metrics = enhanced_metrics(original.T)\n    \n    # Combine metrics with different combination strategies\n    min_metrics = np.minimum(original_metrics, inverse_metrics)\n    avg_metrics = (original_metrics + inverse_metrics) / 2\n    max_metrics = np.maximum(original_metrics, transposed_metrics)\n    \n    return tuple(np.concatenate((min_metrics, avg_metrics, max_metrics)))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 59,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 6
+    }
+  },
+  {
+    "id": 51,
+    "parent_id": 48,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        sq_col = (col_sums - 1)**2  # Strongly prefer columns with sum near 1\n        sq_row = (row_sums - 1)**2  # Strongly prefer rows with sum near 1\n        return np.concatenate((\n            log_col, log_row,\n            col_sums, row_sums,\n            sq_col, sq_row,\n            np.sum(m * np.arange(n)[None,:], axis=1),  # Weighted column contributions\n            np.sum(m * np.arange(n)[:,None], axis=0)   # Weighted row contributions\n        ))\n    \n    original_metrics = weighted_metrics(original)\n    inverse_metrics = weighted_metrics(inverse)\n    transposed_metrics = weighted_metrics(original.T)\n    \n    return tuple(np.minimum.reduce([original_metrics, inverse_metrics, transposed_metrics]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 60,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 52,
+    "parent_id": 48,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def enhanced_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        \n        # Additional metrics\n        col_overlaps = np.sum(m[:,:,None] & m[:,None,:], axis=0).ravel()\n        row_overlaps = np.sum(m[:,:,None] & m[None,:,:], axis=2).ravel()\n        col_nonzeros = np.count_nonzero(m, axis=0)\n        row_nonzeros = np.count_nonzero(m, axis=1)\n        col_entropy = -np.sum(m * np.log(m + 1e-10), axis=0)\n        row_entropy = -np.sum(m * np.log(m + 1e-10), axis=1)\n        \n        return np.concatenate((\n            log_col, log_row,\n            col_sums, row_sums,\n            col_overlaps, row_overlaps,\n            col_nonzeros, row_nonzeros,\n            col_entropy, row_entropy,\n            [np.sum(m)], [np.sum(np.abs(m - np.eye(n, dtype=int)))]\n        ))\n    \n    original_metrics = enhanced_metrics(original)\n    inverse_metrics = enhanced_metrics(inverse)\n    transposed_metrics = enhanced_metrics(original.T)\n    \n    return tuple(np.minimum.reduce([original_metrics, inverse_metrics, transposed_metrics]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 61,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 53,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def enhanced_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        \n        # Column-wise features\n        col_nonzeros = np.count_nonzero(m, axis=0)\n        col_entropy = -np.sum(m * np.log2(m + 1e-10), axis=0)\n        col_dist_to_basis = np.min(np.sum(m != np.eye(n), axis=0), \n                                 np.sum(m != np.zeros((n,n)), axis=0)\n        \n        # Row-wise features\n        row_nonzeros = np.count_nonzero(m, axis=1)\n        row_entropy = -np.sum(m * np.log2(m.T + 1e-10), axis=1)\n        \n        # Interaction terms\n        col_prod = np.prod(col_sums + 1)\n        row_prod = np.prod(row_sums + 1)\n        total_entropy = -np.sum(m * np.log2(m + 1e-10))\n        \n        # Distance to permutation\n        perm_dist = min(np.sum(m != np.eye(n)), np.sum(m != np.zeros((n,n))))\n        \n        return np.concatenate((\n            [perm_dist, total_entropy, col_prod, row_prod],\n            col_sums, row_sums, \n            col_nonzeros, row_nonzeros,\n            col_entropy, row_entropy,\n            col_dist_to_basis\n        ))\n    \n    original_metrics = enhanced_metrics(original)\n    inverse_metrics = enhanced_metrics(inverse)\n    combined_metrics = np.minimum(original_metrics, inverse_metrics)\n    \n    # Add cross-block metrics\n    cross_block = np.sum(original * inverse)\n    combined_metrics = np.concatenate((combined_metrics, [cross_block]))\n    \n    return tuple(combined_metrics)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmppsji0xxt.py\", line 41\n    col_dist_to_basis = np.min(np.sum(m != np.eye(n), axis=0), \n                              ^\nSyntaxError: '(' was never closed\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 62,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 7
+    }
+  },
+  {
+    "id": 54,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    idx = np.concatenate([np.arange(n, 2*n), np.arange(0, n)])\n    matrix2 = matrix[idx, :][:, idx]\n    \n    def get_features(mat):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        col_ones = (col_sums == 1).astype(float)\n        row_ones = (row_sums == 1).astype(float)\n        return np.concatenate([col_sums, row_sums, log_col, log_row, col_ones, row_ones])\n    \n    f1 = get_features(matrix)\n    f2 = get_features(matrix2)\n    min_f = np.minimum(f1, f2)\n    return tuple(min_f)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 31,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 19
+    }
+  },
+  {
+    "id": 55,
+    "parent_id": 48,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        \n        # New features\n        basis_dist = np.minimum(col_sums, np.abs(col_sums - 1))  # Distance from basis vector\n        col_interactions = np.outer(col_sums, col_sums).flatten()[:n]  # Interactions\n        \n        return np.concatenate((\n            log_col, log_row, \n            col_sums, row_sums,\n            basis_dist,\n            col_interactions\n        ))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 63,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 56,
+    "parent_id": 48,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    original_T = original.T\n    inverse_T = inverse.T\n    \n    def compute_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        col_dominance = col_sums - np.min(col_sums)\n        row_dominance = row_sums - np.min(row_sums)\n        col_entropy = -np.sum(m * np.log(m + (m == 0)), axis=0)\n        row_entropy = -np.sum(m * np.log(m + (m == 0)), axis=1)\n        permutation_score = np.sum(np.abs(m - np.eye(n, dtype=int)))\n        return np.concatenate((\n            log_col, log_row, \n            col_sums, row_sums,\n            col_dominance, row_dominance,\n            col_entropy, row_entropy,\n            [permutation_score]\n        ))\n    \n    variants = [\n        compute_metrics(original),\n        compute_metrics(inverse),\n        compute_metrics(original_T),\n        compute_metrics(inverse_T)\n    ]\n    \n    return tuple(np.min(variants, axis=0))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 64,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 57,
+    "parent_id": 48,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        col_weights = 1/(col_sums + 0.1)\n        row_weights = 1/(row_sums + 0.1)\n        products = np.outer(col_sums, row_sums).flatten()\n        return np.concatenate((col_weights, row_weights, col_sums, row_sums, products))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 66,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 58,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 0.1)\n        log_row = np.log(row_sums + 0.1)\n        prod_col = np.prod(col_sums + 1)\n        prod_row = np.prod(row_sums + 1)\n        log_prod_col = np.log(prod_col + 0.1)\n        log_prod_row = np.log(prod_row + 0.1)\n        return np.concatenate((col_sums, row_sums, log_col, log_row, [log_prod_col], [log_prod_row]))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: 'bool' object is not iterable",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 67,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 8
+    }
+  },
+  {
+    "id": 59,
+    "parent_id": 48,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 1)\n        log_row = np.log2(row_sums + 1)\n        perm_penalty = np.sum(np.abs(m - np.eye(n, dtype=int)))\n        return np.concatenate((log_col, log_row, col_sums, row_sums, [perm_penalty]))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": -44.71738727887471,
+      "additional_data": {
+        "score": "-44.717387",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 4,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 69,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 6
+    }
+  },
+  {
+    "id": 60,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 1)  # Changed shift to 1.0\n        log_row = np.log2(row_sums + 1)  # Changed shift to 1.0\n        prod_col = np.prod(col_sums + 1)\n        prod_row = np.prod(row_sums + 1)\n        return np.concatenate((col_sums, row_sums, log_col, log_row, [prod_col], [prod_row]))\n    \n    # Compute features for all four representations\n    f1 = weighted_sums(original)\n    f2 = weighted_sums(inverse)\n    f3 = weighted_sums(original.T)\n    f4 = weighted_sums(inverse.T)\n    \n    # Combine all features into a single tuple\n    return tuple(np.concatenate((f1, f2, f3, f4)))\n",
+    "evaluation": {
+      "fitness": -25.00402731895447,
+      "additional_data": {
+        "score": "-25.004027",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 55,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 9
+    }
+  },
+  {
+    "id": 61,
+    "parent_id": 48,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    \n    def evaluate(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        \n        # Exponential weighting for sparsity\n        exp_col = np.exp(-(col_sums - 1)**2)\n        exp_row = np.exp(-(row_sums - 1)**2)\n        \n        # Position weighting (higher bits more significant)\n        pos_weights = np.arange(1, n+1)[::-1]\n        pos_col = np.dot(m.T, pos_weights)\n        pos_row = np.dot(m, pos_weights)\n        \n        # Column/row interaction metrics\n        col_overlap = np.sum(np.outer(col_sums, col_sums) * (1 - np.eye(n)), axis=1)\n        row_overlap = np.sum(np.outer(row_sums, row_sums) * (1 - np.eye(n)), axis=1)\n        \n        return np.concatenate((\n            log_col, log_row,\n            exp_col, exp_row,\n            pos_col, pos_row,\n            col_overlap, row_overlap,\n            col_sums, row_sums\n        ))\n    \n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    transpose = original.T\n    inv_transpose = inverse.T\n    \n    original_sums = evaluate(original)\n    inverse_sums = evaluate(inverse)\n    transpose_sums = evaluate(transpose)\n    inv_transpose_sums = evaluate(inv_transpose)\n    \n    return tuple(np.minimum.reduce([\n        original_sums,\n        inverse_sums,\n        transpose_sums,\n        inv_transpose_sums\n    ]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 68,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 7
+    }
+  },
+  {
+    "id": 62,
+    "parent_id": 23,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def compute_features(mat, n):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        sorted_col = np.sort(col_sums)\n        sorted_row = np.sort(row_sums)\n        log_sorted_col = np.log2(sorted_col + 1)\n        log_sorted_row = np.log2(sorted_row + 1)\n        deficit_row_weight1 = n - np.count_nonzero(row_sums == 1)\n        deficit_col_weight1 = n - np.count_nonzero(col_sums == 1)\n        total_ones = np.sum(mat)\n        excess_ones = total_ones - n\n        return np.concatenate((sorted_col, sorted_row, log_sorted_col, log_sorted_row, [deficit_row_weight1, deficit_col_weight1, excess_ones]))\n    \n    original_features = compute_features(original, n)\n    inverse_features = compute_features(inverse, n)\n    combined = np.minimum(original_features, inverse_features)\n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": -10.005290238062543,
+      "additional_data": {
+        "score": "-10.005290",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 35,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 20
+    }
+  },
+  {
+    "id": 63,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def weighted_sums(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 0.1)\n        log_row = np.log2(row_sums + 0.1)\n        prod_col = np.prod(col_sums + 1)\n        prod_row = np.prod(row_sums + 1)\n        total_nonzeros = np.sum(row_sums)\n        count_row1 = np.sum(row_sums == 1)\n        count_col1 = np.sum(col_sums == 1)\n        diag = np.diag(m)\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        trace = np.sum(diag)\n        identity_mat = np.eye(n_block, dtype=int)\n        hamming_dist = np.sum(m != identity_mat)\n        \n        return np.concatenate((\n            col_sums, \n            row_sums, \n            log_col, \n            log_row, \n            [prod_col, prod_row, total_nonzeros, count_row1, count_col1, \n             identity_rows, identity_cols, trace, hamming_dist]\n        ))\n    \n    original_features = weighted_sums(original)\n    inverse_features = weighted_sums(inverse)\n    return tuple(np.minimum(original_features, inverse_features))\n",
+    "evaluation": {
+      "fitness": -67.38176509539286,
+      "additional_data": {
+        "score": "-67.381765",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 11,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 53,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 10
+    }
+  },
+  {
+    "id": 64,
+    "parent_id": 33,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 0.1)  # Keep 0.1 offset for per-col prioritization\n        log_row = np.log2(row_sums + 0.1)\n        # Replace products with sum-of-logs (offset=1 to match product base)\n        sum_log_col = np.sum(np.log2(col_sums + 1))\n        sum_log_row = np.sum(np.log2(row_sums + 1))\n        return np.concatenate((col_sums, row_sums, log_col, log_row, [sum_log_col], [sum_log_row]))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": -45.660117355982464,
+      "additional_data": {
+        "score": "-45.660117",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 54,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 11
+    }
+  },
+  {
+    "id": 65,
+    "parent_id": 37,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def get_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        basis_dist = np.sum(np.minimum(col_sums, n - col_sums + 1))\n        total_sum = np.sum(m)\n        return (basis_dist, total_sum)\n    \n    orig_dist, orig_sum = get_metrics(original)\n    inv_dist, inv_sum = get_metrics(inverse)\n    \n    return (min(orig_dist, inv_dist), min(orig_sum, inv_sum))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 73,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 66,
+    "parent_id": 59,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 1)\n        log_row = np.log2(row_sums + 1)\n        perm_penalty = min(np.sum(np.abs(m - np.eye(n, dtype=int))),\n                          np.sum(np.abs(m - np.fliplr(np.eye(n, dtype=int))))\n        off_diag = np.sum(m * (1 - np.eye(n, dtype=int)))\n        nonzero_count = np.count_nonzero(m)\n        return np.concatenate((log_col, log_row, col_sums, row_sums, \n                             [perm_penalty, off_diag, nonzero_count]))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(np.minimum(original_sums, inverse_sums))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmps8uql3mu.py\", line 39\n    perm_penalty = min(np.sum(np.abs(m - np.eye(n, dtype=int))),\n                      ^\nSyntaxError: '(' was never closed\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 71,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 67,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def weighted_sums(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log1p(col_sums)\n        log_row = np.log1p(row_sums)\n        log_prod_col = np.sum(log_col)\n        log_prod_row = np.sum(log_row)\n        total_nonzeros = np.sum(row_sums)\n        count_row1 = np.sum(row_sums == 1)\n        count_col1 = np.sum(col_sums == 1)\n        diag = np.diag(m)\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        trace = np.sum(diag)\n        identity_mat = np.eye(n_block, dtype=int)\n        hamming_dist = np.sum(m != identity_mat)\n        near_identity_rows = np.sum((row_sums <= 2) & (m != identity_mat))\n        near_identity_cols = np.sum((col_sums <= 2) & (m != identity_mat))\n        \n        return np.concatenate((\n            col_sums, \n            row_sums, \n            log_col, \n            log_row, \n            [log_prod_col, log_prod_row, total_nonzeros, count_row1, count_col1, \n             identity_rows, identity_cols, trace, hamming_dist,\n             near_identity_rows, near_identity_cols]\n        ))\n    \n    original_features = weighted_sums(original)\n    inverse_features = weighted_sums(inverse)\n    return tuple(np.minimum(original_features, inverse_features))\n",
+    "evaluation": {
+      "fitness": -79.13550516764323,
+      "additional_data": {
+        "score": "-79.135505",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 7,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 74,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 68,
+    "parent_id": 59,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    \n    def get_variants(m):\n        original = m[:n,:n]\n        inverse = m[n:,n:]\n        transpose = original.T\n        inv_transpose = inverse.T\n        return [original, inverse, transpose, inv_transpose]\n    \n    variants = get_variants(matrix)\n    \n    def evaluate(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        \n        # Priority metrics\n        single_cols = np.sum(col_sums == 1)\n        single_rows = np.sum(row_sums == 1)\n        \n        # Secondary metrics\n        col_entropy = -np.sum((col_sums/n) * np.log2(col_sums/n + 1e-10))\n        row_entropy = -np.sum((row_sums/n) * np.log2(row_sums/n + 1e-10))\n        \n        # Structure metrics\n        upper_tri = np.triu(m).sum()\n        lower_tri = np.tril(m).sum()\n        diag = np.sum(np.diag(m))\n        \n        # Distance to identity\n        identity_diff = np.sum(m != np.eye(n, dtype=int))\n        \n        return (single_cols, single_rows, \n                -col_entropy, -row_entropy,\n                -upper_tri, -lower_tri,\n                diag, -identity_diff)\n    \n    best = None\n    for variant in variants:\n        current = evaluate(variant)\n        if best is None or current > best:\n            best = current\n            \n    return best\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 72,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 69,
+    "parent_id": 64,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 0.5)\n        log_row = np.log2(row_sums + 0.5)\n        sum_log_col = np.sum(log_col)\n        sum_log_row = np.sum(log_row)\n        symmetry = np.sum(np.abs(m - m.T))\n        diag_dom = np.sum(np.abs(np.diag(m) - 1))\n        return np.concatenate((\n            col_sums, \n            row_sums, \n            log_col, \n            log_row, \n            [sum_log_col], \n            [sum_log_row],\n            [symmetry],\n            [diag_dom]\n        ))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    combined = 0.6 * np.minimum(original_sums, inverse_sums) + 0.4 * np.maximum(original_sums, inverse_sums)\n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": -40.289514493942264,
+      "additional_data": {
+        "score": "-40.289514",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 77,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 70,
+    "parent_id": 59,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 1)\n        log_row = np.log2(row_sums + 1)\n        col_penalty = np.sum(np.abs(m - np.eye(n, dtype=int)), axis=0)\n        row_penalty = np.sum(np.abs(m - np.eye(n, dtype=int)), axis=1)\n        correct_cols = np.sum(m == np.eye(n, dtype=int), axis=0)\n        correct_rows = np.sum(m == np.eye(n, dtype=int), axis=1)\n        col_var = np.var(m, axis=0)\n        row_var = np.var(m, axis=1)\n        return np.concatenate((\n            log_col, log_row, \n            col_sums, row_sums,\n            col_penalty, row_penalty,\n            correct_cols, correct_rows,\n            col_var, row_var\n        ))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    transposed_sums = weighted_sums(original.T)\n    \n    return tuple(np.minimum.reduce([original_sums, inverse_sums, transposed_sums]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 76,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 71,
+    "parent_id": 48,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    # Compute column and row sums for both matrices\n    col_sums_orig = np.sum(original, axis=0)\n    row_sums_orig = np.sum(original, axis=1)\n    col_sums_inv = np.sum(inverse, axis=0)\n    row_sums_inv = np.sum(inverse, axis=1)\n    \n    # Compute log features\n    log_col_orig = np.log(col_sums_orig + 1)\n    log_row_orig = np.log(row_sums_orig + 1)\n    log_col_inv = np.log(col_sums_inv + 1)\n    log_row_inv = np.log(row_sums_inv + 1)\n    \n    # Compute global missing basis features\n    col_missing_orig = n - np.count_nonzero(col_sums_orig == 1)\n    row_missing_orig = n - np.count_nonzero(row_sums_orig == 1)\n    col_missing_inv = n - np.count_nonzero(col_sums_inv == 1)\n    row_missing_inv = n - np.count_nonzero(row_sums_inv == 1)\n    global_col_missing = min(col_missing_orig, col_missing_inv)\n    global_row_missing = min(row_missing_orig, row_missing_inv)\n    \n    # Combine features for element-wise min\n    orig_features = np.concatenate((log_col_orig, log_row_orig, col_sums_orig, row_sums_orig))\n    inv_features = np.concatenate((log_col_inv, log_row_inv, col_sums_inv, row_sums_inv))\n    min_features = np.minimum(orig_features, inv_features)\n    \n    # Return tuple with global features first\n    return (float(global_col_missing), float(global_row_missing)) + tuple(min_features)\n",
+    "evaluation": {
+      "fitness": -37.86197883288065,
+      "additional_data": {
+        "score": "-37.861979",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 65,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 8
+    }
+  },
+  {
+    "id": 72,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    \n    def get_features(m):\n        # Consider both original and transposed versions\n        m1 = m[:n, :n]\n        m2 = m[:n, :n].T\n        m3 = m[n:, n:]\n        m4 = m[n:, n:].T\n        \n        features = []\n        for mat in [m1, m2, m3, m4]:\n            col_sums = np.sum(mat, axis=0)\n            log_col = np.log2(col_sums + 0.1)  # +0.1 to avoid log(0)\n            hamming = np.sum(mat != np.eye(n, dtype=int))\n            features.extend([*col_sums, *log_col, hamming])\n        \n        return np.array(features)\n    \n    features = get_features(matrix)\n    return tuple(features)\n",
+    "evaluation": {
+      "fitness": -25.805944840113327,
+      "additional_data": {
+        "score": "-25.805945",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 78,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 73,
+    "parent_id": 67,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def weighted_sums(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log1p(col_sums)\n        log_row = np.log1p(row_sums)\n        log_prod_col = np.sum(log_col)\n        log_prod_row = np.sum(log_row)\n        total_nonzeros = np.sum(row_sums)\n        count_row1 = np.sum(row_sums == 1)\n        count_col1 = np.sum(col_sums == 1)\n        diag = np.diag(m)\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        trace = np.sum(diag)\n        identity_mat = np.eye(n_block, dtype=int)\n        hamming_dist = np.sum(m != identity_mat)\n        near_identity_rows = np.sum((row_sums <= 2) & (m != identity_mat))\n        near_identity_cols = np.sum((col_sums <= 2) & (m != identity_mat))\n        off_diag = np.sum(m) - trace\n        col_overlaps = np.sum(np.outer(col_sums, col_sums) * (1 - np.eye(n_block)))\n        row_overlaps = np.sum(np.outer(row_sums, row_sums) * (1 - np.eye(n_block)))\n        col_max = np.max(col_sums)\n        row_max = np.max(row_sums)\n        \n        return np.concatenate((\n            col_sums, \n            row_sums, \n            log_col, \n            log_row, \n            [log_prod_col, log_prod_row, total_nonzeros, count_row1, count_col1, \n             identity_rows, identity_cols, trace, hamming_dist,\n             near_identity_rows, near_identity_cols, off_diag,\n             col_overlaps, row_overlaps, col_max, row_max]\n        ))\n    \n    original_features = weighted_sums(original)\n    inverse_features = weighted_sums(inverse)\n    return tuple(np.minimum(original_features, inverse_features))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 81,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 74,
+    "parent_id": 67,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    trans_original = original.T\n    trans_inverse = inverse.T\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 1)\n        log_row = np.log2(row_sums + 1)\n        log_prod_col = np.sum(log_col)\n        log_prod_row = np.sum(log_row)\n        total_nonzeros = np.sum(col_sums)\n        count_col1 = np.sum(col_sums == 1)\n        diag = np.diag(m)\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        hamming_dist = np.sum(m != np.eye(n, dtype=int))\n        col_entropy = -np.sum(col_sums * log_col)\n        \n        return np.concatenate((\n            col_sums * 2, \n            log_col * 3,\n            [log_prod_col * 2, total_nonzeros, count_col1 * 2, \n             identity_cols * 3, hamming_dist, col_entropy]\n        ))\n    \n    features = [\n        weighted_sums(original),\n        weighted_sums(inverse),\n        weighted_sums(trans_original),\n        weighted_sums(trans_inverse)\n    ]\n    return tuple(np.min(features, axis=0))\n",
+    "evaluation": {
+      "fitness": -47.635495249430335,
+      "additional_data": {
+        "score": "-47.635495",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 82,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 2
+    }
+  },
+  {
+    "id": 75,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def weighted_sums(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 1.0)\n        log_row = np.log2(row_sums + 1.0)\n        inv_col_sums = 1.0 / (col_sums + 1.0)\n        inv_row_sums = 1.0 / (row_sums + 1.0)\n        col_entropy = -np.sum(m * np.log2(m + 1e-10), axis=0)\n        row_entropy = -np.sum(m * np.log2(m + 1e-10), axis=1)\n        count_row1 = np.sum(row_sums == 1)\n        count_col1 = np.sum(col_sums == 1)\n        col_nonzero = np.count_nonzero(m, axis=0)\n        row_nonzero = np.count_nonzero(m, axis=1)\n        \n        return np.concatenate((\n            col_sums,\n            row_sums,\n            log_col,\n            log_row,\n            inv_col_sums,\n            inv_row_sums,\n            col_entropy,\n            row_entropy,\n            [count_row1, count_col1],\n            col_nonzero,\n            row_nonzero\n        ))\n    \n    original_features = weighted_sums(original)\n    inverse_features = weighted_sums(inverse)\n    transposed_features = weighted_sums(original.T)\n    return tuple(np.minimum.reduce([original_features, inverse_features, transposed_features]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 80,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 76,
+    "parent_id": 4,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n_total = matrix.shape[0]\n    total_ones = np.sum(matrix)\n    excess_ones = total_ones - n_total\n    row_weights = np.sum(matrix, axis=1)\n    col_weights = np.sum(matrix, axis=0)\n    row_non_unit = np.sum(row_weights != 1)\n    col_non_unit = np.sum(col_weights != 1)\n    log_row = np.log(row_weights + 1e-10)\n    log_col = np.log(col_weights + 1e-10)\n    return (float(excess_ones), float(row_non_unit), float(col_non_unit)) + tuple(row_weights.astype(float)) + tuple(col_weights.astype(float)) + tuple(log_row) + tuple(log_col)\n",
+    "evaluation": {
+      "fitness": 7.628331677118936,
+      "additional_data": {
+        "score": "7.628332",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 70,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 77,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    U_inv_trans = matrix[n:, n:]\n    U_inv = U_inv_trans.T\n    U_trans = U.T\n    U_trans_inv = U_inv_trans\n\n    def weighted_sums(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 0.1)\n        log_row = np.log2(row_sums + 0.1)\n        prod_col = np.prod(col_sums + 1)\n        prod_row = np.prod(row_sums + 1)\n        total_nonzeros = np.sum(row_sums)\n        count_row1 = np.sum(row_sums == 1)\n        count_col1 = np.sum(col_sums == 1)\n        diag = np.diag(m)\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        trace = np.sum(diag)\n        identity_mat = np.eye(n_block, dtype=int)\n        hamming_dist = np.sum(m != identity_mat)\n        \n        return np.concatenate((\n            col_sums, \n            row_sums, \n            log_col, \n            log_row, \n            [prod_col, prod_row, total_nonzeros, count_row1, count_col1, \n             identity_rows, identity_cols, trace, hamming_dist]\n        ))\n    \n    feat1 = weighted_sums(U)\n    feat2 = weighted_sums(U_inv)\n    feat3 = weighted_sums(U_trans)\n    feat4 = weighted_sums(U_trans_inv)\n    min_feat = np.min([feat1, feat2, feat3, feat4], axis=0)\n    return tuple(min_feat)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 1,
+    "creation_info": {
+      "model": "deepseek:deepseek-reasoner",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 75,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 78,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def get_features(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log1p(col_sums)\n        log_row = np.log1p(row_sums)\n        diag = np.diag(m)\n        \n        # Features measuring progress toward identity\n        identity_mat = np.eye(n_block, dtype=int)\n        hamming_dist = np.sum(m != identity_mat)\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        \n        # Interaction features between rows and columns\n        row_col_interaction = np.sum(np.outer(row_sums, col_sums) * m)\n        col_row_interaction = np.sum(np.outer(col_sums, row_sums) * m)\n        \n        # Permutation-invariant features\n        sorted_cols = np.sort(col_sums)\n        sorted_rows = np.sort(row_sums)\n        \n        # Combined features\n        weighted_entries = np.sum(m * np.outer(log_row, log_col))\n        progress_measure = np.sum((m - identity_mat) * np.outer(1/log_row, 1/log_col))\n        \n        return np.concatenate((\n            sorted_cols,\n            sorted_rows,\n            [np.sum(col_sums), np.sum(row_sums),\n             np.sum(log_col), np.sum(log_row),\n             hamming_dist, identity_rows, identity_cols,\n             row_col_interaction, col_row_interaction,\n             weighted_entries, progress_measure]\n        ))\n    \n    original_features = get_features(original)\n    inverse_features = get_features(inverse)\n    transposed_features = get_features(original.T)\n    \n    # Combine features in a more sophisticated way than just minimum\n    combined_features = 0.5 * original_features + 0.3 * inverse_features + 0.2 * transposed_features\n    return tuple(combined_features)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 79,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 79,
+    "parent_id": 76,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n_total = matrix.shape[0] // 2\n    total_ones = np.sum(matrix)\n    excess_ones = total_ones - 2*n_total\n    row_weights = np.sum(matrix, axis=1)\n    col_weights = np.sum(matrix, axis=0)\n    row_non_unit = np.sum(row_weights != 1)\n    col_non_unit = np.sum(col_weights != 1)\n    log_row = np.log(row_weights + 1e-10)\n    log_col = np.log(col_weights + 1e-10)\n    inv_matrix = binMatInv(matrix[:n_total,:n_total].T)\n    inv_col_weights = np.sum(inv_matrix, axis=0)\n    log_inv_col = np.log(inv_col_weights + 1e-10)\n    diag = np.sum(np.diag(matrix))\n    return (float(excess_ones), float(row_non_unit), float(col_non_unit), float(diag)) + tuple(row_weights.astype(float)) + tuple(col_weights.astype(float)) + tuple(log_row) + tuple(log_col) + tuple(inv_col_weights.astype(float)) + tuple(log_inv_col)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: name 'binMatInv' is not defined",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 88,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 80,
+    "parent_id": 67,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    trans_original = original.T\n    trans_inverse = inverse.T\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log1p(col_sums)\n        log_row = np.log1p(row_sums)\n        inv_col = 1.0 / (col_sums + 1e-6)\n        inv_row = 1.0 / (row_sums + 1e-6)\n        col_priority = np.exp(-col_sums)\n        row_priority = np.exp(-row_sums)\n        identity_mat = np.eye(n, dtype=int)\n        hamming_dist = np.sum(m != identity_mat)\n        near_identity = np.sum((col_sums <= 2) & (row_sums <= 2) & (m != identity_mat))\n        \n        return np.concatenate((\n            col_sums,\n            row_sums,\n            log_col,\n            log_row,\n            inv_col,\n            inv_row,\n            col_priority,\n            row_priority,\n            [hamming_dist, near_identity]\n        ))\n    \n    features = []\n    for m in [original, inverse, trans_original, trans_inverse]:\n        features.append(weighted_sums(m))\n    min_features = np.min(features, axis=0)\n    return tuple(min_features)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation failed: too many values to unpack (expected 2)",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 85,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 3
+    }
+  },
+  {
+    "id": 81,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    transpose = original.T\n    inverse_transpose = inverse.T\n    \n    def weighted_sums(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 0.01)\n        log_row = np.log2(row_sums + 0.01)\n        prod_col = np.prod(col_sums + 1)\n        prod_row = np.prod(row_sums + 1)\n        total_nonzeros = np.sum(row_sums)\n        count_row1 = np.sum(row_sums == 1)\n        count_col1 = np.sum(col_sums == 1)\n        diag = np.diag(m)\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        trace = np.sum(diag)\n        identity_mat = np.eye(n_block, dtype=int)\n        hamming_dist = np.sum(m != identity_mat)\n        almost_identity_rows = np.sum((row_sums == 2) & (diag == 1))\n        almost_identity_cols = np.sum((col_sums == 2) & (diag == 1))\n        \n        return np.concatenate((\n            col_sums, \n            row_sums, \n            log_col, \n            log_row, \n            [np.log2(prod_col + 1), np.log2(prod_row + 1), total_nonzeros, count_row1, count_col1, \n             identity_rows, identity_cols, trace, hamming_dist, almost_identity_rows, almost_identity_cols]\n        ))\n    \n    original_features = weighted_sums(original)\n    inverse_features = weighted_sums(inverse)\n    transpose_features = weighted_sums(transpose)\n    inverse_transpose_features = weighted_sums(inverse_transpose)\n    \n    return tuple(np.minimum.reduce([original_features, inverse_features, transpose_features, inverse_transpose_features]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 83,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 6
+    }
+  },
+  {
+    "id": 82,
+    "parent_id": 67,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def enhanced_features(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log1p(col_sums)\n        log_row = np.log1p(row_sums)\n        \n        # Column and row interaction features\n        col_row_ratio = np.sum(col_sums) / (np.sum(row_sums) + 1e-9)\n        max_col_row_diff = np.max(np.abs(col_sums - row_sums))\n        \n        # Triangular pattern detection\n        upper_tri = np.triu(m)\n        lower_tri = np.tril(m)\n        upper_sum = np.sum(upper_tri)\n        lower_sum = np.sum(lower_tri)\n        \n        # Identity distance metrics\n        identity = np.eye(n_block, dtype=int)\n        hamming = np.sum(m != identity)\n        row_hamming = np.sum(m != identity, axis=1)\n        col_hamming = np.sum(m != identity, axis=0)\n        \n        # Column/row specific features\n        single_nonzero_cols = np.sum(col_sums == 1)\n        single_nonzero_rows = np.sum(row_sums == 1)\n        col_gini = 1 - np.sum((col_sums / np.sum(col_sums))**2)\n        row_gini = 1 - np.sum((row_sums / np.sum(row_sums))**2)\n        \n        # Cross features between columns and rows\n        col_row_corr = np.corrcoef(col_sums, row_sums)[0,1]\n        col_row_max_diff = np.max(np.abs(col_sums - row_sums))\n        \n        # Pattern features\n        diagonal = np.diag(m)\n        anti_diagonal = np.diag(np.fliplr(m))\n        diag_sum = np.sum(diagonal)\n        anti_diag_sum = np.sum(anti_diagonal)\n        \n        return np.concatenate((\n            col_sums,\n            row_sums,\n            log_col,\n            log_row,\n            [np.sum(col_sums), np.sum(row_sums),\n             upper_sum, lower_sum,\n             hamming, single_nonzero_cols, single_nonzero_rows,\n             col_gini, row_gini,\n             col_row_corr, col_row_max_diff,\n             diag_sum, anti_diag_sum,\n             np.sum(np.sort(col_sums)),\n             np.sum(np.sort(row_sums))]\n        ))\n    \n    orig_feat = enhanced_features(original)\n    inv_feat = enhanced_features(inverse)\n    trans_feat = enhanced_features(original.T)\n    inv_trans_feat = enhanced_features(inverse.T)\n    \n    return tuple(np.minimum.reduce([orig_feat, inv_feat, trans_feat, inv_trans_feat]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 89,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 83,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def compute_features(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        diag = np.diag(m)\n        \n        # Features for columns\n        col_features = []\n        for i in range(n_block):\n            for j in range(i+1, n_block):\n                # Hamming distance between columns\n                hamming = np.sum(m[:,i] != m[:,j])\n                # Whether one column is subset of another\n                subset = np.all((m[:,i] & ~m[:,j]) == 0) or np.all((m[:,j] & ~m[:,i]) == 0)\n                col_features.extend([hamming, float(subset)])\n        \n        # Features for rows\n        row_features = []\n        for i in range(n_block):\n            for j in range(i+1, n_block):\n                # Hamming distance between rows\n                hamming = np.sum(m[i,:] != m[j,:])\n                row_features.append(hamming)\n        \n        # Identity features\n        identity_mat = np.eye(n_block, dtype=int)\n        hamming_dist = np.sum(m != identity_mat)\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        \n        return np.concatenate((\n            col_sums,\n            row_sums,\n            [hamming_dist, identity_cols, identity_rows],\n            col_features,\n            row_features\n        ))\n    \n    original_features = compute_features(original)\n    inverse_features = compute_features(inverse)\n    return tuple(np.concatenate([original_features, inverse_features]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 86,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 7
+    }
+  },
+  {
+    "id": 84,
+    "parent_id": 67,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def weighted_sums(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(np.maximum(col_sums, 1))\n        log_row = np.log2(np.maximum(row_sums, 1))\n        log_prod_col = np.sum(log_col)\n        log_prod_row = np.sum(log_row)\n        total_nonzeros = np.sum(row_sums)\n        count_row1 = np.sum(row_sums == 1)\n        count_col1 = np.sum(col_sums == 1)\n        count_row0 = np.sum(row_sums == 0)\n        count_col0 = np.sum(col_sums == 0)\n        diag = np.diag(m)\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        trace = np.sum(diag)\n        identity_mat = np.eye(n_block, dtype=int)\n        hamming_dist = np.sum(m != identity_mat)\n        near_identity_rows = np.sum((row_sums <= 2) & (m != identity_mat))\n        near_identity_cols = np.sum((col_sums <= 2) & (m != identity_mat))\n        col_var = np.var(col_sums)\n        row_var = np.var(row_sums)\n        \n        return np.concatenate((\n            col_sums, \n            row_sums, \n            log_col, \n            log_row, \n            [log_prod_col, log_prod_row, total_nonzeros, count_row1, count_col1, \n             count_row0, count_col0, identity_rows, identity_cols, trace, \n             hamming_dist, near_identity_rows, near_identity_cols,\n             col_var, row_var]\n        ))\n    \n    original_features = weighted_sums(original)\n    inverse_features = weighted_sums(inverse)\n    return tuple(np.minimum(original_features, inverse_features))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 91,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 5
+    }
+  },
+  {
+    "id": 85,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def get_features(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        col_weights = 1 / (col_sums + 0.1)\n        row_weights = 1 / (row_sums + 0.1)\n        \n        # Column-based features\n        col_features = []\n        for j in range(n_block):\n            col = m[:, j]\n            basis_similarity = np.max(col)\n            basis_overlap = np.sum(col * np.eye(n_block)[:, j])\n            col_features.extend([\n                col_sums[j],\n                col_weights[j],\n                basis_similarity,\n                basis_overlap,\n                np.sum(col * np.arange(n_block)),  # Position weighting\n            ])\n        \n        # Matrix-wide features\n        diag = np.diag(m)\n        identity_score = np.sum(diag)\n        hamming_dist = np.sum(m != np.eye(n_block))\n        col_sum_variance = np.var(col_sums)\n        row_sum_variance = np.var(row_sums)\n        \n        return np.concatenate([\n            col_features,\n            [\n                identity_score,\n                hamming_dist,\n                col_sum_variance,\n                row_sum_variance,\n                np.sum(col_weights),\n                np.sum(row_weights),\n                np.sum(np.exp(-col_sums)),\n                np.sum(np.exp(-row_sums)),\n            ]\n        ])\n    \n    orig_features = get_features(original)\n    inv_features = get_features(inverse)\n    \n    # Combine features with more sophisticated interaction\n    combined = np.concatenate([\n        orig_features,\n        inv_features,\n        np.minimum(orig_features, inv_features),\n        np.maximum(orig_features, inv_features),\n        (orig_features + inv_features)/2,\n        orig_features * inv_features,\n    ])\n    \n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 87,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 8
+    }
+  },
+  {
+    "id": 86,
+    "parent_id": 71,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    # Compute column and row sums for both matrices\n    col_sums_orig = np.sum(original, axis=0)\n    row_sums_orig = np.sum(original, axis=1)\n    col_sums_inv = np.sum(inverse, axis=0)\n    row_sums_inv = np.sum(inverse, axis=1)\n    \n    # Compute log features with more emphasis on weight-1 columns\n    log_col_orig = np.log(col_sums_orig + 0.5)  # changed from +1 to +0.5 to prioritize weight-1\n    log_row_orig = np.log(row_sums_orig + 1)\n    log_col_inv = np.log(col_sums_inv + 0.5)    # same change for inverse\n    log_row_inv = np.log(row_sums_inv + 1)\n    \n    # Compute global missing basis features\n    col_missing_orig = n - np.count_nonzero(col_sums_orig == 1)\n    row_missing_orig = n - np.count_nonzero(row_sums_orig == 1)\n    col_missing_inv = n - np.count_nonzero(col_sums_inv == 1)\n    row_missing_inv = n - np.count_nonzero(row_sums_inv == 1)\n    global_col_missing = min(col_missing_orig, col_missing_inv)\n    global_row_missing = min(row_missing_orig, row_missing_inv)\n    \n    # Add total sum as an additional global feature\n    total_sum = min(np.sum(original), np.sum(inverse))\n    \n    # Combine features with more weight to column features\n    orig_features = np.concatenate((log_col_orig, log_row_orig, col_sums_orig, row_sums_orig))\n    inv_features = np.concatenate((log_col_inv, log_row_inv, col_sums_inv, row_sums_inv))\n    min_features = np.minimum(orig_features, inv_features)\n    \n    # Return tuple with global features first, including total_sum\n    return (float(global_col_missing), float(global_row_missing), float(total_sum)) + tuple(min_features)\n",
+    "evaluation": {
+      "fitness": 0.009853156407672259,
+      "additional_data": {
+        "score": "0.009853",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 84,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 87,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def matrix_features(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        diag = np.diag(m)\n        \n        # Sparsity features\n        off_diag = m - np.diag(diag)\n        off_diag_sum = np.sum(off_diag)\n        max_off_diag = np.max(off_diag)\n        \n        # Clustering features\n        row_clusters = np.sum(np.diff(np.sort(row_sums)))\n        col_clusters = np.sum(np.diff(np.sort(col_sums)))\n        \n        # Identity proximity\n        identity_dist = np.sum(m != np.eye(n_block, dtype=int))\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        \n        # Dynamic weights\n        progress = 1 - (np.sum(m) - n_block) / (n_block*(n_block-1))\n        weight = 0.5 + progress * 0.5\n        \n        features = np.array([\n            np.sum(col_sums),\n            np.sum(row_sums),\n            np.sum(np.abs(col_sums - 1)),\n            np.sum(np.abs(row_sums - 1)),\n            off_diag_sum,\n            max_off_diag,\n            row_clusters,\n            col_clusters,\n            identity_dist,\n            identity_rows,\n            weight * np.sum(col_sums * row_sums)\n        ])\n        \n        return features\n    \n    orig_feat = matrix_features(original)\n    inv_feat = matrix_features(inverse)\n    \n    # Weighted combination instead of simple min\n    combined = 0.6 * orig_feat + 0.4 * inv_feat\n    \n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": -12.630045890808105,
+      "additional_data": {
+        "score": "-12.630046",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 90,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 9
+    }
+  },
+  {
+    "id": 88,
+    "parent_id": 59,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def weighted_sums(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log1p(col_sums)  # Changed from log2 to natural log\n        log_row = np.log1p(row_sums)\n        col_penalty = np.sum(np.abs(m - np.eye(n, dtype=int)), axis=0)\n        row_penalty = np.sum(np.abs(m - np.eye(n, dtype=int)), axis=1)\n        spread = np.sum(np.abs(np.diff(m, axis=0))) + np.sum(np.abs(np.diff(m, axis=1))))\n        return np.concatenate((log_col, log_row, col_sums, row_sums, col_penalty, row_penalty, [spread]))\n    \n    original_sums = weighted_sums(original)\n    inverse_sums = weighted_sums(inverse)\n    \n    return tuple(0.5 * (original_sums + inverse_sums))  # Changed from min to average\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Result file not found. Return code: 1, stderr:   File \"/var/folders/28/81_7stz56pj25dz5bc6t2lh40000gn/T/tmpuev1m3bt.py\", line 41\n    spread = np.sum(np.abs(np.diff(m, axis=0))) + np.sum(np.abs(np.diff(m, axis=1))))\n                                                                                    ^\nSyntaxError: unmatched ')'\n",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 93,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 4
+    }
+  },
+  {
+    "id": 89,
+    "parent_id": 51,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n,:n]\n    inverse = matrix[n:,n:]\n    \n    def get_metrics(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log(col_sums + 1)\n        log_row = np.log(row_sums + 1)\n        sq_col = (col_sums - 1)**2\n        sq_row = (row_sums - 1)**2\n        weighted_col = np.sum(m * np.arange(1, n+1)[None,:], axis=1)\n        weighted_row = np.sum(m * np.arange(1, n+1)[:,None], axis=0)\n        return np.concatenate([\n            col_sums, row_sums,\n            log_col, log_row,\n            sq_col, sq_row,\n            weighted_col, weighted_row,\n            np.sum(m * (1 + np.arange(n)[None,:]**2), axis=1),\n            np.sum(m * (1 + np.arange(n)[:,None]**2), axis=0)\n        ])\n    \n    metrics = []\n    for m in [original, inverse, original.T, inverse.T]:\n        metrics.append(get_metrics(m))\n    \n    if len(metrics) > 0:\n        combined = np.minimum.reduce(metrics)\n    else:\n        combined = np.zeros(8*n)\n    \n    return tuple(float(x) for x in combined)\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 96,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 90,
+    "parent_id": 74,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    trans_original = original.T\n    trans_inverse = inverse.T\n    \n    def matrix_features(m):\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(col_sums + 1)\n        log_row = np.log2(row_sums + 1)\n        \n        # Triangularity measures\n        upper_tri = np.triu(m)\n        lower_tri = np.tril(m)\n        upper_score = np.sum(upper_tri != np.eye(n, dtype=int))\n        lower_score = np.sum(lower_tri != np.eye(n, dtype=int))\n        \n        # Column/row interaction features\n        col_nonzeros = np.count_nonzero(m, axis=0)\n        row_nonzeros = np.count_nonzero(m, axis=1)\n        col_std = np.std(col_nonzeros)\n        row_std = np.std(row_nonzeros)\n        \n        # Identity progress features\n        diag = np.diag(m)\n        off_diag = np.sum(m) - np.sum(diag)\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        \n        # Combined features\n        complexity = (np.sum(col_sums * row_sums) + \n                     upper_score + lower_score + \n                     off_diag * 2 - \n                     (identity_cols + identity_rows) * 3)\n        \n        return np.concatenate((\n            col_sums,\n            row_sums,\n            log_col,\n            log_row,\n            [complexity, upper_score, lower_score, \n             col_std, row_std, off_diag, \n             identity_cols, identity_rows]\n        ))\n    \n    features = [\n        matrix_features(original),\n        matrix_features(inverse),\n        matrix_features(trans_original),\n        matrix_features(trans_inverse)\n    ]\n    return tuple(np.min(features, axis=0))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 99,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 91,
+    "parent_id": 62,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def compute_features(mat, n):\n        col_sums = np.sum(mat, axis=0)\n        row_sums = np.sum(mat, axis=1)\n        sorted_col = np.sort(col_sums)\n        sorted_row = np.sort(row_sums)\n        log_sorted_col = np.log2(sorted_col + 1)\n        log_sorted_row = np.log2(sorted_row + 1)\n        deficit_row_weight1 = (n - np.count_nonzero(row_sums == 1)) / n\n        deficit_col_weight1 = (n - np.count_nonzero(col_sums == 1)) / n\n        count_row_weight2 = np.count_nonzero(row_sums == 2)\n        count_col_weight2 = np.count_nonzero(col_sums == 2)\n        total_ones = np.sum(mat)\n        excess_ones_pos = max(total_ones - n, 0) / (n*n)\n        excess_ones_neg = max(n - total_ones, 0) / (n*n)\n        col_var = np.var(col_sums)\n        row_var = np.var(row_sums)\n        return np.concatenate((\n            sorted_col, sorted_row, log_sorted_col, log_sorted_row,\n            [deficit_row_weight1, deficit_col_weight1, count_row_weight2, \n             count_col_weight2, excess_ones_pos, excess_ones_neg, col_var, row_var]\n        ))\n    \n    original_features = compute_features(original, n)\n    inverse_features = compute_features(inverse, n)\n    combined = np.minimum(original_features, inverse_features)\n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": -23.221994129816693,
+      "additional_data": {
+        "score": "-23.221994",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 92,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  },
+  {
+    "id": 92,
+    "parent_id": 67,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def weighted_sums(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log1p(col_sums)\n        log_row = np.log1p(row_sums)\n        total_nonzeros = np.sum(col_sums)\n        count_col1 = np.sum(col_sums == 1)\n        diag = np.diag(m)\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        trace = np.sum(diag)\n        identity_mat = np.eye(n_block, dtype=int)\n        hamming_dist = np.sum(m != identity_mat)\n        near_identity = np.sum((col_sums <= 2) & (m != identity_mat))\n        col_entropy = -np.sum(col_sums * np.log1p(col_sums + 1e-10))\n        row_entropy = -np.sum(row_sums * np.log1p(row_sums + 1e-10))\n        \n        return np.concatenate((\n            col_sums,\n            log_col,\n            [total_nonzeros, count_col1, identity_rows, trace, \n             hamming_dist, near_identity, col_entropy, row_entropy]\n        ))\n    \n    original_features = weighted_sums(original)\n    inverse_features = weighted_sums(inverse)\n    return tuple(np.minimum(original_features, inverse_features))\n",
+    "evaluation": {
+      "fitness": -54.98868012428284,
+      "additional_data": {
+        "score": "-54.988680",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 94,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 6
+    }
+  },
+  {
+    "id": 93,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def enhanced_features(m):\n        n_block = m.shape[0]\n        identity = np.eye(n_block, dtype=int)\n        \n        # Basic sums\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        \n        # Distance metrics\n        hamming = np.sum(m != identity)\n        col_hamming = np.sum(m != identity, axis=0)\n        row_hamming = np.sum(m != identity, axis=1)\n        \n        # Column/row quality metrics\n        col_quality = np.exp(-(col_sums - 1)**2)\n        row_quality = np.exp(-(row_sums - 1)**2)\n        \n        # Triangular form metrics\n        upper_tri = np.triu(m)\n        lower_tri = np.tril(m)\n        upper_score = np.sum(upper_tri != 0)\n        lower_score = np.sum(lower_tri != 0)\n        \n        # Overlap with identity\n        diag = np.diag(m)\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        \n        # Combined features\n        features = np.concatenate((\n            col_sums,\n            row_sums,\n            col_hamming,\n            row_hamming,\n            col_quality,\n            row_quality,\n            [hamming, upper_score, lower_score, identity_cols, identity_rows]\n        ))\n        return features\n    \n    orig_feat = enhanced_features(original)\n    inv_feat = enhanced_features(inverse)\n    \n    # Use weighted combination rather than just minimum\n    combined = 0.6 * orig_feat + 0.4 * inv_feat\n    return tuple(combined)\n",
+    "evaluation": {
+      "fitness": -55.34536468187967,
+      "additional_data": {
+        "score": "-55.345365",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 98,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 10
+    }
+  },
+  {
+    "id": 94,
+    "parent_id": 63,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    trans_original = original.T\n    trans_inverse = inverse.T\n    \n    def weighted_sums(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log2(np.maximum(col_sums, 0.5))\n        log_row = np.log2(np.maximum(row_sums, 0.5))\n        near_col = np.sum(np.abs(col_sums - 1))\n        near_row = np.sum(np.abs(row_sums - 1))\n        count_row1 = np.sum(row_sums == 1)\n        count_col1 = np.sum(col_sums == 1)\n        diag = np.diag(m)\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        hamming_dist = np.sum(m != np.eye(n_block, dtype=int))\n        \n        return np.concatenate((\n            col_sums,\n            row_sums,\n            log_col,\n            log_row,\n            [near_col, near_row, count_row1, count_col1,\n             identity_rows, identity_cols, hamming_dist]\n        ))\n    \n    original_features = weighted_sums(original)\n    inverse_features = weighted_sums(inverse)\n    trans_original_features = weighted_sums(trans_original)\n    trans_inverse_features = weighted_sums(trans_inverse)\n    \n    return tuple(np.minimum.reduce([original_features, inverse_features,\n                                  trans_original_features, trans_inverse_features]))\n",
+    "evaluation": {
+      "fitness": -38.80588064193725,
+      "additional_data": {
+        "score": "-38.805881",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 95,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 11
+    }
+  },
+  {
+    "id": 95,
+    "parent_id": 67,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    original = matrix[:n, :n]\n    inverse = matrix[n:, n:]\n    \n    def weighted_sums(m):\n        n_block = m.shape[0]\n        col_sums = np.sum(m, axis=0)\n        row_sums = np.sum(m, axis=1)\n        log_col = np.log1p(col_sums)\n        log_row = np.log1p(row_sums)\n        log_prod_col = np.sum(log_col)\n        log_prod_row = np.sum(log_row)\n        total_nonzeros = np.sum(row_sums)\n        count_row1 = np.sum(row_sums == 1)\n        count_col1 = np.sum(col_sums == 1)\n        diag = np.diag(m)\n        identity_rows = np.sum((row_sums == 1) & (diag == 1))\n        identity_cols = np.sum((col_sums == 1) & (diag == 1))\n        trace = np.sum(diag)\n        identity_mat = np.eye(n_block, dtype=int)\n        hamming_dist = np.sum(m != identity_mat)\n        near_identity_rows = np.sum((row_sums <= 2) & (m != identity_mat))\n        near_identity_cols = np.sum((col_sums <= 2) & (m != identity_mat))\n        col_weights = np.sort(col_sums)\n        row_weights = np.sort(row_sums)\n        off_diag = np.sum(m) - trace\n        col_entropy = -np.sum(col_sums/n_block * np.log1p(col_sums/n_block))\n        row_entropy = -np.sum(row_sums/n_block * np.log1p(row_sums/n_block))\n        \n        return np.concatenate((\n            col_sums, \n            row_sums,\n            log_col,\n            log_row,\n            col_weights,\n            row_weights,\n            [log_prod_col, log_prod_row, total_nonzeros, count_row1, count_col1,\n             identity_rows, identity_cols, trace, hamming_dist,\n             near_identity_rows, near_identity_cols, off_diag,\n             col_entropy, row_entropy]\n        ))\n    \n    original_features = weighted_sums(original)\n    inverse_features = weighted_sums(inverse)\n    transposed_features = weighted_sums(original.T)\n    return tuple(np.minimum.reduce([original_features, inverse_features, transposed_features]))\n",
+    "evaluation": {
+      "fitness": 0.0,
+      "additional_data": {
+        "score": "0.0",
+        "validity": "error",
+        "error": "Evaluation timed out after 60 seconds",
+        "execution_method": "single_subprocess"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "SMALL ITERATIVE IMPROVEMENT",
+      "step": 97,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 7
+    }
+  },
+  {
+    "id": 96,
+    "parent_id": 77,
+    "solution": "\ndef heuristic(matrix):\n    import numpy as np\n    n = matrix.shape[0] // 2\n    U = matrix[:n, :n]\n    \n    col_sums = np.sum(U, axis=0)\n    row_sums = np.sum(U, axis=1)\n    total_nonzeros = np.sum(col_sums)\n    count_row1 = np.sum(row_sums == 1)\n    count_col1 = np.sum(col_sums == 1)\n    diag = np.diag(U)\n    identity_rows = np.sum((row_sums == 1) & (diag == 1))\n    identity_cols = np.sum((col_sums == 1) & (diag == 1))\n    \n    return (total_nonzeros, -count_col1, -count_row1, -identity_cols, -identity_rows)\n",
+    "evaluation": {
+      "fitness": 8.533333333333331,
+      "additional_data": {
+        "score": "8.533333",
+        "validity": "valid",
+        "execution_method": "single_subprocess",
+        "function_name": "heuristic"
+      }
+    },
+    "children": 0,
+    "creation_info": {
+      "model": "deepseek:deepseek-chat",
+      "change_type": "LARGE QUALITATIVE CHANGE",
+      "step": 100,
+      "is_reasoning": true,
+      "big_changes_rate": 0.4,
+      "child_number": 1
+    }
+  }
+]

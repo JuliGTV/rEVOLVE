@@ -1,0 +1,212 @@
+// Population
+digraph {
+	1 [label=-4.91 color=black fillcolor="#0000ff" penwidth=3 style=filled]
+	2 [label=-13.24 fillcolor="#0009ff" style=filled]
+	1 -> 2
+	3 [label=1.92 color=black fillcolor="#0013ff" penwidth=3 style=filled]
+	1 -> 3
+	4 [label=0.00 fillcolor="#001dff" style=filled]
+	1 -> 4
+	5 [label=-3.55 fillcolor="#0027ff" style=filled]
+	1 -> 5
+	6 [label=-4.59 fillcolor="#0031ff" style=filled]
+	1 -> 6
+	7 [label=2.19 color=black fillcolor="#003aff" penwidth=3 style=filled]
+	1 -> 7
+	8 [label=0.00 fillcolor="#0044ff" style=filled]
+	5 -> 8
+	9 [label=0.00 fillcolor="#004eff" style=filled]
+	3 -> 9
+	10 [label=1.52 fillcolor="#0058ff" style=filled]
+	1 -> 10
+	11 [label=4.01 color=black fillcolor="#0062ff" penwidth=3 style=filled]
+	1 -> 11
+	12 [label=0.00 fillcolor="#006bff" style=filled]
+	7 -> 12
+	13 [label=0.00 fillcolor="#0075ff" style=filled]
+	6 -> 13
+	14 [label=0.00 fillcolor="#007fff" style=filled]
+	7 -> 14
+	15 [label=0.00 fillcolor="#0089ff" style=filled]
+	9 -> 15
+	16 [label=-2.41 fillcolor="#0093ff" style=filled]
+	11 -> 16
+	17 [label=-6.12 fillcolor="#009cff" style=filled]
+	1 -> 17
+	18 [label=0.00 fillcolor="#00a6ff" style=filled]
+	12 -> 18
+	19 [label=0.00 fillcolor="#00b0ff" style=filled]
+	14 -> 19
+	20 [label=0.00 fillcolor="#00baff" style=filled]
+	7 -> 20
+	21 [label=0.00 fillcolor="#00c4ff" style=filled]
+	7 -> 21
+	22 [label=-7.92 fillcolor="#00cdff" style=filled]
+	16 -> 22
+	23 [label=0.00 fillcolor="#00d7ff" style=filled]
+	8 -> 23
+	24 [label=3.24 fillcolor="#00e1ff" style=filled]
+	9 -> 24
+	25 [label=-10.08 fillcolor="#00ebff" style=filled]
+	22 -> 25
+	26 [label=-16.03 fillcolor="#00f5ff" style=filled]
+	3 -> 26
+	27 [label=0.00 fillcolor="#00ffff" style=filled]
+	11 -> 27
+	28 [label=4.83 color=black fillcolor="#00fff5" penwidth=3 style=filled]
+	3 -> 28
+	29 [label=3.33 fillcolor="#00ffeb" style=filled]
+	7 -> 29
+	30 [label=0.00 fillcolor="#00ffe1" style=filled]
+	12 -> 30
+	31 [label=-14.47 fillcolor="#00ffd7" style=filled]
+	16 -> 31
+	32 [label=0.00 fillcolor="#00ffcd" style=filled]
+	11 -> 32
+	33 [label=0.00 fillcolor="#00ffc4" style=filled]
+	17 -> 33
+	34 [label=0.00 fillcolor="#00ffba" style=filled]
+	28 -> 34
+	35 [label=4.83 fillcolor="#00ffb0" style=filled]
+	11 -> 35
+	36 [label=0.00 fillcolor="#00ffa6" style=filled]
+	11 -> 36
+	37 [label=0.00 fillcolor="#00ff9c" style=filled]
+	23 -> 37
+	38 [label=8.93 color=black fillcolor="#00ff93" penwidth=3 style=filled]
+	21 -> 38
+	39 [label=0.00 fillcolor="#00ff89" style=filled]
+	3 -> 39
+	40 [label=8.50 fillcolor="#00ff7f" style=filled]
+	27 -> 40
+	41 [label=-4.87 fillcolor="#00ff75" style=filled]
+	33 -> 41
+	42 [label=0.00 fillcolor="#00ff6b" style=filled]
+	28 -> 42
+	43 [label=0.00 fillcolor="#00ff62" style=filled]
+	28 -> 43
+	44 [label=4.52 fillcolor="#00ff58" style=filled]
+	39 -> 44
+	45 [label=-14.95 fillcolor="#00ff4e" style=filled]
+	6 -> 45
+	46 [label=3.96 fillcolor="#00ff44" style=filled]
+	38 -> 46
+	47 [label=0.00 fillcolor="#00ff3a" style=filled]
+	39 -> 47
+	48 [label=0.00 fillcolor="#00ff31" style=filled]
+	7 -> 48
+	49 [label=0.00 fillcolor="#00ff27" style=filled]
+	44 -> 49
+	50 [label=0.00 fillcolor="#00ff1d" style=filled]
+	28 -> 50
+	51 [label=0.00 fillcolor="#00ff13" style=filled]
+	30 -> 51
+	52 [label=3.64 fillcolor="#00ff09" style=filled]
+	38 -> 52
+	53 [label=0.00 fillcolor="#00ff00" style=filled]
+	14 -> 53
+	54 [label=-13.98 fillcolor="#09ff00" style=filled]
+	35 -> 54
+	55 [label=7.00 fillcolor="#13ff00" style=filled]
+	38 -> 55
+	56 [label=8.45 fillcolor="#1dff00" style=filled]
+	38 -> 56
+	57 [label=-12.99 fillcolor="#27ff00" style=filled]
+	44 -> 57
+	58 [label=-3.45 fillcolor="#31ff00" style=filled]
+	38 -> 58
+	59 [label=8.40 fillcolor="#3aff00" style=filled]
+	8 -> 59
+	60 [label=0.00 fillcolor="#44ff00" style=filled]
+	38 -> 60
+	61 [label=0.00 fillcolor="#4eff00" style=filled]
+	56 -> 61
+	62 [label=0.00 fillcolor="#58ff00" style=filled]
+	38 -> 62
+	63 [label=8.93 fillcolor="#62ff00" style=filled]
+	61 -> 63
+	64 [label=0.00 fillcolor="#6bff00" style=filled]
+	38 -> 64
+	65 [label=0.00 fillcolor="#75ff00" style=filled]
+	38 -> 65
+	66 [label=8.40 fillcolor="#7fff00" style=filled]
+	20 -> 66
+	67 [label=0.00 fillcolor="#89ff00" style=filled]
+	44 -> 67
+	68 [label=6.11 fillcolor="#93ff00" style=filled]
+	63 -> 68
+	69 [label=7.28 fillcolor="#9cff00" style=filled]
+	29 -> 69
+	70 [label=0.00 fillcolor="#a6ff00" style=filled]
+	38 -> 70
+	71 [label=7.13 fillcolor="#b0ff00" style=filled]
+	38 -> 71
+	72 [label=6.03 fillcolor="#baff00" style=filled]
+	38 -> 72
+	73 [label=0.00 fillcolor="#c4ff00" style=filled]
+	68 -> 73
+	74 [label=4.13 fillcolor="#cdff00" style=filled]
+	38 -> 74
+	75 [label=0.00 fillcolor="#d7ff00" style=filled]
+	58 -> 75
+	76 [label=0.00 fillcolor="#e1ff00" style=filled]
+	70 -> 76
+	77 [label=0.00 fillcolor="#ebff00" style=filled]
+	38 -> 77
+	78 [label=6.67 fillcolor="#f5ff00" style=filled]
+	4 -> 78
+	79 [label=-0.02 fillcolor="#ffff00" style=filled]
+	69 -> 79
+	80 [label=4.12 fillcolor="#fff500" style=filled]
+	38 -> 80
+	81 [label=-16.84 fillcolor="#ffeb00" style=filled]
+	16 -> 81
+	82 [label=0.00 fillcolor="#ffe100" style=filled]
+	11 -> 82
+	83 [label=0.00 fillcolor="#ffd700" style=filled]
+	38 -> 83
+	84 [label=6.30 fillcolor="#ffcd00" style=filled]
+	38 -> 84
+	85 [label=0.00 fillcolor="#ffc400" style=filled]
+	50 -> 85
+	86 [label=0.00 fillcolor="#ffba00" style=filled]
+	84 -> 86
+	87 [label=0.00 fillcolor="#ffb000" style=filled]
+	78 -> 87
+	88 [label=0.00 fillcolor="#ffa600" style=filled]
+	59 -> 88
+	89 [label=0.00 fillcolor="#ff9c00" style=filled]
+	12 -> 89
+	90 [label=0.00 fillcolor="#ff9300" style=filled]
+	3 -> 90
+	91 [label=0.00 fillcolor="#ff8900" style=filled]
+	49 -> 91
+	92 [label=0.00 fillcolor="#ff7f00" style=filled]
+	37 -> 92
+	93 [label=0.00 fillcolor="#ff7500" style=filled]
+	33 -> 93
+	94 [label=5.81 fillcolor="#ff6b00" style=filled]
+	8 -> 94
+	95 [label=0.00 fillcolor="#ff6200" style=filled]
+	55 -> 95
+	96 [label=-2.47 fillcolor="#ff5800" style=filled]
+	7 -> 96
+	97 [label=0.00 fillcolor="#ff4e00" style=filled]
+	64 -> 97
+	98 [label=0.00 fillcolor="#ff4400" style=filled]
+	87 -> 98
+	99 [label=0.00 fillcolor="#ff3a00" style=filled]
+	76 -> 99
+	100 [label=0.00 fillcolor="#ff3100" style=filled]
+	85 -> 100
+	101 [label=9.20 color=gold fillcolor="#ff2700" penwidth=4 style=filled]
+	15 -> 101
+	102 [label=6.04 fillcolor="#ff1d00" style=filled]
+	80 -> 102
+	103 [label=0.00 fillcolor="#ff1300" style=filled]
+	11 -> 103
+	104 [label=4.36 fillcolor="#ff0900" style=filled]
+	67 -> 104
+	105 [label=0.00 fillcolor="#ff0000" style=filled]
+	11 -> 105
+}

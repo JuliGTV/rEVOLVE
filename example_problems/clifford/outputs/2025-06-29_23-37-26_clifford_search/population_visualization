@@ -1,0 +1,204 @@
+// Population
+digraph {
+	1 [label=4.83 color=gold fillcolor="#0000ff" penwidth=4 style=filled]
+	2 [label=0.00 fillcolor="#000aff" style=filled]
+	1 -> 2
+	3 [label=0.00 fillcolor="#0014ff" style=filled]
+	1 -> 3
+	4 [label=0.00 fillcolor="#001eff" style=filled]
+	1 -> 4
+	5 [label=0.00 fillcolor="#0028ff" style=filled]
+	1 -> 5
+	6 [label=0.00 fillcolor="#0033ff" style=filled]
+	1 -> 6
+	7 [label=0.00 fillcolor="#003dff" style=filled]
+	1 -> 7
+	8 [label=0.00 fillcolor="#0047ff" style=filled]
+	1 -> 8
+	9 [label=0.00 fillcolor="#0051ff" style=filled]
+	1 -> 9
+	10 [label=0.00 fillcolor="#005bff" style=filled]
+	1 -> 10
+	11 [label=0.00 fillcolor="#0066ff" style=filled]
+	1 -> 11
+	12 [label=4.80 fillcolor="#0070ff" style=filled]
+	1 -> 12
+	13 [label=0.00 fillcolor="#007aff" style=filled]
+	1 -> 13
+	14 [label=0.00 fillcolor="#0084ff" style=filled]
+	1 -> 14
+	15 [label=0.00 fillcolor="#008eff" style=filled]
+	1 -> 15
+	16 [label=0.00 fillcolor="#0099ff" style=filled]
+	1 -> 16
+	17 [label=0.00 fillcolor="#00a3ff" style=filled]
+	1 -> 17
+	18 [label=0.00 fillcolor="#00adff" style=filled]
+	1 -> 18
+	19 [label=0.00 fillcolor="#00b7ff" style=filled]
+	8 -> 19
+	20 [label=0.00 fillcolor="#00c1ff" style=filled]
+	1 -> 20
+	21 [label=0.00 fillcolor="#00cbff" style=filled]
+	10 -> 21
+	22 [label=0.00 fillcolor="#00d6ff" style=filled]
+	7 -> 22
+	23 [label=0.00 fillcolor="#00e0ff" style=filled]
+	16 -> 23
+	24 [label=0.00 fillcolor="#00eaff" style=filled]
+	9 -> 24
+	25 [label=0.00 fillcolor="#00f4ff" style=filled]
+	7 -> 25
+	26 [label=0.00 fillcolor="#00ffff" style=filled]
+	5 -> 26
+	27 [label=0.00 fillcolor="#00fff4" style=filled]
+	2 -> 27
+	28 [label=0.00 fillcolor="#00ffea" style=filled]
+	12 -> 28
+	29 [label=0.00 fillcolor="#00ffe0" style=filled]
+	19 -> 29
+	30 [label=0.00 fillcolor="#00ffd6" style=filled]
+	8 -> 30
+	31 [label=0.00 fillcolor="#00ffcb" style=filled]
+	22 -> 31
+	32 [label=0.00 fillcolor="#00ffc1" style=filled]
+	3 -> 32
+	33 [label=0.00 fillcolor="#00ffb7" style=filled]
+	22 -> 33
+	34 [label=0.00 fillcolor="#00ffad" style=filled]
+	30 -> 34
+	35 [label=0.00 fillcolor="#00ffa3" style=filled]
+	16 -> 35
+	36 [label=-4.93 fillcolor="#00ff99" style=filled]
+	1 -> 36
+	37 [label=0.00 fillcolor="#00ff8e" style=filled]
+	35 -> 37
+	38 [label=0.00 fillcolor="#00ff84" style=filled]
+	13 -> 38
+	39 [label=0.00 fillcolor="#00ff7a" style=filled]
+	27 -> 39
+	40 [label=0.00 fillcolor="#00ff70" style=filled]
+	30 -> 40
+	41 [label=0.00 fillcolor="#00ff66" style=filled]
+	31 -> 41
+	42 [label=0.00 fillcolor="#00ff5b" style=filled]
+	3 -> 42
+	43 [label=0.00 fillcolor="#00ff51" style=filled]
+	17 -> 43
+	44 [label=0.00 fillcolor="#00ff47" style=filled]
+	34 -> 44
+	45 [label=0.00 fillcolor="#00ff3d" style=filled]
+	22 -> 45
+	46 [label=0.00 fillcolor="#00ff32" style=filled]
+	15 -> 46
+	47 [label=0.00 fillcolor="#00ff28" style=filled]
+	12 -> 47
+	48 [label=0.00 fillcolor="#00ff1e" style=filled]
+	12 -> 48
+	49 [label=0.00 fillcolor="#00ff14" style=filled]
+	39 -> 49
+	50 [label=0.00 fillcolor="#00ff0a" style=filled]
+	41 -> 50
+	51 [label=0.00 fillcolor="#00ff00" style=filled]
+	22 -> 51
+	52 [label=0.00 fillcolor="#0aff00" style=filled]
+	42 -> 52
+	53 [label=0.00 fillcolor="#14ff00" style=filled]
+	28 -> 53
+	54 [label=0.00 fillcolor="#1eff00" style=filled]
+	37 -> 54
+	55 [label=0.00 fillcolor="#28ff00" style=filled]
+	29 -> 55
+	56 [label=0.00 fillcolor="#33ff00" style=filled]
+	10 -> 56
+	57 [label=0.00 fillcolor="#3dff00" style=filled]
+	7 -> 57
+	58 [label=0.00 fillcolor="#47ff00" style=filled]
+	30 -> 58
+	59 [label=0.00 fillcolor="#51ff00" style=filled]
+	32 -> 59
+	60 [label=0.00 fillcolor="#5bff00" style=filled]
+	42 -> 60
+	61 [label=0.00 fillcolor="#65ff00" style=filled]
+	16 -> 61
+	62 [label=0.00 fillcolor="#70ff00" style=filled]
+	39 -> 62
+	63 [label=0.00 fillcolor="#7aff00" style=filled]
+	32 -> 63
+	64 [label=0.00 fillcolor="#84ff00" style=filled]
+	3 -> 64
+	65 [label=0.00 fillcolor="#8eff00" style=filled]
+	42 -> 65
+	66 [label=-51.70 fillcolor="#99ff00" style=filled]
+	17 -> 66
+	67 [label=0.00 fillcolor="#a3ff00" style=filled]
+	24 -> 67
+	68 [label=0.00 fillcolor="#adff00" style=filled]
+	44 -> 68
+	69 [label=0.00 fillcolor="#b7ff00" style=filled]
+	7 -> 69
+	70 [label=0.00 fillcolor="#c1ff00" style=filled]
+	28 -> 70
+	71 [label=0.00 fillcolor="#cbff00" style=filled]
+	58 -> 71
+	72 [label=0.00 fillcolor="#d6ff00" style=filled]
+	61 -> 72
+	73 [label=-2.20 fillcolor="#e0ff00" style=filled]
+	11 -> 73
+	74 [label=0.00 fillcolor="#eaff00" style=filled]
+	55 -> 74
+	75 [label=0.00 fillcolor="#f4ff00" style=filled]
+	27 -> 75
+	76 [label=0.00 fillcolor="#ffff00" style=filled]
+	32 -> 76
+	77 [label=0.00 fillcolor="#fff400" style=filled]
+	25 -> 77
+	78 [label=0.00 fillcolor="#ffea00" style=filled]
+	30 -> 78
+	79 [label=1.64 fillcolor="#ffe000" style=filled]
+	17 -> 79
+	80 [label=0.00 fillcolor="#ffd600" style=filled]
+	13 -> 80
+	81 [label=0.00 fillcolor="#ffcb00" style=filled]
+	28 -> 81
+	82 [label=0.00 fillcolor="#ffc100" style=filled]
+	25 -> 82
+	83 [label=0.00 fillcolor="#ffb700" style=filled]
+	58 -> 83
+	84 [label=0.00 fillcolor="#ffad00" style=filled]
+	39 -> 84
+	85 [label=0.00 fillcolor="#ffa300" style=filled]
+	43 -> 85
+	86 [label=0.00 fillcolor="#ff9900" style=filled]
+	56 -> 86
+	87 [label=0.00 fillcolor="#ff8e00" style=filled]
+	12 -> 87
+	88 [label=0.00 fillcolor="#ff8400" style=filled]
+	67 -> 88
+	89 [label=0.00 fillcolor="#ff7a00" style=filled]
+	83 -> 89
+	90 [label=0.00 fillcolor="#ff7000" style=filled]
+	78 -> 90
+	91 [label=0.00 fillcolor="#ff6500" style=filled]
+	21 -> 91
+	92 [label=0.00 fillcolor="#ff5b00" style=filled]
+	2 -> 92
+	93 [label=0.00 fillcolor="#ff5100" style=filled]
+	53 -> 93
+	94 [label=0.00 fillcolor="#ff4700" style=filled]
+	7 -> 94
+	95 [label=0.00 fillcolor="#ff3d00" style=filled]
+	76 -> 95
+	96 [label=0.00 fillcolor="#ff3300" style=filled]
+	47 -> 96
+	97 [label=0.00 fillcolor="#ff2800" style=filled]
+	7 -> 97
+	98 [label=0.00 fillcolor="#ff1e00" style=filled]
+	84 -> 98
+	99 [label=0.00 fillcolor="#ff1400" style=filled]
+	46 -> 99
+	100 [label=0.00 fillcolor="#ff0a00" style=filled]
+	91 -> 100
+	101 [label=0.00 fillcolor="#ff0000" style=filled]
+	61 -> 101
+}

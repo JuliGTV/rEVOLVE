@@ -17,7 +17,7 @@ sys.path.insert(0, project_root)
 from src.evolve import AsyncEvolver
 from src.specification import ProblemSpecification
 from src.population import Organism
-from spec import get_clifford_heuristic_spec, get_clifford_heuristic_evolver_config
+from spec3 import get_clifford_heuristic_spec, get_clifford_heuristic_evolver_config
 
 # Rebuild the pydantic models to resolve forward references
 ProblemSpecification.model_rebuild()
