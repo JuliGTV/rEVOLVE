@@ -1,37 +1,54 @@
+# Evolution Report
 
-"""
-Heilbronn triangles problem specification for the simple evolutionary system.
-"""
+## Problem Information
+- **Problem Name**: heilbronn_triangles
+- **Timestamp**: 2025-07-11_17-52-08
 
-from src.specification import ProblemSpecification, Hyperparameters
-from src.population import Organism
-from src.evaluation import Evaluation
-from .evaluation import evaluate_heilbronn_triangles
+## Hyperparameters
+- **Exploration Rate**: 0.0
+- **Elitism Rate**: 1.0
+- **Max Steps**: 5
+- **Target Fitness**: 0.037
+- **Reason**: True
 
-n = 11
+## Evolver Configuration
+- **Max Concurrent**: 20
+- **Model Mix**: {
+  "deepseek:deepseek-reasoner": 0.01,
+  "deepseek:deepseek-chat": 0.99
+}
+- **Big Changes Rate**: 0.2
+- **Best Model**: deepseek:deepseek-reasoner
+- **Max Children Per Organism**: 20
+- **Checkpoint Dir**: checkpoints
+- **Population Path**: None
 
-SYSTEM_PROMPT = f"""
-You are an expert in computational geometry and programming.
+## Population Statistics
+- **Number of Organisms**: 6
+- **Best Fitness Score**: 0.0
+- **Average Fitness Score**: 0.0000
+- **Number of Best-So-Far Organisms**: 0
 
-You are working on the Heilbronn problem for n = {n} points.
+## Best-So-Far Organisms Summary
+These organisms were the best fitness when they were created:
 
-Your goal is to identify the coordinates of the points that lie on or inside the equilateral triangle with vertices (0,0), (1,0), (0.5, sqrt(3)/2)
-such that the area of the smallest triangle formed by any three points is maximized.
+| ID | Fitness | Improvement |
+|----|---------|-------------|
 
-You will be given a function `find_points()` that returns a list of {n} pairs of coordinates.
-You will also be given the evaluation of the function, which will be 0 if the points are not inside the triangle or if the number of points is not {n}
-and will be the area of the smallest triangle formed by any three points otherwise. (The area is normalized by the area of the equilateral triangle with vertices (0,0), (1,0), (0.5, sqrt(3)/2))
+## Fitness Progression
+![Fitness Progression](fitness_progression.png)
 
-The current SOTA for this problem is 0.0365 but we want to beat it.
+## Population Visualization
+![Population Visualization](population_visualization.gv.png)
 
-You will also be given some additional information about the the function (for example the list of points that it returned).
+## Ancestry Analysis
+![Ancestry Graph](ancestry_graph.png)
 
-Your job will be to modify the function `find_points()` so as to improve its score in the evaluation.
+For detailed ancestry analysis of the best organism, see [best_ancestry.md](best_ancestry.md).
 
+## Best Solution
+```
 
-"""
-
-INITIAL_CODE = '''
 """
 Heilbronn problem in an equilateral triangle – n = 11
 
@@ -201,90 +218,100 @@ def find_points(seed: int | None = 0) -> List[Tuple[float, float]]:
         with vertices (0, 0), (1, 0), (0.5, √3/2).
     """
     # 1) global crude search
-    pts = _anneal(n_pts=11, iters=100, seed=seed)
+    pts = _anneal(n_pts=11, iters=60_000, seed=seed)
 
     # 2) local deterministic polish (if SciPy available)
-    # pts = _local_polish(pts)  # Skip for now to avoid timeout
+    pts = _local_polish(pts)
 
     # 3) final rounding for readability
     return [(float(f"{x:.8f}"), float(f"{y:.8f}")) for x, y in pts]
 
 
 
-'''
 
+```
 
-# Configuration for Heilbronn triangles experiment
-HEILBRONN_TRIANGLES_CONFIG = {
-    # Basic evolution parameters
-    "exploration_rate": 0.0,
-    "elitism_rate": 1.0, 
-    "max_steps": 1000,
-    "target_fitness": 0.037,  # Beat current SOTA of 0.0365
-    "reason": True,
-    
-    # AsyncEvolver specific parameters
-    "max_concurrent": 20,
-    "model_mix": {"deepseek:deepseek-reasoner": 0.01, "deepseek:deepseek-chat": 0.99},
-    "big_changes_rate": 0.2,
-    "best_model": "deepseek:deepseek-reasoner",
-    "max_children_per_organism": 20,
-    
-    # Experiment settings
-    "checkpoint_dir": "checkpoints",  # Use main checkpoint directory
-    "population_path": None,  # Set to None for fresh start, or path to resume from specific population
+## Additional Data from Best Solution
+```json
+{
+  "num_points": "0",
+  "min_area_normalized": "0.0",
+  "validity": "error",
+  "error": "Results file not found",
+  "points": "[]"
+}
+```
+
+## Creation Information for Best Solution
+```json
+null
+```
+
+## Files in this Report
+- `population_visualization.gv` / `population_visualization.gv.png` - Visual representation of the population
+- `fitness_progression.png` - Plot showing fitness improvement over generations  
+- `ancestry_graph.png` - Visualization of best organisms' ancestry relationships
+- `best_ancestry.md` - Detailed ancestry analysis of the fittest organism
+- `population.json` / `population.pkl` - Serialized population data
+- `report.md` - This comprehensive report file
+
+## Configuration Reproducibility
+
+To reproduce this evolution run exactly, use the following configuration:
+
+### Problem Specification
+```python
+from src.specification import get_heilbronn_triangles_spec
+
+spec = get_heilbronn_triangles_spec()
+```
+
+### Evolver Configuration  
+```python
+evolver_config = {
+  "checkpoint_dir": "checkpoints",
+  "max_concurrent": 20,
+  "model_mix": {
+    "deepseek:deepseek-reasoner": 0.01,
+    "deepseek:deepseek-chat": 0.99
+  },
+  "big_changes_rate": 0.2,
+  "best_model": "deepseek:deepseek-reasoner",
+  "max_children_per_organism": 20,
+  "population_path": null
+}
+```
+
+### Full Reproduction Script
+```python
+from src.evolve import AsyncEvolver
+
+# Get specification and config
+spec = get_heilbronn_triangles_spec()
+evolver_config = {
+  "checkpoint_dir": "checkpoints",
+  "max_concurrent": 20,
+  "model_mix": {
+    "deepseek:deepseek-reasoner": 0.01,
+    "deepseek:deepseek-chat": 0.99
+  },
+  "big_changes_rate": 0.2,
+  "best_model": "deepseek:deepseek-reasoner",
+  "max_children_per_organism": 20,
+  "population_path": null
 }
 
+# Create evolver
+evolver = AsyncEvolver(
+    specification=spec,
+    **evolver_config
+)
 
-def get_heilbronn_triangles_spec() -> ProblemSpecification:
-    """
-    Get the Heilbronn triangles problem specification for the async evolutionary system.
-    
-    Returns:
-        ProblemSpecification configured for Heilbronn triangles optimization
-    """
-    
-    # Create initial population with the base solution
-    initial_evaluation = evaluate_heilbronn_triangles(INITIAL_CODE, n)
-    starting_population = [
-        Organism(solution=INITIAL_CODE, evaluation=initial_evaluation)
-    ]
-    
-    # Configure hyperparameters for Heilbronn triangles evolution
-    hyperparameters = Hyperparameters(
-        exploration_rate=HEILBRONN_TRIANGLES_CONFIG["exploration_rate"],
-        elitism_rate=HEILBRONN_TRIANGLES_CONFIG["elitism_rate"],
-        max_steps=HEILBRONN_TRIANGLES_CONFIG["max_steps"],
-        target_fitness=HEILBRONN_TRIANGLES_CONFIG["target_fitness"],
-        reason=HEILBRONN_TRIANGLES_CONFIG["reason"]
-    )
-    
-    def evaluator(solution: str) -> Evaluation:
-        return evaluate_heilbronn_triangles(solution, n)
-    
-    return ProblemSpecification(
-        name="heilbronn_triangles",
-        systemprompt=SYSTEM_PROMPT,
-        evaluator=evaluator,
-        starting_population=starting_population,
-        hyperparameters=hyperparameters
-    )
+# Run evolution
+population = await evolver.evolve()
 
-
-def get_heilbronn_triangles_evolver_config() -> dict:
-    """
-    Get the AsyncEvolver configuration for Heilbronn triangles.
-    
-    Returns:
-        Dictionary with AsyncEvolver parameters
-    """
-    return {
-        "checkpoint_dir": HEILBRONN_TRIANGLES_CONFIG["checkpoint_dir"],
-        "max_concurrent": HEILBRONN_TRIANGLES_CONFIG["max_concurrent"],
-        "model_mix": HEILBRONN_TRIANGLES_CONFIG["model_mix"],
-        "big_changes_rate": HEILBRONN_TRIANGLES_CONFIG["big_changes_rate"],
-        "best_model": HEILBRONN_TRIANGLES_CONFIG["best_model"],
-        "max_children_per_organism": HEILBRONN_TRIANGLES_CONFIG["max_children_per_organism"],
-        "population_path": HEILBRONN_TRIANGLES_CONFIG["population_path"]
-    }
-
+# Generate report
+from src.reporting import EvolutionReporter
+reporter = EvolutionReporter(population, spec, evolver_config)
+report_dir = reporter.generate_report()
+```

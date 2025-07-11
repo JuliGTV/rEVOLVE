@@ -55,18 +55,19 @@ def run_solution_safely(solution_code: str, n: int = 11, timeout_seconds: int = 
     with tempfile.NamedTemporaryFile(mode='w', suffix=".py", delete=False) as temp_file:
         # Write the solution code plus evaluation wrapper
         full_code = f"""
+# Solution code
+{solution_code}
+
+# Additional imports needed for evaluation
 import numpy as np
 import pickle
 import sys
 import traceback
 
-# Solution code
-{solution_code}
-
 # Evaluation wrapper
 try:
     if 'find_points' in globals():
-        points = find_points({n})
+        points = find_points()
     else:
         raise RuntimeError("No find_points() function found")
     
@@ -163,7 +164,7 @@ def evaluate_heilbronn_triangles(solution: str, n: int = 11) -> Evaluation:
                 "num_points": f"{len(points)}",
                 "min_area_normalized": f"{fitness:.6f}",
                 "validity": "valid" if fitness > 0 else "invalid",
-                "points": points.tolist()
+                "points": str(points.tolist())
             }
         )
         
@@ -175,6 +176,6 @@ def evaluate_heilbronn_triangles(solution: str, n: int = 11) -> Evaluation:
                 "min_area_normalized": "0.0",
                 "validity": "error",
                 "error": str(e),
-                "points": []
+                "points": "[]"
             }
         )
