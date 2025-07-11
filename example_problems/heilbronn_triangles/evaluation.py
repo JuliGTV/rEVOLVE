@@ -162,7 +162,8 @@ def evaluate_heilbronn_triangles(solution: str, n: int = 11) -> Evaluation:
             additional_data={
                 "num_points": f"{len(points)}",
                 "min_area_normalized": f"{fitness:.6f}",
-                "validity": "valid" if fitness > 0 else "invalid"
+                "validity": "valid" if fitness > 0 else "invalid",
+                "points": points.tolist()
             }
         )
         
@@ -173,6 +174,7 @@ def evaluate_heilbronn_triangles(solution: str, n: int = 11) -> Evaluation:
                 "num_points": "0",
                 "min_area_normalized": "0.0",
                 "validity": "error",
-                "error": str(e)
+                "error": str(e),
+                "points": []
             }
         )
