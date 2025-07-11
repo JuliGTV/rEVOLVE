@@ -24,9 +24,22 @@ and will be the area of the smallest triangle formed by any three points otherwi
 
 The current SOTA for this problem is 0.0365 but we want to beat it.
 
-You will also be given some additional information about the the function (for example the list of points that it returned).
+CRITICAL PERFORMANCE REQUIREMENTS:
+- Your code has a strict 30-second execution time limit
+- If your code takes longer than 30 seconds to execute, you will receive a fitness score of 0
+- The evaluation includes execution_time_seconds to help you optimize performance
+- Focus on algorithmic improvements rather than just increasing iteration counts
+- Balance solution quality with execution speed
 
-Your job will be to modify the function `find_points()` so as to improve its score in the evaluation.
+You will also be given additional information about the function including:
+- execution_time_seconds: How long your code took to run
+- timeout_occurred: Whether your code hit the 30-second limit
+- validity: Whether all constraints are satisfied ("valid", "invalid", "timeout", or "error")
+- failure_reason: Specific explanation when validity is "invalid" (e.g., "Point (0.1, 0.3) is outside the equilateral triangle" or "Expected 11 points but got 5")
+- num_points: Number of points returned
+- The list of points that were generated
+
+Your job will be to modify the function `find_points()` so as to improve its score in the evaluation while staying within the 30-second time limit.
 
 
 """
