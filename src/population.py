@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 import random
+import pickle
 from typing import Optional, List
 from src.evaluation import Evaluation
 from graphviz import Digraph
@@ -26,6 +27,26 @@ class Population:
         if pop:
             for organism in pop:
                 self.add(organism)
+    
+    @classmethod
+    def from_pickle(cls, pickle_path: str, exploration_rate: float = 0.2, elitism_rate: float = 0.1):
+        """Load population from a pickle file"""
+        with open(pickle_path, 'rb') as f:
+            organisms = pickle.load(f)
+        
+        # Create new population instance
+        population = cls(exploration_rate=exploration_rate, elitism_rate=elitism_rate)
+        
+        # Add organisms and set the ID counter to the highest ID + 1
+        max_id = 0
+        for organism in organisms:
+            # Don't use add() method to preserve original IDs
+            population.population.append(organism)
+            if organism.id and organism.id > max_id:
+                max_id = organism.id
+        
+        population.id_counter = max_id + 1
+        return population
 
     def add(self, organism: Organism):
         organism.id = self.id_counter
@@ -55,7 +76,7 @@ class Population:
         return random.choice(self.population)
     
     def get_weighted_random(self) -> Organism:
-        weights = [organism.evaluation.fitness ** 3 + 1 for organism in self.population]
+        weights = [organism.evaluation.fitness ** 4 + 1 for organism in self.population]
         return random.choices(self.population, weights=weights, k=1)[0]
     
     def get_next(self) -> Organism:
@@ -137,6 +158,3 @@ class Population:
 
         dot.render(filename, format='png', view=view)
         return dot
-
-    
-
