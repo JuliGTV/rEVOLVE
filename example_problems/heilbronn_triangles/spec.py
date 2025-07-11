@@ -214,9 +214,31 @@ def find_points(seed: int | None = 0) -> List[Tuple[float, float]]:
 '''
 
 
+# Configuration for Heilbronn triangles experiment
+HEILBRONN_TRIANGLES_CONFIG = {
+    # Basic evolution parameters
+    "exploration_rate": 0.0,
+    "elitism_rate": 1.0, 
+    "max_steps": 1000,
+    "target_fitness": 0.037,  # Beat current SOTA of 0.0365
+    "reason": True,
+    
+    # AsyncEvolver specific parameters
+    "max_concurrent": 20,
+    "model_mix": {"deepseek:deepseek-reasoner": 0.01, "deepseek:deepseek-chat": 0.99},
+    "big_changes_rate": 0.2,
+    "best_model": "deepseek:deepseek-reasoner",
+    "max_children_per_organism": 20,
+    
+    # Experiment settings
+    "checkpoint_dir": "checkpoints",  # Use main checkpoint directory
+    "population_path": None,  # Set to None for fresh start, or path to resume from specific population
+}
+
+
 def get_heilbronn_triangles_spec() -> ProblemSpecification:
     """
-    Get the Heilbronn triangles problem specification for the simple evolutionary system.
+    Get the Heilbronn triangles problem specification for the async evolutionary system.
     
     Returns:
         ProblemSpecification configured for Heilbronn triangles optimization
@@ -230,11 +252,11 @@ def get_heilbronn_triangles_spec() -> ProblemSpecification:
     
     # Configure hyperparameters for Heilbronn triangles evolution
     hyperparameters = Hyperparameters(
-        exploration_rate=0,      
-        elitism_rate=1,          
-        max_steps=1000,          
-        target_fitness=0.037,     
-        reason=True              
+        exploration_rate=HEILBRONN_TRIANGLES_CONFIG["exploration_rate"],
+        elitism_rate=HEILBRONN_TRIANGLES_CONFIG["elitism_rate"],
+        max_steps=HEILBRONN_TRIANGLES_CONFIG["max_steps"],
+        target_fitness=HEILBRONN_TRIANGLES_CONFIG["target_fitness"],
+        reason=HEILBRONN_TRIANGLES_CONFIG["reason"]
     )
     
     def evaluator(solution: str) -> Evaluation:
@@ -247,4 +269,22 @@ def get_heilbronn_triangles_spec() -> ProblemSpecification:
         starting_population=starting_population,
         hyperparameters=hyperparameters
     )
+
+
+def get_heilbronn_triangles_evolver_config() -> dict:
+    """
+    Get the AsyncEvolver configuration for Heilbronn triangles.
+    
+    Returns:
+        Dictionary with AsyncEvolver parameters
+    """
+    return {
+        "checkpoint_dir": HEILBRONN_TRIANGLES_CONFIG["checkpoint_dir"],
+        "max_concurrent": HEILBRONN_TRIANGLES_CONFIG["max_concurrent"],
+        "model_mix": HEILBRONN_TRIANGLES_CONFIG["model_mix"],
+        "big_changes_rate": HEILBRONN_TRIANGLES_CONFIG["big_changes_rate"],
+        "best_model": HEILBRONN_TRIANGLES_CONFIG["best_model"],
+        "max_children_per_organism": HEILBRONN_TRIANGLES_CONFIG["max_children_per_organism"],
+        "population_path": HEILBRONN_TRIANGLES_CONFIG["population_path"]
+    }
 
