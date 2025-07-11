@@ -1,8 +1,9 @@
-from typing import Callable, Optional
+from typing import Callable, Optional, TYPE_CHECKING
 from pydantic import BaseModel
-from src.population import Organism
 from src.evaluation import Evaluation
 
+if TYPE_CHECKING:
+    from src.population import Organism
 
 
 class Hyperparameters(BaseModel):
@@ -17,7 +18,5 @@ class ProblemSpecification(BaseModel):
     name: str
     systemprompt: str
     evaluator: Callable[[str], Evaluation]
-    starting_population: list[Organism] 
+    starting_population: list["Organism"] 
     hyperparameters: Hyperparameters = Hyperparameters()
-
-

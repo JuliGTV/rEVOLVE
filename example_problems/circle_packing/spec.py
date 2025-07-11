@@ -75,7 +75,7 @@ CONSTRAINTS:
 - sum_radii: sum of all radii (float)
 
 OPTIMIZATION GOAL:
-- The target is to achieve a sum of radii of 2.635 (AlphaEvolve benchmark)
+- The target is to achieve a sum of radii of 2.636 (AlphaEvolve benchmark)
 - Higher sum of radii = better fitness
 
 KEY GEOMETRIC INSIGHTS:
@@ -103,16 +103,37 @@ CODING REQUIREMENTS:
 Improve the existing solution by trying different geometric arrangements, optimization techniques, or hybrid approaches."""
 
 
+# Configuration for circle packing experiment
+CIRCLE_PACKING_CONFIG = {
+    # Basic evolution parameters
+    "exploration_rate": 0.0,
+    "elitism_rate": 1.0, 
+    "max_steps": 1000,
+    "target_fitness": 2.636,  # AlphaEvolve benchmark
+    "reason": True,
+    
+    # AsyncEvolver specific parameters
+    "max_concurrent": 20,
+    "model_mix": {"deepseek:deepseek-reasoner": 0.01, "deepseek:deepseek-chat": 0.99},
+    "big_changes_rate": 0.2,
+    "best_model": "deepseek:deepseek-reasoner",
+    "max_children_per_organism": 20,
+    
+    # Experiment settings
+    "checkpoint_dir": "checkpoints",  # Use main checkpoint directory
+    "population_path": None,  # Set to None for fresh start, or path to resume from specific population
+}
+
+
 def get_circle_packing_spec() -> ProblemSpecification:
     """
-    Get the circle packing problem specification for the simple evolutionary system.
+    Get the circle packing problem specification for the async evolutionary system.
     
     Returns:
         ProblemSpecification configured for circle packing optimization
     """
     
     # Create initial population with the base solution
-    # Evaluate the initial solution properly instead of using dummy value
     initial_evaluation = evaluate_circle_packing(INITIAL_SOLUTION)
     starting_population = [
         Organism(solution=INITIAL_SOLUTION, evaluation=initial_evaluation)
@@ -120,11 +141,11 @@ def get_circle_packing_spec() -> ProblemSpecification:
     
     # Configure hyperparameters for circle packing evolution
     hyperparameters = Hyperparameters(
-        exploration_rate=0,      # Higher exploration for this complex problem
-        elitism_rate=1,          # Keep good solutions
-        max_steps=4000,             # Run for many iterations
-        target_fitness=2.636,      # AlphaEvolve benchmark
-        reason=True                # Enable reasoning for complex problem
+        exploration_rate=CIRCLE_PACKING_CONFIG["exploration_rate"],
+        elitism_rate=CIRCLE_PACKING_CONFIG["elitism_rate"],
+        max_steps=CIRCLE_PACKING_CONFIG["max_steps"],
+        target_fitness=CIRCLE_PACKING_CONFIG["target_fitness"],
+        reason=CIRCLE_PACKING_CONFIG["reason"]
     )
     
     return ProblemSpecification(
@@ -134,3 +155,21 @@ def get_circle_packing_spec() -> ProblemSpecification:
         starting_population=starting_population,
         hyperparameters=hyperparameters
     )
+
+
+def get_circle_packing_evolver_config() -> dict:
+    """
+    Get the AsyncEvolver configuration for circle packing.
+    
+    Returns:
+        Dictionary with AsyncEvolver parameters
+    """
+    return {
+        "checkpoint_dir": CIRCLE_PACKING_CONFIG["checkpoint_dir"],
+        "max_concurrent": CIRCLE_PACKING_CONFIG["max_concurrent"],
+        "model_mix": CIRCLE_PACKING_CONFIG["model_mix"],
+        "big_changes_rate": CIRCLE_PACKING_CONFIG["big_changes_rate"],
+        "best_model": CIRCLE_PACKING_CONFIG["best_model"],
+        "max_children_per_organism": CIRCLE_PACKING_CONFIG["max_children_per_organism"],
+        "population_path": CIRCLE_PACKING_CONFIG["population_path"]
+    }

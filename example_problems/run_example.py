@@ -1,22 +1,26 @@
 from src.specification import ProblemSpecification
-from src.evolve import Evolver
+from src.evolve import AsyncEvolver
 from typing import Optional
+import asyncio
 
 
-
-def run_example(spec: ProblemSpecification, max_steps: Optional[int] = None, target_fitness: Optional[int] = None):
+async def run_example_async(spec: ProblemSpecification, max_steps: Optional[int] = None, target_fitness: Optional[int] = None):
     if max_steps:
         spec.hyperparameters.max_steps = max_steps
     if target_fitness:
         spec.hyperparameters.target_fitness = target_fitness
     
     try:
-        e = Evolver(spec)
-        e.evolve()
+        e = AsyncEvolver(spec)
+        await e.evolve()
         e.report()
     except Exception as e:
-  
         raise e
+
+
+def run_example(spec: ProblemSpecification, max_steps: Optional[int] = None, target_fitness: Optional[int] = None):
+    """Sync wrapper for backward compatibility"""
+    asyncio.run(run_example_async(spec, max_steps, target_fitness))
 
 if __name__ == "__main__":
     import sys

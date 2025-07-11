@@ -1,0 +1,8 @@
+// Population
+digraph {
+	1 [label=1.78 color=black fillcolor="#0000ff" penwidth=3 style=filled]
+	2 [label=1.82 color=gold fillcolor="#00ff00" penwidth=4 style=filled]
+	1 -> 2
+	3 [label=1.57 fillcolor="#ff0000" style=filled]
+	1 -> 3
+}

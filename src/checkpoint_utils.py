@@ -32,20 +32,18 @@ def list_checkpoints(checkpoint_dir: str = "checkpoints") -> List[Tuple[str, str
     
     return sorted(checkpoints, key=lambda x: x[3], reverse=True)  # Sort by timestamp, newest first
 
-def delete_checkpoint(problem_name: str, evolver_type: str = "evolver", checkpoint_dir: str = "checkpoints") -> bool:
+def delete_checkpoint(problem_name: str, checkpoint_dir: str = "checkpoints") -> bool:
     """
     Delete a specific checkpoint file.
     
     Args:
         problem_name: Name of the problem
-        evolver_type: Type of evolver ("evolver" or "evolver2")
         checkpoint_dir: Directory containing checkpoints
     
     Returns:
         True if deleted successfully, False otherwise
     """
-    suffix = "_evolver2_checkpoint.pkl" if evolver_type == "evolver2" else "_checkpoint.pkl"
-    filename = f"{problem_name.replace(' ', '_')}{suffix}"
+    filename = f"{problem_name.replace(' ', '_')}_async_checkpoint.pkl"
     filepath = os.path.join(checkpoint_dir, filename)
     
     if os.path.exists(filepath):
@@ -60,38 +58,34 @@ def delete_checkpoint(problem_name: str, evolver_type: str = "evolver", checkpoi
         logfire.warning(f"Checkpoint file not found: {filepath}")
         return False
 
-def checkpoint_exists(problem_name: str, evolver_type: str = "evolver", checkpoint_dir: str = "checkpoints") -> bool:
+def checkpoint_exists(problem_name: str, checkpoint_dir: str = "checkpoints") -> bool:
     """
-    Check if a checkpoint exists for a specific problem and evolver type.
+    Check if a checkpoint exists for a specific problem.
     
     Args:
         problem_name: Name of the problem
-        evolver_type: Type of evolver ("evolver" or "evolver2")
         checkpoint_dir: Directory containing checkpoints
     
     Returns:
         True if checkpoint exists, False otherwise
     """
-    suffix = "_evolver2_checkpoint.pkl" if evolver_type == "evolver2" else "_checkpoint.pkl"
-    filename = f"{problem_name.replace(' ', '_')}{suffix}"
+    filename = f"{problem_name.replace(' ', '_')}_async_checkpoint.pkl"
     filepath = os.path.join(checkpoint_dir, filename)
     
     return os.path.exists(filepath)
 
-def get_checkpoint_info(problem_name: str, evolver_type: str = "evolver", checkpoint_dir: str = "checkpoints") -> Optional[dict]:
+def get_checkpoint_info(problem_name: str, checkpoint_dir: str = "checkpoints") -> Optional[dict]:
     """
     Get information about a specific checkpoint.
     
     Args:
         problem_name: Name of the problem
-        evolver_type: Type of evolver ("evolver" or "evolver2")
         checkpoint_dir: Directory containing checkpoints
     
     Returns:
         Dictionary with checkpoint information or None if not found
     """
-    suffix = "_evolver2_checkpoint.pkl" if evolver_type == "evolver2" else "_checkpoint.pkl"
-    filename = f"{problem_name.replace(' ', '_')}{suffix}"
+    filename = f"{problem_name.replace(' ', '_')}_async_checkpoint.pkl"
     filepath = os.path.join(checkpoint_dir, filename)
     
     if not os.path.exists(filepath):
