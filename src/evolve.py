@@ -7,6 +7,7 @@ import os
 import pickle
 from datetime import datetime
 import asyncio
+import concurrent.futures
 from typing import List, Tuple
 
 
@@ -60,6 +61,11 @@ class AsyncEvolver:
         self.reason = specification.hyperparameters.reason
         self.prompt_gen = Promptgenerator(specification.systemprompt, self.reason)
         
+        # Create thread pool executor for CPU-bound evaluation tasks
+        self.executor = concurrent.futures.ThreadPoolExecutor(
+            max_workers=min(self.max_concurrent, os.cpu_count() or 1)
+        )
+        
         # Ensure checkpoint directory exists
         os.makedirs(self.checkpoint_dir, exist_ok=True)
         
@@ -73,7 +79,29 @@ class AsyncEvolver:
                     big_changes_rate=self.big_changes_rate,
                     best_model=self.best_model,
                     max_children_per_organism=self.max_children_per_organism,
-                    population_path=population_path)
+                    population_path=population_path,
+                    thread_pool_workers=self.executor._max_workers)
+
+    async def _evaluate_in_thread(self, solution: str):
+        """Run evaluation in a separate thread to avoid blocking the event loop"""
+        with logfire.span("evaluation", solution_length=len(solution)):
+            loop = asyncio.get_event_loop()
+            result = await loop.run_in_executor(
+                self.executor, 
+                self.specification.evaluator, 
+                solution
+            )
+            
+            # Log evaluation result for debugging
+            fitness = result.fitness if hasattr(result, 'fitness') else 0.0
+            validity = result.additional_data.get('validity', 'unknown') if hasattr(result, 'additional_data') else 'unknown'
+            
+            logfire.info("Evaluation completed", 
+                        fitness=fitness, 
+                        validity=validity,
+                        solution_length=len(solution))
+            
+            return result
 
     async def evolve(self) -> Population:
         """Main async evolution loop with streaming concurrent LLM calls"""
@@ -219,6 +247,8 @@ class AsyncEvolver:
         finally:
             # Always save final checkpoint
             self._save_checkpoint(step)
+            # Cleanup thread pool executor
+            self.executor.shutdown(wait=True)
 
         logfire.info(f"Evolution completed\n"
                      f"with {step} steps\n"
@@ -278,7 +308,7 @@ class AsyncEvolver:
         logfire.debug(f"Selected model {selected_model} for parent {parent_id} (reasoning: {is_reasoning})")
         
         mutated = await generate_async(prompt, model=selected_model, reasoning=is_reasoning)
-        evaluation = self.specification.evaluator(mutated)
+        evaluation = await self._evaluate_in_thread(mutated)
         return mutated, evaluation
     
     async def _generate_and_evaluate_async_with_metadata(self, prompt: str, parent_id: int, change_type: str, step_number: int) -> Tuple[str, object, dict]:
@@ -292,7 +322,7 @@ class AsyncEvolver:
                      f"(change_type: {change_type}, reasoning: {is_reasoning})")
         
         mutated = await generate_async(prompt, model=selected_model, reasoning=is_reasoning)
-        sync_evaluation = self.specification.evaluator(mutated)
+        sync_evaluation = await self._evaluate_in_thread(mutated)
         evaluation = self._convert_evaluation(sync_evaluation)
         
         # Create creation info
@@ -316,7 +346,7 @@ class AsyncEvolver:
                     f"(fitness: {best_organism.evaluation.fitness}) with {self.best_model}")
         
         mutated = await generate_async(prompt, model=self.best_model, reasoning=is_reasoning)
-        sync_evaluation = self.specification.evaluator(mutated)
+        sync_evaluation = await self._evaluate_in_thread(mutated)
         evaluation = self._convert_evaluation(sync_evaluation)
         
         # Create creation info for exploitation
@@ -402,4 +432,9 @@ class AsyncEvolver:
         except Exception as e:
             logfire.error(f"Failed to load checkpoint: {str(e)}")
             raise
+    
+    def __del__(self):
+        """Cleanup thread pool executor when object is destroyed"""
+        if hasattr(self, 'executor') and self.executor is not None:
+            self.executor.shutdown(wait=False)
 
