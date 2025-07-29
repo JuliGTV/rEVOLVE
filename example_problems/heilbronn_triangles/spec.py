@@ -230,9 +230,9 @@ def find_points(seed: int | None = 0) -> List[Tuple[float, float]]:
 # Configuration for Heilbronn triangles experiment
 HEILBRONN_TRIANGLES_CONFIG = {
     # Basic evolution parameters
-    "exploration_rate": 0.0,
-    "elitism_rate": 1.0, 
-    "max_steps": 1000,
+    "exploration_rate": 0.1,
+    "elitism_rate": 0.4, 
+    "max_steps": 3000,
     "target_fitness": 0.037,  # Beat current SOTA of 0.0365
     "reason": True,
     

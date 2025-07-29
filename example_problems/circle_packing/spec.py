@@ -115,7 +115,7 @@ CIRCLE_PACKING_CONFIG = {
     # AsyncEvolver specific parameters
     "max_concurrent": 20,
     "model_mix": {"deepseek:deepseek-reasoner": 0.01, "deepseek:deepseek-chat": 0.99},
-    "big_changes_rate": 0.2,
+    "big_changes_rate": 0.3,
     "best_model": "deepseek:deepseek-reasoner",
     "max_children_per_organism": 20,
     

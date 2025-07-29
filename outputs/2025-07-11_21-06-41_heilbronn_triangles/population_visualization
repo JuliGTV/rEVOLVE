@@ -1,0 +1,970 @@
+// Population
+digraph {
+	1 [label=0.00 color=black fillcolor="#0000ff" penwidth=3 style=filled]
+	2 [label=0.02 color=black fillcolor="#0002ff" penwidth=3 style=filled]
+	1 -> 2
+	3 [label=0.00 fillcolor="#0004ff" style=filled]
+	1 -> 3
+	4 [label=0.00 fillcolor="#0006ff" style=filled]
+	1 -> 4
+	5 [label=0.01 fillcolor="#0008ff" style=filled]
+	1 -> 5
+	6 [label=0.01 fillcolor="#000aff" style=filled]
+	1 -> 6
+	7 [label=0.00 fillcolor="#000cff" style=filled]
+	1 -> 7
+	8 [label=0.00 fillcolor="#000eff" style=filled]
+	1 -> 8
+	9 [label=0.00 fillcolor="#0010ff" style=filled]
+	1 -> 9
+	10 [label=0.00 fillcolor="#0013ff" style=filled]
+	1 -> 10
+	11 [label=0.00 fillcolor="#0015ff" style=filled]
+	1 -> 11
+	12 [label=0.00 fillcolor="#0017ff" style=filled]
+	1 -> 12
+	13 [label=0.01 fillcolor="#0019ff" style=filled]
+	1 -> 13
+	14 [label=0.01 fillcolor="#001bff" style=filled]
+	1 -> 14
+	15 [label=0.00 fillcolor="#001dff" style=filled]
+	1 -> 15
+	16 [label=0.00 fillcolor="#001fff" style=filled]
+	1 -> 16
+	17 [label=0.00 fillcolor="#0021ff" style=filled]
+	1 -> 17
+	18 [label=0.00 fillcolor="#0023ff" style=filled]
+	1 -> 18
+	19 [label=0.01 fillcolor="#0026ff" style=filled]
+	1 -> 19
+	20 [label=0.00 fillcolor="#0028ff" style=filled]
+	1 -> 20
+	21 [label=0.00 fillcolor="#002aff" style=filled]
+	1 -> 21
+	22 [label=0.00 fillcolor="#002cff" style=filled]
+	2 -> 22
+	23 [label=0.01 fillcolor="#002eff" style=filled]
+	2 -> 23
+	24 [label=0.01 fillcolor="#0030ff" style=filled]
+	2 -> 24
+	25 [label=0.00 fillcolor="#0032ff" style=filled]
+	2 -> 25
+	26 [label=0.00 fillcolor="#0034ff" style=filled]
+	2 -> 26
+	27 [label=0.00 fillcolor="#0036ff" style=filled]
+	2 -> 27
+	28 [label=0.00 fillcolor="#0039ff" style=filled]
+	2 -> 28
+	29 [label=0.00 fillcolor="#003bff" style=filled]
+	2 -> 29
+	30 [label=0.00 fillcolor="#003dff" style=filled]
+	2 -> 30
+	31 [label=0.00 fillcolor="#003fff" style=filled]
+	2 -> 31
+	32 [label=0.00 fillcolor="#0041ff" style=filled]
+	2 -> 32
+	33 [label=0.00 fillcolor="#0043ff" style=filled]
+	2 -> 33
+	34 [label=0.01 fillcolor="#0045ff" style=filled]
+	2 -> 34
+	35 [label=0.00 fillcolor="#0047ff" style=filled]
+	2 -> 35
+	36 [label=0.00 fillcolor="#0049ff" style=filled]
+	2 -> 36
+	37 [label=0.00 fillcolor="#004cff" style=filled]
+	2 -> 37
+	38 [label=0.00 fillcolor="#004eff" style=filled]
+	2 -> 38
+	39 [label=0.01 fillcolor="#0050ff" style=filled]
+	2 -> 39
+	40 [label=0.00 fillcolor="#0052ff" style=filled]
+	2 -> 40
+	41 [label=0.00 fillcolor="#0054ff" style=filled]
+	2 -> 41
+	42 [label=0.01 fillcolor="#0056ff" style=filled]
+	2 -> 42
+	43 [label=0.00 fillcolor="#0058ff" style=filled]
+	2 -> 43
+	44 [label=0.00 fillcolor="#005aff" style=filled]
+	2 -> 44
+	45 [label=0.00 fillcolor="#005cff" style=filled]
+	2 -> 45
+	46 [label=0.01 fillcolor="#005fff" style=filled]
+	2 -> 46
+	47 [label=0.00 fillcolor="#0061ff" style=filled]
+	2 -> 47
+	48 [label=0.00 fillcolor="#0063ff" style=filled]
+	2 -> 48
+	49 [label=0.00 fillcolor="#0065ff" style=filled]
+	2 -> 49
+	50 [label=0.01 fillcolor="#0067ff" style=filled]
+	2 -> 50
+	51 [label=0.00 fillcolor="#0069ff" style=filled]
+	2 -> 51
+	52 [label=0.00 fillcolor="#006bff" style=filled]
+	2 -> 52
+	53 [label=0.00 fillcolor="#006dff" style=filled]
+	2 -> 53
+	54 [label=0.00 fillcolor="#006fff" style=filled]
+	2 -> 54
+	55 [label=0.01 fillcolor="#0072ff" style=filled]
+	2 -> 55
+	56 [label=0.01 fillcolor="#0074ff" style=filled]
+	2 -> 56
+	57 [label=0.01 fillcolor="#0076ff" style=filled]
+	2 -> 57
+	58 [label=0.00 fillcolor="#0078ff" style=filled]
+	2 -> 58
+	59 [label=0.00 fillcolor="#007aff" style=filled]
+	2 -> 59
+	60 [label=0.01 fillcolor="#007cff" style=filled]
+	2 -> 60
+	61 [label=0.02 color=black fillcolor="#007eff" penwidth=3 style=filled]
+	2 -> 61
+	62 [label=0.00 fillcolor="#0080ff" style=filled]
+	2 -> 62
+	63 [label=0.00 fillcolor="#0082ff" style=filled]
+	2 -> 63
+	64 [label=0.00 fillcolor="#0085ff" style=filled]
+	2 -> 64
+	65 [label=0.00 fillcolor="#0087ff" style=filled]
+	2 -> 65
+	66 [label=0.01 fillcolor="#0089ff" style=filled]
+	2 -> 66
+	67 [label=0.00 fillcolor="#008bff" style=filled]
+	2 -> 67
+	68 [label=0.00 fillcolor="#008dff" style=filled]
+	2 -> 68
+	69 [label=0.01 fillcolor="#008fff" style=filled]
+	2 -> 69
+	70 [label=0.00 fillcolor="#0091ff" style=filled]
+	2 -> 70
+	71 [label=0.00 fillcolor="#0093ff" style=filled]
+	2 -> 71
+	72 [label=0.00 fillcolor="#0095ff" style=filled]
+	2 -> 72
+	73 [label=0.00 fillcolor="#0098ff" style=filled]
+	2 -> 73
+	74 [label=0.00 fillcolor="#009aff" style=filled]
+	2 -> 74
+	75 [label=0.00 fillcolor="#009cff" style=filled]
+	2 -> 75
+	76 [label=0.00 fillcolor="#009eff" style=filled]
+	2 -> 76
+	77 [label=0.00 fillcolor="#00a0ff" style=filled]
+	61 -> 77
+	78 [label=0.00 fillcolor="#00a2ff" style=filled]
+	2 -> 78
+	79 [label=0.01 fillcolor="#00a4ff" style=filled]
+	2 -> 79
+	80 [label=0.00 fillcolor="#00a6ff" style=filled]
+	2 -> 80
+	81 [label=0.00 fillcolor="#00a8ff" style=filled]
+	61 -> 81
+	82 [label=0.00 fillcolor="#00abff" style=filled]
+	61 -> 82
+	83 [label=0.00 fillcolor="#00adff" style=filled]
+	61 -> 83
+	84 [label=0.00 fillcolor="#00afff" style=filled]
+	61 -> 84
+	85 [label=0.00 fillcolor="#00b1ff" style=filled]
+	61 -> 85
+	86 [label=0.00 fillcolor="#00b3ff" style=filled]
+	61 -> 86
+	87 [label=0.00 fillcolor="#00b5ff" style=filled]
+	61 -> 87
+	88 [label=0.00 fillcolor="#00b7ff" style=filled]
+	61 -> 88
+	89 [label=0.00 fillcolor="#00b9ff" style=filled]
+	61 -> 89
+	90 [label=0.00 fillcolor="#00bbff" style=filled]
+	61 -> 90
+	91 [label=0.00 fillcolor="#00beff" style=filled]
+	61 -> 91
+	92 [label=0.00 fillcolor="#00c0ff" style=filled]
+	61 -> 92
+	93 [label=0.00 fillcolor="#00c2ff" style=filled]
+	61 -> 93
+	94 [label=0.00 fillcolor="#00c4ff" style=filled]
+	61 -> 94
+	95 [label=0.00 fillcolor="#00c6ff" style=filled]
+	61 -> 95
+	96 [label=0.00 fillcolor="#00c8ff" style=filled]
+	61 -> 96
+	97 [label=0.00 fillcolor="#00caff" style=filled]
+	61 -> 97
+	98 [label=0.00 fillcolor="#00ccff" style=filled]
+	61 -> 98
+	99 [label=0.00 fillcolor="#00ceff" style=filled]
+	61 -> 99
+	100 [label=0.02 fillcolor="#00d1ff" style=filled]
+	61 -> 100
+	101 [label=0.00 fillcolor="#00d3ff" style=filled]
+	61 -> 101
+	102 [label=0.00 fillcolor="#00d5ff" style=filled]
+	61 -> 102
+	103 [label=0.00 fillcolor="#00d7ff" style=filled]
+	61 -> 103
+	104 [label=0.00 fillcolor="#00d9ff" style=filled]
+	61 -> 104
+	105 [label=0.00 fillcolor="#00dbff" style=filled]
+	61 -> 105
+	106 [label=0.00 fillcolor="#00ddff" style=filled]
+	61 -> 106
+	107 [label=0.00 fillcolor="#00dfff" style=filled]
+	61 -> 107
+	108 [label=0.00 fillcolor="#00e1ff" style=filled]
+	61 -> 108
+	109 [label=0.00 fillcolor="#00e4ff" style=filled]
+	61 -> 109
+	110 [label=0.00 fillcolor="#00e6ff" style=filled]
+	61 -> 110
+	111 [label=0.00 fillcolor="#00e8ff" style=filled]
+	61 -> 111
+	112 [label=0.00 fillcolor="#00eaff" style=filled]
+	61 -> 112
+	113 [label=0.00 fillcolor="#00ecff" style=filled]
+	61 -> 113
+	114 [label=0.00 fillcolor="#00eeff" style=filled]
+	61 -> 114
+	115 [label=0.00 fillcolor="#00f0ff" style=filled]
+	61 -> 115
+	116 [label=0.00 fillcolor="#00f2ff" style=filled]
+	61 -> 116
+	117 [label=0.00 fillcolor="#00f4ff" style=filled]
+	61 -> 117
+	118 [label=0.00 fillcolor="#00f7ff" style=filled]
+	61 -> 118
+	119 [label=0.00 fillcolor="#00f9ff" style=filled]
+	61 -> 119
+	120 [label=0.00 fillcolor="#00fbff" style=filled]
+	61 -> 120
+	121 [label=0.00 fillcolor="#00fdff" style=filled]
+	61 -> 121
+	122 [label=0.00 fillcolor="#00fffe" style=filled]
+	61 -> 122
+	123 [label=0.00 fillcolor="#00fffc" style=filled]
+	61 -> 123
+	124 [label=0.00 fillcolor="#00fffa" style=filled]
+	61 -> 124
+	125 [label=0.00 fillcolor="#00fff8" style=filled]
+	61 -> 125
+	126 [label=0.00 fillcolor="#00fff6" style=filled]
+	61 -> 126
+	127 [label=0.00 fillcolor="#00fff3" style=filled]
+	61 -> 127
+	128 [label=0.00 fillcolor="#00fff1" style=filled]
+	61 -> 128
+	129 [label=0.00 fillcolor="#00ffef" style=filled]
+	61 -> 129
+	130 [label=0.00 fillcolor="#00ffed" style=filled]
+	61 -> 130
+	131 [label=0.00 fillcolor="#00ffeb" style=filled]
+	61 -> 131
+	132 [label=0.00 fillcolor="#00ffe9" style=filled]
+	61 -> 132
+	133 [label=0.00 fillcolor="#00ffe7" style=filled]
+	61 -> 133
+	134 [label=0.00 fillcolor="#00ffe5" style=filled]
+	61 -> 134
+	135 [label=0.00 fillcolor="#00ffe3" style=filled]
+	61 -> 135
+	136 [label=0.00 fillcolor="#00ffe0" style=filled]
+	61 -> 136
+	137 [label=0.00 fillcolor="#00ffde" style=filled]
+	61 -> 137
+	138 [label=0.00 fillcolor="#00ffdc" style=filled]
+	61 -> 138
+	139 [label=0.00 fillcolor="#00ffda" style=filled]
+	61 -> 139
+	140 [label=0.00 fillcolor="#00ffd8" style=filled]
+	61 -> 140
+	141 [label=0.01 fillcolor="#00ffd6" style=filled]
+	61 -> 141
+	142 [label=0.00 fillcolor="#00ffd4" style=filled]
+	61 -> 142
+	143 [label=0.00 fillcolor="#00ffd2" style=filled]
+	61 -> 143
+	144 [label=0.00 fillcolor="#00ffd0" style=filled]
+	61 -> 144
+	145 [label=0.00 fillcolor="#00ffcd" style=filled]
+	61 -> 145
+	146 [label=0.00 fillcolor="#00ffcb" style=filled]
+	61 -> 146
+	147 [label=0.00 fillcolor="#00ffc9" style=filled]
+	61 -> 147
+	148 [label=0.00 fillcolor="#00ffc7" style=filled]
+	61 -> 148
+	149 [label=0.00 fillcolor="#00ffc5" style=filled]
+	61 -> 149
+	150 [label=0.00 fillcolor="#00ffc3" style=filled]
+	61 -> 150
+	151 [label=0.00 fillcolor="#00ffc1" style=filled]
+	61 -> 151
+	152 [label=0.00 fillcolor="#00ffbf" style=filled]
+	61 -> 152
+	153 [label=0.00 fillcolor="#00ffbd" style=filled]
+	61 -> 153
+	154 [label=0.01 fillcolor="#00ffba" style=filled]
+	61 -> 154
+	155 [label=0.00 fillcolor="#00ffb8" style=filled]
+	61 -> 155
+	156 [label=0.00 fillcolor="#00ffb6" style=filled]
+	61 -> 156
+	157 [label=0.00 fillcolor="#00ffb4" style=filled]
+	61 -> 157
+	158 [label=0.00 fillcolor="#00ffb2" style=filled]
+	61 -> 158
+	159 [label=0.00 fillcolor="#00ffb0" style=filled]
+	61 -> 159
+	160 [label=0.00 fillcolor="#00ffae" style=filled]
+	61 -> 160
+	161 [label=0.00 fillcolor="#00ffac" style=filled]
+	61 -> 161
+	162 [label=0.00 fillcolor="#00ffaa" style=filled]
+	61 -> 162
+	163 [label=0.00 fillcolor="#00ffa7" style=filled]
+	61 -> 163
+	164 [label=0.00 fillcolor="#00ffa5" style=filled]
+	61 -> 164
+	165 [label=0.00 fillcolor="#00ffa3" style=filled]
+	61 -> 165
+	166 [label=0.00 fillcolor="#00ffa1" style=filled]
+	61 -> 166
+	167 [label=0.00 fillcolor="#00ff9f" style=filled]
+	61 -> 167
+	168 [label=0.00 fillcolor="#00ff9d" style=filled]
+	61 -> 168
+	169 [label=0.00 fillcolor="#00ff9b" style=filled]
+	61 -> 169
+	170 [label=0.00 fillcolor="#00ff99" style=filled]
+	61 -> 170
+	171 [label=0.00 fillcolor="#00ff96" style=filled]
+	61 -> 171
+	172 [label=0.00 fillcolor="#00ff94" style=filled]
+	61 -> 172
+	173 [label=0.00 fillcolor="#00ff92" style=filled]
+	61 -> 173
+	174 [label=0.00 fillcolor="#00ff90" style=filled]
+	61 -> 174
+	175 [label=0.01 fillcolor="#00ff8e" style=filled]
+	61 -> 175
+	176 [label=0.00 fillcolor="#00ff8c" style=filled]
+	61 -> 176
+	177 [label=0.00 fillcolor="#00ff8a" style=filled]
+	61 -> 177
+	178 [label=0.00 fillcolor="#00ff88" style=filled]
+	61 -> 178
+	179 [label=0.00 fillcolor="#00ff86" style=filled]
+	61 -> 179
+	180 [label=0.00 fillcolor="#00ff83" style=filled]
+	61 -> 180
+	181 [label=0.00 fillcolor="#00ff81" style=filled]
+	61 -> 181
+	182 [label=0.00 fillcolor="#00ff7f" style=filled]
+	61 -> 182
+	183 [label=0.00 fillcolor="#00ff7d" style=filled]
+	61 -> 183
+	184 [label=0.00 fillcolor="#00ff7b" style=filled]
+	61 -> 184
+	185 [label=0.00 fillcolor="#00ff79" style=filled]
+	61 -> 185
+	186 [label=0.00 fillcolor="#00ff77" style=filled]
+	61 -> 186
+	187 [label=0.00 fillcolor="#00ff75" style=filled]
+	61 -> 187
+	188 [label=0.00 fillcolor="#00ff73" style=filled]
+	61 -> 188
+	189 [label=0.00 fillcolor="#00ff70" style=filled]
+	61 -> 189
+	190 [label=0.00 fillcolor="#00ff6e" style=filled]
+	61 -> 190
+	191 [label=0.00 fillcolor="#00ff6c" style=filled]
+	61 -> 191
+	192 [label=0.00 fillcolor="#00ff6a" style=filled]
+	61 -> 192
+	193 [label=0.00 fillcolor="#00ff68" style=filled]
+	61 -> 193
+	194 [label=0.00 fillcolor="#00ff66" style=filled]
+	61 -> 194
+	195 [label=0.00 fillcolor="#00ff64" style=filled]
+	61 -> 195
+	196 [label=0.00 fillcolor="#00ff62" style=filled]
+	61 -> 196
+	197 [label=0.00 fillcolor="#00ff60" style=filled]
+	61 -> 197
+	198 [label=0.00 fillcolor="#00ff5d" style=filled]
+	61 -> 198
+	199 [label=0.01 fillcolor="#00ff5b" style=filled]
+	61 -> 199
+	200 [label=0.00 fillcolor="#00ff59" style=filled]
+	61 -> 200
+	201 [label=0.00 fillcolor="#00ff57" style=filled]
+	61 -> 201
+	202 [label=0.00 fillcolor="#00ff55" style=filled]
+	61 -> 202
+	203 [label=0.00 fillcolor="#00ff53" style=filled]
+	61 -> 203
+	204 [label=0.00 fillcolor="#00ff51" style=filled]
+	61 -> 204
+	205 [label=0.00 fillcolor="#00ff4f" style=filled]
+	61 -> 205
+	206 [label=0.00 fillcolor="#00ff4d" style=filled]
+	61 -> 206
+	207 [label=0.00 fillcolor="#00ff4a" style=filled]
+	61 -> 207
+	208 [label=0.00 fillcolor="#00ff48" style=filled]
+	61 -> 208
+	209 [label=0.00 fillcolor="#00ff46" style=filled]
+	61 -> 209
+	210 [label=0.00 fillcolor="#00ff44" style=filled]
+	61 -> 210
+	211 [label=0.00 fillcolor="#00ff42" style=filled]
+	61 -> 211
+	212 [label=0.00 fillcolor="#00ff40" style=filled]
+	61 -> 212
+	213 [label=0.00 fillcolor="#00ff3e" style=filled]
+	61 -> 213
+	214 [label=0.00 fillcolor="#00ff3c" style=filled]
+	61 -> 214
+	215 [label=0.00 fillcolor="#00ff3a" style=filled]
+	61 -> 215
+	216 [label=0.01 fillcolor="#00ff37" style=filled]
+	61 -> 216
+	217 [label=0.00 fillcolor="#00ff35" style=filled]
+	61 -> 217
+	218 [label=0.00 fillcolor="#00ff33" style=filled]
+	61 -> 218
+	219 [label=0.00 fillcolor="#00ff31" style=filled]
+	61 -> 219
+	220 [label=0.00 fillcolor="#00ff2f" style=filled]
+	61 -> 220
+	221 [label=0.00 fillcolor="#00ff2d" style=filled]
+	61 -> 221
+	222 [label=0.00 fillcolor="#00ff2b" style=filled]
+	61 -> 222
+	223 [label=0.00 fillcolor="#00ff29" style=filled]
+	61 -> 223
+	224 [label=0.00 fillcolor="#00ff27" style=filled]
+	61 -> 224
+	225 [label=0.00 fillcolor="#00ff24" style=filled]
+	61 -> 225
+	226 [label=0.00 fillcolor="#00ff22" style=filled]
+	61 -> 226
+	227 [label=0.00 fillcolor="#00ff20" style=filled]
+	61 -> 227
+	228 [label=0.00 fillcolor="#00ff1e" style=filled]
+	61 -> 228
+	229 [label=0.00 fillcolor="#00ff1c" style=filled]
+	61 -> 229
+	230 [label=0.00 fillcolor="#00ff1a" style=filled]
+	61 -> 230
+	231 [label=0.00 fillcolor="#00ff18" style=filled]
+	61 -> 231
+	232 [label=0.00 fillcolor="#00ff16" style=filled]
+	61 -> 232
+	233 [label=0.01 fillcolor="#00ff14" style=filled]
+	61 -> 233
+	234 [label=0.00 fillcolor="#00ff11" style=filled]
+	61 -> 234
+	235 [label=0.00 fillcolor="#00ff0f" style=filled]
+	61 -> 235
+	236 [label=0.00 fillcolor="#00ff0d" style=filled]
+	61 -> 236
+	237 [label=0.00 fillcolor="#00ff0b" style=filled]
+	61 -> 237
+	238 [label=0.00 fillcolor="#00ff09" style=filled]
+	61 -> 238
+	239 [label=0.00 fillcolor="#00ff07" style=filled]
+	61 -> 239
+	240 [label=0.00 fillcolor="#00ff05" style=filled]
+	61 -> 240
+	241 [label=0.00 fillcolor="#00ff03" style=filled]
+	61 -> 241
+	242 [label=0.00 fillcolor="#00ff01" style=filled]
+	61 -> 242
+	243 [label=0.00 fillcolor="#01ff00" style=filled]
+	61 -> 243
+	244 [label=0.00 fillcolor="#03ff00" style=filled]
+	61 -> 244
+	245 [label=0.00 fillcolor="#05ff00" style=filled]
+	61 -> 245
+	246 [label=0.00 fillcolor="#07ff00" style=filled]
+	61 -> 246
+	247 [label=0.01 fillcolor="#09ff00" style=filled]
+	61 -> 247
+	248 [label=0.00 fillcolor="#0bff00" style=filled]
+	61 -> 248
+	249 [label=0.00 fillcolor="#0dff00" style=filled]
+	61 -> 249
+	250 [label=0.00 fillcolor="#0fff00" style=filled]
+	61 -> 250
+	251 [label=0.00 fillcolor="#11ff00" style=filled]
+	61 -> 251
+	252 [label=0.00 fillcolor="#14ff00" style=filled]
+	61 -> 252
+	253 [label=0.00 fillcolor="#16ff00" style=filled]
+	61 -> 253
+	254 [label=0.00 fillcolor="#18ff00" style=filled]
+	61 -> 254
+	255 [label=0.00 fillcolor="#1aff00" style=filled]
+	61 -> 255
+	256 [label=0.00 fillcolor="#1cff00" style=filled]
+	61 -> 256
+	257 [label=0.00 fillcolor="#1eff00" style=filled]
+	61 -> 257
+	258 [label=0.00 fillcolor="#20ff00" style=filled]
+	61 -> 258
+	259 [label=0.00 fillcolor="#22ff00" style=filled]
+	61 -> 259
+	260 [label=0.00 fillcolor="#24ff00" style=filled]
+	61 -> 260
+	261 [label=0.00 fillcolor="#27ff00" style=filled]
+	61 -> 261
+	262 [label=0.00 fillcolor="#29ff00" style=filled]
+	61 -> 262
+	263 [label=0.00 fillcolor="#2bff00" style=filled]
+	61 -> 263
+	264 [label=0.00 fillcolor="#2dff00" style=filled]
+	61 -> 264
+	265 [label=0.00 fillcolor="#2fff00" style=filled]
+	61 -> 265
+	266 [label=0.00 fillcolor="#31ff00" style=filled]
+	61 -> 266
+	267 [label=0.00 fillcolor="#33ff00" style=filled]
+	61 -> 267
+	268 [label=0.00 fillcolor="#35ff00" style=filled]
+	61 -> 268
+	269 [label=0.00 fillcolor="#37ff00" style=filled]
+	61 -> 269
+	270 [label=0.00 fillcolor="#3aff00" style=filled]
+	61 -> 270
+	271 [label=0.00 fillcolor="#3cff00" style=filled]
+	61 -> 271
+	272 [label=0.00 fillcolor="#3eff00" style=filled]
+	61 -> 272
+	273 [label=0.00 fillcolor="#40ff00" style=filled]
+	61 -> 273
+	274 [label=0.01 fillcolor="#42ff00" style=filled]
+	61 -> 274
+	275 [label=0.00 fillcolor="#44ff00" style=filled]
+	61 -> 275
+	276 [label=0.00 fillcolor="#46ff00" style=filled]
+	61 -> 276
+	277 [label=0.00 fillcolor="#48ff00" style=filled]
+	61 -> 277
+	278 [label=0.00 fillcolor="#4aff00" style=filled]
+	61 -> 278
+	279 [label=0.00 fillcolor="#4dff00" style=filled]
+	61 -> 279
+	280 [label=0.00 fillcolor="#4fff00" style=filled]
+	61 -> 280
+	281 [label=0.00 fillcolor="#51ff00" style=filled]
+	61 -> 281
+	282 [label=0.01 fillcolor="#53ff00" style=filled]
+	61 -> 282
+	283 [label=0.00 fillcolor="#55ff00" style=filled]
+	61 -> 283
+	284 [label=0.00 fillcolor="#57ff00" style=filled]
+	61 -> 284
+	285 [label=0.00 fillcolor="#59ff00" style=filled]
+	61 -> 285
+	286 [label=0.00 fillcolor="#5bff00" style=filled]
+	61 -> 286
+	287 [label=0.00 fillcolor="#5dff00" style=filled]
+	61 -> 287
+	288 [label=0.00 fillcolor="#60ff00" style=filled]
+	61 -> 288
+	289 [label=0.00 fillcolor="#62ff00" style=filled]
+	61 -> 289
+	290 [label=0.00 fillcolor="#64ff00" style=filled]
+	61 -> 290
+	291 [label=0.00 fillcolor="#66ff00" style=filled]
+	61 -> 291
+	292 [label=0.00 fillcolor="#68ff00" style=filled]
+	61 -> 292
+	293 [label=0.00 fillcolor="#6aff00" style=filled]
+	61 -> 293
+	294 [label=0.00 fillcolor="#6cff00" style=filled]
+	61 -> 294
+	295 [label=0.00 fillcolor="#6eff00" style=filled]
+	61 -> 295
+	296 [label=0.00 fillcolor="#70ff00" style=filled]
+	61 -> 296
+	297 [label=0.00 fillcolor="#73ff00" style=filled]
+	61 -> 297
+	298 [label=0.01 fillcolor="#75ff00" style=filled]
+	61 -> 298
+	299 [label=0.00 fillcolor="#77ff00" style=filled]
+	61 -> 299
+	300 [label=0.01 fillcolor="#79ff00" style=filled]
+	61 -> 300
+	301 [label=0.00 fillcolor="#7bff00" style=filled]
+	61 -> 301
+	302 [label=0.01 fillcolor="#7dff00" style=filled]
+	61 -> 302
+	303 [label=0.00 fillcolor="#7fff00" style=filled]
+	61 -> 303
+	304 [label=0.00 fillcolor="#81ff00" style=filled]
+	61 -> 304
+	305 [label=0.00 fillcolor="#83ff00" style=filled]
+	61 -> 305
+	306 [label=0.00 fillcolor="#86ff00" style=filled]
+	61 -> 306
+	307 [label=0.00 fillcolor="#88ff00" style=filled]
+	61 -> 307
+	308 [label=0.00 fillcolor="#8aff00" style=filled]
+	61 -> 308
+	309 [label=0.00 fillcolor="#8cff00" style=filled]
+	61 -> 309
+	310 [label=0.00 fillcolor="#8eff00" style=filled]
+	61 -> 310
+	311 [label=0.00 fillcolor="#90ff00" style=filled]
+	61 -> 311
+	312 [label=0.00 fillcolor="#92ff00" style=filled]
+	61 -> 312
+	313 [label=0.00 fillcolor="#94ff00" style=filled]
+	61 -> 313
+	314 [label=0.00 fillcolor="#96ff00" style=filled]
+	61 -> 314
+	315 [label=0.00 fillcolor="#99ff00" style=filled]
+	61 -> 315
+	316 [label=0.00 fillcolor="#9bff00" style=filled]
+	61 -> 316
+	317 [label=0.00 fillcolor="#9dff00" style=filled]
+	61 -> 317
+	318 [label=0.00 fillcolor="#9fff00" style=filled]
+	61 -> 318
+	319 [label=0.00 fillcolor="#a1ff00" style=filled]
+	61 -> 319
+	320 [label=0.00 fillcolor="#a3ff00" style=filled]
+	61 -> 320
+	321 [label=0.00 fillcolor="#a5ff00" style=filled]
+	61 -> 321
+	322 [label=0.00 fillcolor="#a7ff00" style=filled]
+	61 -> 322
+	323 [label=0.00 fillcolor="#a9ff00" style=filled]
+	61 -> 323
+	324 [label=0.01 fillcolor="#acff00" style=filled]
+	61 -> 324
+	325 [label=0.00 fillcolor="#aeff00" style=filled]
+	61 -> 325
+	326 [label=0.00 fillcolor="#b0ff00" style=filled]
+	61 -> 326
+	327 [label=0.00 fillcolor="#b2ff00" style=filled]
+	61 -> 327
+	328 [label=0.00 fillcolor="#b4ff00" style=filled]
+	61 -> 328
+	329 [label=0.00 fillcolor="#b6ff00" style=filled]
+	61 -> 329
+	330 [label=0.00 fillcolor="#b8ff00" style=filled]
+	61 -> 330
+	331 [label=0.00 fillcolor="#baff00" style=filled]
+	61 -> 331
+	332 [label=0.00 fillcolor="#bdff00" style=filled]
+	61 -> 332
+	333 [label=0.00 fillcolor="#bfff00" style=filled]
+	61 -> 333
+	334 [label=0.00 fillcolor="#c1ff00" style=filled]
+	61 -> 334
+	335 [label=0.00 fillcolor="#c3ff00" style=filled]
+	61 -> 335
+	336 [label=0.00 fillcolor="#c5ff00" style=filled]
+	61 -> 336
+	337 [label=0.00 fillcolor="#c7ff00" style=filled]
+	61 -> 337
+	338 [label=0.00 fillcolor="#c9ff00" style=filled]
+	61 -> 338
+	339 [label=0.00 fillcolor="#cbff00" style=filled]
+	61 -> 339
+	340 [label=0.00 fillcolor="#cdff00" style=filled]
+	61 -> 340
+	341 [label=0.00 fillcolor="#d0ff00" style=filled]
+	61 -> 341
+	342 [label=0.00 fillcolor="#d2ff00" style=filled]
+	61 -> 342
+	343 [label=0.00 fillcolor="#d4ff00" style=filled]
+	61 -> 343
+	344 [label=0.00 fillcolor="#d6ff00" style=filled]
+	61 -> 344
+	345 [label=0.00 fillcolor="#d8ff00" style=filled]
+	61 -> 345
+	346 [label=0.00 fillcolor="#daff00" style=filled]
+	61 -> 346
+	347 [label=0.00 fillcolor="#dcff00" style=filled]
+	61 -> 347
+	348 [label=0.00 fillcolor="#deff00" style=filled]
+	61 -> 348
+	349 [label=0.00 fillcolor="#e0ff00" style=filled]
+	61 -> 349
+	350 [label=0.00 fillcolor="#e3ff00" style=filled]
+	61 -> 350
+	351 [label=0.00 fillcolor="#e5ff00" style=filled]
+	61 -> 351
+	352 [label=0.00 fillcolor="#e7ff00" style=filled]
+	61 -> 352
+	353 [label=0.00 fillcolor="#e9ff00" style=filled]
+	61 -> 353
+	354 [label=0.00 fillcolor="#ebff00" style=filled]
+	61 -> 354
+	355 [label=0.00 fillcolor="#edff00" style=filled]
+	61 -> 355
+	356 [label=0.00 fillcolor="#efff00" style=filled]
+	61 -> 356
+	357 [label=0.00 fillcolor="#f1ff00" style=filled]
+	61 -> 357
+	358 [label=0.00 fillcolor="#f3ff00" style=filled]
+	61 -> 358
+	359 [label=0.00 fillcolor="#f6ff00" style=filled]
+	61 -> 359
+	360 [label=0.00 fillcolor="#f8ff00" style=filled]
+	61 -> 360
+	361 [label=0.00 fillcolor="#faff00" style=filled]
+	61 -> 361
+	362 [label=0.00 fillcolor="#fcff00" style=filled]
+	61 -> 362
+	363 [label=0.00 fillcolor="#feff00" style=filled]
+	61 -> 363
+	364 [label=0.00 fillcolor="#fffd00" style=filled]
+	61 -> 364
+	365 [label=0.00 fillcolor="#fffb00" style=filled]
+	61 -> 365
+	366 [label=0.00 fillcolor="#fff900" style=filled]
+	61 -> 366
+	367 [label=0.00 fillcolor="#fff700" style=filled]
+	61 -> 367
+	368 [label=0.00 fillcolor="#fff400" style=filled]
+	61 -> 368
+	369 [label=0.00 fillcolor="#fff200" style=filled]
+	61 -> 369
+	370 [label=0.00 fillcolor="#fff000" style=filled]
+	61 -> 370
+	371 [label=0.00 fillcolor="#ffee00" style=filled]
+	61 -> 371
+	372 [label=0.00 fillcolor="#ffec00" style=filled]
+	61 -> 372
+	373 [label=0.00 fillcolor="#ffea00" style=filled]
+	61 -> 373
+	374 [label=0.00 fillcolor="#ffe800" style=filled]
+	61 -> 374
+	375 [label=0.00 fillcolor="#ffe600" style=filled]
+	61 -> 375
+	376 [label=0.00 fillcolor="#ffe400" style=filled]
+	61 -> 376
+	377 [label=0.00 fillcolor="#ffe100" style=filled]
+	61 -> 377
+	378 [label=0.00 fillcolor="#ffdf00" style=filled]
+	61 -> 378
+	379 [label=0.00 fillcolor="#ffdd00" style=filled]
+	61 -> 379
+	380 [label=0.00 fillcolor="#ffdb00" style=filled]
+	61 -> 380
+	381 [label=0.00 fillcolor="#ffd900" style=filled]
+	61 -> 381
+	382 [label=0.00 fillcolor="#ffd700" style=filled]
+	61 -> 382
+	383 [label=0.00 fillcolor="#ffd500" style=filled]
+	61 -> 383
+	384 [label=0.00 fillcolor="#ffd300" style=filled]
+	61 -> 384
+	385 [label=0.00 fillcolor="#ffd100" style=filled]
+	61 -> 385
+	386 [label=0.00 fillcolor="#ffce00" style=filled]
+	61 -> 386
+	387 [label=0.00 fillcolor="#ffcc00" style=filled]
+	61 -> 387
+	388 [label=0.00 fillcolor="#ffca00" style=filled]
+	61 -> 388
+	389 [label=0.00 fillcolor="#ffc800" style=filled]
+	61 -> 389
+	390 [label=0.01 fillcolor="#ffc600" style=filled]
+	61 -> 390
+	391 [label=0.00 fillcolor="#ffc400" style=filled]
+	61 -> 391
+	392 [label=0.03 color=gold fillcolor="#ffc200" penwidth=4 style=filled]
+	61 -> 392
+	393 [label=0.00 fillcolor="#ffc000" style=filled]
+	61 -> 393
+	394 [label=0.00 fillcolor="#ffbe00" style=filled]
+	61 -> 394
+	395 [label=0.00 fillcolor="#ffbb00" style=filled]
+	61 -> 395
+	396 [label=0.00 fillcolor="#ffb900" style=filled]
+	61 -> 396
+	397 [label=0.00 fillcolor="#ffb700" style=filled]
+	61 -> 397
+	398 [label=0.00 fillcolor="#ffb500" style=filled]
+	61 -> 398
+	399 [label=0.00 fillcolor="#ffb300" style=filled]
+	61 -> 399
+	400 [label=0.00 fillcolor="#ffb100" style=filled]
+	61 -> 400
+	401 [label=0.00 fillcolor="#ffaf00" style=filled]
+	61 -> 401
+	402 [label=0.00 fillcolor="#ffad00" style=filled]
+	61 -> 402
+	403 [label=0.00 fillcolor="#ffab00" style=filled]
+	61 -> 403
+	404 [label=0.00 fillcolor="#ffa800" style=filled]
+	61 -> 404
+	405 [label=0.00 fillcolor="#ffa600" style=filled]
+	61 -> 405
+	406 [label=0.00 fillcolor="#ffa400" style=filled]
+	61 -> 406
+	407 [label=0.00 fillcolor="#ffa200" style=filled]
+	61 -> 407
+	408 [label=0.00 fillcolor="#ffa000" style=filled]
+	61 -> 408
+	409 [label=0.00 fillcolor="#ff9e00" style=filled]
+	392 -> 409
+	410 [label=0.02 fillcolor="#ff9c00" style=filled]
+	392 -> 410
+	411 [label=0.00 fillcolor="#ff9a00" style=filled]
+	392 -> 411
+	412 [label=0.00 fillcolor="#ff9800" style=filled]
+	392 -> 412
+	413 [label=0.00 fillcolor="#ff9500" style=filled]
+	392 -> 413
+	414 [label=0.00 fillcolor="#ff9300" style=filled]
+	61 -> 414
+	415 [label=0.00 fillcolor="#ff9100" style=filled]
+	392 -> 415
+	416 [label=0.00 fillcolor="#ff8f00" style=filled]
+	392 -> 416
+	417 [label=0.00 fillcolor="#ff8d00" style=filled]
+	392 -> 417
+	418 [label=0.00 fillcolor="#ff8b00" style=filled]
+	392 -> 418
+	419 [label=0.00 fillcolor="#ff8900" style=filled]
+	392 -> 419
+	420 [label=0.00 fillcolor="#ff8700" style=filled]
+	392 -> 420
+	421 [label=0.00 fillcolor="#ff8500" style=filled]
+	392 -> 421
+	422 [label=0.00 fillcolor="#ff8200" style=filled]
+	392 -> 422
+	423 [label=0.00 fillcolor="#ff8000" style=filled]
+	392 -> 423
+	424 [label=0.00 fillcolor="#ff7e00" style=filled]
+	392 -> 424
+	425 [label=0.00 fillcolor="#ff7c00" style=filled]
+	392 -> 425
+	426 [label=0.00 fillcolor="#ff7a00" style=filled]
+	392 -> 426
+	427 [label=0.00 fillcolor="#ff7800" style=filled]
+	392 -> 427
+	428 [label=0.00 fillcolor="#ff7600" style=filled]
+	392 -> 428
+	429 [label=0.00 fillcolor="#ff7400" style=filled]
+	392 -> 429
+	430 [label=0.00 fillcolor="#ff7200" style=filled]
+	392 -> 430
+	431 [label=0.00 fillcolor="#ff6f00" style=filled]
+	61 -> 431
+	432 [label=0.00 fillcolor="#ff6d00" style=filled]
+	392 -> 432
+	433 [label=0.00 fillcolor="#ff6b00" style=filled]
+	392 -> 433
+	434 [label=0.00 fillcolor="#ff6900" style=filled]
+	392 -> 434
+	435 [label=0.00 fillcolor="#ff6700" style=filled]
+	392 -> 435
+	436 [label=0.00 fillcolor="#ff6500" style=filled]
+	392 -> 436
+	437 [label=0.00 fillcolor="#ff6300" style=filled]
+	392 -> 437
+	438 [label=0.00 fillcolor="#ff6100" style=filled]
+	392 -> 438
+	439 [label=0.00 fillcolor="#ff5f00" style=filled]
+	392 -> 439
+	440 [label=0.00 fillcolor="#ff5c00" style=filled]
+	392 -> 440
+	441 [label=0.00 fillcolor="#ff5a00" style=filled]
+	392 -> 441
+	442 [label=0.00 fillcolor="#ff5800" style=filled]
+	392 -> 442
+	443 [label=0.00 fillcolor="#ff5600" style=filled]
+	392 -> 443
+	444 [label=0.00 fillcolor="#ff5400" style=filled]
+	392 -> 444
+	445 [label=0.00 fillcolor="#ff5200" style=filled]
+	392 -> 445
+	446 [label=0.00 fillcolor="#ff5000" style=filled]
+	392 -> 446
+	447 [label=0.00 fillcolor="#ff4e00" style=filled]
+	392 -> 447
+	448 [label=0.00 fillcolor="#ff4c00" style=filled]
+	392 -> 448
+	449 [label=0.00 fillcolor="#ff4900" style=filled]
+	392 -> 449
+	450 [label=0.00 fillcolor="#ff4700" style=filled]
+	392 -> 450
+	451 [label=0.00 fillcolor="#ff4500" style=filled]
+	392 -> 451
+	452 [label=0.00 fillcolor="#ff4300" style=filled]
+	392 -> 452
+	453 [label=0.00 fillcolor="#ff4100" style=filled]
+	392 -> 453
+	454 [label=0.00 fillcolor="#ff3f00" style=filled]
+	392 -> 454
+	455 [label=0.00 fillcolor="#ff3d00" style=filled]
+	392 -> 455
+	456 [label=0.00 fillcolor="#ff3b00" style=filled]
+	392 -> 456
+	457 [label=0.00 fillcolor="#ff3900" style=filled]
+	392 -> 457
+	458 [label=0.00 fillcolor="#ff3600" style=filled]
+	392 -> 458
+	459 [label=0.00 fillcolor="#ff3400" style=filled]
+	392 -> 459
+	460 [label=0.00 fillcolor="#ff3200" style=filled]
+	392 -> 460
+	461 [label=0.00 fillcolor="#ff3000" style=filled]
+	392 -> 461
+	462 [label=0.00 fillcolor="#ff2e00" style=filled]
+	392 -> 462
+	463 [label=0.00 fillcolor="#ff2c00" style=filled]
+	392 -> 463
+	464 [label=0.01 fillcolor="#ff2a00" style=filled]
+	61 -> 464
+	465 [label=0.00 fillcolor="#ff2800" style=filled]
+	392 -> 465
+	466 [label=0.00 fillcolor="#ff2600" style=filled]
+	392 -> 466
+	467 [label=0.00 fillcolor="#ff2300" style=filled]
+	392 -> 467
+	468 [label=0.00 fillcolor="#ff2100" style=filled]
+	392 -> 468
+	469 [label=0.00 fillcolor="#ff1f00" style=filled]
+	392 -> 469
+	470 [label=0.00 fillcolor="#ff1d00" style=filled]
+	392 -> 470
+	471 [label=0.00 fillcolor="#ff1b00" style=filled]
+	392 -> 471
+	472 [label=0.00 fillcolor="#ff1900" style=filled]
+	392 -> 472
+	473 [label=0.00 fillcolor="#ff1700" style=filled]
+	392 -> 473
+	474 [label=0.00 fillcolor="#ff1500" style=filled]
+	392 -> 474
+	475 [label=0.00 fillcolor="#ff1300" style=filled]
+	392 -> 475
+	476 [label=0.00 fillcolor="#ff1000" style=filled]
+	392 -> 476
+	477 [label=0.00 fillcolor="#ff0e00" style=filled]
+	392 -> 477
+	478 [label=0.00 fillcolor="#ff0c00" style=filled]
+	392 -> 478
+	479 [label=0.00 fillcolor="#ff0a00" style=filled]
+	392 -> 479
+	480 [label=0.00 fillcolor="#ff0800" style=filled]
+	392 -> 480
+	481 [label=0.00 fillcolor="#ff0600" style=filled]
+	392 -> 481
+	482 [label=0.00 fillcolor="#ff0400" style=filled]
+	392 -> 482
+	483 [label=0.00 fillcolor="#ff0200" style=filled]
+	392 -> 483
+	484 [label=0.00 fillcolor="#ff0000" style=filled]
+	392 -> 484
+}
